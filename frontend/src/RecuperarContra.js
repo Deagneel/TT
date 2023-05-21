@@ -56,7 +56,11 @@ Agradecemos su preferencia.
         <div className="row">
           <div className="col-md-6">
             <div className="bg-white p-3 rounded">
+              <br></br>
+              <br></br>
               <h2 className="text-center">Restablecer contraseña</h2>
+              <br />
+              <br></br>
               <br></br>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
@@ -73,8 +77,8 @@ Agradecemos su preferencia.
                     style={{ width: '100%' }}
                   />
                 </div>
-                <br></br>
-                <br></br>
+                <br />
+                <br />
                 <div className="d-flex justify-content-center">
                   <button
                     type="submit"
@@ -93,11 +97,13 @@ Agradecemos su preferencia.
             </div>
           </div>
           <div className="col-md-6">
-            <img
-              src={process.env.PUBLIC_URL + '/Rene.jpg'}
-              alt="Imagen"
-              className="img-fluid"
-            />
+            <div style={{ borderRadius: '50%', overflow: 'hidden' }}>
+              <img
+                src={process.env.PUBLIC_URL + '/Imagen1.png'}
+                alt="Imagen"
+                className="img-fluid"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -106,3 +112,4 @@ Agradecemos su preferencia.
 }
 
 export default RecuperarContrasena;
+

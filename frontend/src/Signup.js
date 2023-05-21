@@ -5,7 +5,6 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Validation from './SignupValidation.js';
 import axios from 'axios';
 
-
 function Signup() {
   const [values, setValues] = useState({
     nombre: '',
@@ -69,7 +68,7 @@ function Signup() {
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const tipoDeUsuario = searchParams.get("tipo_de_usuario");
+  const tipoDeUsuario = searchParams.get('tipo_de_usuario');
 
   useEffect(() => {
     if (tipoDeUsuario !== null) {
@@ -79,7 +78,6 @@ function Signup() {
       }));
     }
   }, [tipoDeUsuario]);
-  
 
   return (
     <div className="d-flex justify-content-center align-items-center bg-white vh-100">
@@ -176,11 +174,12 @@ function Signup() {
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
-                  {values.intento_envio && values.contrasena !== values.confirmar_contrasena && (
-                    <span className="text-danger">
-                      Las contraseñas no coinciden
-                    </span>
-                  )}
+                  {values.intento_envio &&
+                    values.contrasena !== values.confirmar_contrasena && (
+                      <span className="text-danger">
+                        Las contraseñas no coinciden
+                      </span>
+                    )}
                 </div>
 
                 <div className="mb-3">
@@ -231,11 +230,13 @@ function Signup() {
             </div>
           </div>
           <div className="col-md-6">
-            <img
-              src={process.env.PUBLIC_URL + '/Rene.jpg'}
-              alt="Signup"
-              className="img-fluid"
-            />
+            <div style={{ borderRadius: '50%', overflow: 'hidden' }}>
+              <img
+                src={process.env.PUBLIC_URL + '/Imagen1.png'}
+                alt="Signup"
+                className="img-fluid"
+              />
+            </div>
           </div>
         </div>
       </div>
