@@ -29,10 +29,10 @@ function TipoUsuario() {
               </Link>
               <h2>Crear Cuenta</h2>
               <br />
-              <div className="d-flex justify-content-center">
-                <div className="d-flex flex-column align-items-center mr-5">
+              <div className="d-flex justify-content-center align-items-end">
+                <div className="d-flex flex-column align-items-center mr-5" style={{ marginRight: '70px' }}>
                   <img
-                    src={process.env.PUBLIC_URL + '/Rene.jpg'}
+                    src={process.env.PUBLIC_URL + '/Arrendador.png'}
                     alt="Arrendador"
                     className="img-fluid"
                     style={{ marginBottom: '10px' }}
@@ -59,12 +59,13 @@ function TipoUsuario() {
                     Soy propietario del inmueble
                   </p>
                 </div>
-                <div className="d-flex flex-column align-items-center">
+                <div className="d-flex flex-column align-items-center" style={{ marginLeft: '70px' }}>
                   <img
-                    src={process.env.PUBLIC_URL + '/Rene.jpg'}
+                    src={process.env.PUBLIC_URL + '/Arrendatario.png'}
                     alt="Arrendatario"
                     className="img-fluid"
-                    style={{ marginBottom: '10px', marginLeft: '10px' }}
+                    width="88%"
+                    style={{ marginBottom: '10px' }}
                   />
                   <Link
                     to={{
@@ -98,9 +99,3 @@ function TipoUsuario() {
 }
 
 export default TipoUsuario;
-
-
-
-
-
-
