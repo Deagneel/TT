@@ -68,12 +68,13 @@ function Login() {
         <div className="row">
           <div className="col-md-6">
             <img
-              src={process.env.PUBLIC_URL + '/rene.jpg'}
+              src={process.env.PUBLIC_URL + '/imagen2.png'}
               alt="Imagen"
-              className="img-fluid"
+              className="img-fluid rounded-circle"
+              style={{ width: '100%', height: 'auto' }} // Corrige el valor de la propiedad height
             />
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6" style={{ marginTop: '90px' }}> 
             <div className="bg-white p-3 rounded">
               <center>
                 <h2>Inicio de Sesión</h2>
