@@ -20,6 +20,9 @@ function Signup() {
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
+  const [emailError, setEmailError] = useState('');
+  const [emailExistsError, setEmailExistsError] = useState('');
+
 
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -33,12 +36,12 @@ function Signup() {
     setValues((prev) => ({ ...prev, aceptar_terminos: event.target.checked }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setValues((prev) => ({ ...prev, intento_envio: true }));
     const err = Validation(values);
     setErrors(err);
-
+  
     if (
       err.nombre === '' &&
       err.correo === '' &&
@@ -46,25 +49,63 @@ function Signup() {
       values.contrasena === values.confirmar_contrasena &&
       values.aceptar_terminos
     ) {
-      const nombreUsuario =
-        values.nombre.substring(0, 8) +
-        generateRandomNumber() +
-        generateRandomNumber() +
-        generateRandomNumber(); // Genera el nombre de usuario
-
-      const updatedValues = {
-        ...values,
-        nombre_usuario: nombreUsuario,
-      };
-
-      axios
-        .post('http://localhost:8081/signup', updatedValues)
-        .then((res) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8081/checkEmail?correo=${values.correo}`
+        );
+  
+        if (response.data.exists) {
+          setEmailExistsError(response.data.error);
+        } else {
+          const nombreUsuario =
+            values.nombre.substring(0, 8) +
+            generateRandomNumber() +
+            generateRandomNumber() +
+            generateRandomNumber(); // Genera el nombre de usuario
+  
+          const updatedValues = {
+            ...values,
+            nombre_usuario: nombreUsuario,
+          };
+  
+          const signupResponse = await axios.post(
+            'http://localhost:8081/signup',
+            updatedValues
+          );
+  
+          if (signupResponse.data === 'Error') {
+            console.log('Error al registrar el usuario');
+            return; // Puedes mostrar un mensaje de error si deseas
+          }
+  
           navigate('/');
-        })
-        .catch((err) => console.log(err));
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
+  
+
+  useEffect(() => {
+    if (values.intento_envio && values.correo !== '') {
+      try {
+        const checkEmail = async () => {
+          const response = await axios.get(
+            `http://localhost:8081/checkEmail?correo=${values.correo}`
+          );
+          if (response.data.exists) {
+            setEmailError('El correo ya está registrado');
+          } else {
+            setEmailError('');
+          }
+        };
+        checkEmail();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [values.intento_envio, values.correo]);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -86,7 +127,7 @@ function Signup() {
           <div className="col-md-6">
             <div className="bg-white p-3 rounded">
               <Link
-                to="/home"
+                to="/tipousuario"
                 style={{
                   position: 'absolute',
                   top: '20px',
@@ -130,7 +171,7 @@ function Signup() {
                     <span className="text-danger">{errors.nombre}</span>
                   )}
                 </div>
-
+  
                 <div className="mb-3">
                   <label htmlFor="correo">
                     <strong>Correo</strong>
@@ -145,8 +186,11 @@ function Signup() {
                   {values.intento_envio && errors.correo && (
                     <span className="text-danger">{errors.correo}</span>
                   )}
+                  {values.intento_envio && emailError && (
+                    <span className="text-danger">{emailError}</span>
+                  )}
                 </div>
-
+  
                 <div className="mb-3">
                   <label htmlFor="contrasena">
                     <strong>Contraseña</strong>
@@ -162,7 +206,7 @@ function Signup() {
                     <span className="text-danger">{errors.contrasena}</span>
                   )}
                 </div>
-
+  
                 <div className="mb-3">
                   <label htmlFor="confirmar_contrasena">
                     <strong>Confirmar Contraseña</strong>
@@ -181,7 +225,7 @@ function Signup() {
                       </span>
                     )}
                 </div>
-
+  
                 <div className="mb-3">
                   <label htmlFor="aceptar_terminos">
                     <input
@@ -196,8 +240,11 @@ function Signup() {
                       Es necesario aceptar los términos y condiciones para crear la cuenta.
                     </span>
                   )}
+                  {values.intento_envio && errors.correo && (
+                    <span className="text-danger">{errors.correo}</span>
+                  )}
                 </div>
-
+  
                 <div className="d-flex flex-column align-items-center">
                   <button
                     type="submit"
@@ -212,7 +259,7 @@ function Signup() {
                   >
                     Registrarse
                   </button>
-
+  
                   <Link
                     to="/"
                     className="btn btn-success rounded-0"
@@ -241,7 +288,7 @@ function Signup() {
         </div>
       </div>
     </div>
-  );
+  );  
 }
 
 export default Signup

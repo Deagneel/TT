@@ -138,7 +138,7 @@ function Login() {
                     Iniciar sesión
                   </button>
                   <Link
-                    to="/signup"
+                    to="/tipousuario"
                     className="btn btn-success rounded-0"
                     style={{
                       width: 'auto',

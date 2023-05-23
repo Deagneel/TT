@@ -1,31 +1,32 @@
 function Validation(values) {
-
-    let error = {}
-
-    const correo_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    const contrasena_pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/
-
-
-    if(values.nombre === "") {        
-        error.nombre = "El nombre no puede estar vacío"    
-    }     else {        
-        error.nombre = ""    
+    let errors = {};
+  
+    if (values.nombre.trim() === "") {
+      errors.nombre = "El nombre no puede estar vacío";
+    } else {
+      errors.nombre = "";
     }
-    if(values.correo === "") {        
-        error.correo = "El correo no puede estar vacío"    
-    }     else if(!correo_pattern.test(values.correo)) {        
-        error.correo = "El correo no coincide"    
-    }else {        
-        error.correo = ""    
+  
+    if (values.correo === "") {
+      errors.correo = "El correo no puede estar vacío";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.correo)) {
+      errors.correo = "El correo no coincide";
+    } else if (values.correo.length < 15 || values.correo.length > 50) {
+      errors.correo = "El correo debe tener entre 15 y 50 caracteres";
+    } else {
+      errors.correo = "";
     }
-    if(values.contrasena === "") {        
-        error.contrasena = "La contraseña no puede estar vacía"    
-    }     else if(!contrasena_pattern.test(values.contrasena)) {        
-        error.contrasena = "La contraseña debe contener al menos una mayuscula y un numero, entre 8 y 15 caracteres"    
-    } else {        
-        error.contrasena = ""    
-    }    
-    return error;}
-
-export default Validation;
+  
+    if (values.contrasena === "") {
+      errors.contrasena = "La contraseña no puede estar vacía";
+    } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,15}$/.test(values.contrasena)) {
+      errors.contrasena = "La contraseña debe contener al menos una mayúscula, una minúscula, un número y tener entre 8 y 15 caracteres";
+    } else {
+      errors.contrasena = "";
+    }
+  
+    return errors;
+  }
+  
+  export default Validation;
+  

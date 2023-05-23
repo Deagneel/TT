@@ -8,7 +8,7 @@ function Validation(values) {
 
 
     if(values.correo === "") {        
-        error.correo = "El nombre no puede estar vacío"    
+        error.correo = "El correo no puede estar vacío"    
     }     else if(!correo_pattern.test(values.correo)) {        
         error.correo = "El correo no coincide"    
     }    else {        error.correo = ""    }
