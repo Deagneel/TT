@@ -95,6 +95,7 @@ function Login() {
                     placeholder="Ingresar correo"
                     name="correo"
                     onChange={handleInput}
+                    autocomplete="off"
                     className="form-control rounded-0"
                     style={{ width: '100%' }}
                   />
@@ -121,7 +122,7 @@ function Login() {
                   <Link
                     to="/recuperarcontra"
                     style={{ marginBottom: '10px' }}>
-                    ¿Olvidaste tu contraseña?
+                    
                   </Link>
                 </div>
                 <div className="d-flex flex-column align-items-center">
