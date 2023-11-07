@@ -164,6 +164,7 @@ function Signup() {
                     type="text"
                     placeholder="Ingresar nombre"
                     name="nombre"
+                    autocomplete="off"
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
@@ -180,6 +181,7 @@ function Signup() {
                     type="email"
                     placeholder="Ingresar correo"
                     name="correo"
+                    autocomplete="off"
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
