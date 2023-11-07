@@ -16,7 +16,6 @@ function NuevaContra() {
   const handleConfirmarContrasenaInput = (event) => {
     setConfirmarContrasena(event.target.value);
   };
-//ss
   const handleSubmit = (event) => {
     event.preventDefault();
     // Validar contraseñas y realizar la lógica necesaria para cambiar la contraseña
