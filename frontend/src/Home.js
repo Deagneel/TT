@@ -21,7 +21,7 @@ function Navbar() {
       <div>
         <button className="white-text-button" style={{ marginRight: '75px' }}>Inicio de sesión</button>
         <button className="white-text-button" style={{ marginRight: '75px' }}>Registrarse</button>
-        <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '35px', cursor: 'pointer' }} onClick={handleBellClick}></i>
+        <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
       </div>
     </div>

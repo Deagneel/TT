@@ -6,6 +6,7 @@ import Home from './Home';
 import RecuperarContra from './RecuperarContra';
 import NuevaContra from './NuevaContra';
 import TipoUsuario from './TipoUsuario';
+import PerfilArrendador from './PerfilArrendador';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/recuperarcontra" element={<RecuperarContra />} />
         <Route path="/nuevacontra" element={<NuevaContra />} />
         <Route path="/tipousuario" element={<TipoUsuario />} />
+        <Route path="/perfilarrendador" element={<PerfilArrendador />} />
       </Routes>
     </BrowserRouter>
   );
