@@ -7,6 +7,7 @@ import RecuperarContra from './RecuperarContra';
 import NuevaContra from './NuevaContra';
 import TipoUsuario from './TipoUsuario';
 import PerfilArrendador from './PerfilArrendador';
+import Chat from './Chat';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/nuevacontra" element={<NuevaContra />} />
         <Route path="/tipousuario" element={<TipoUsuario />} />
         <Route path="/perfilarrendador" element={<PerfilArrendador />} />
+        <Route path="/chat" element={<Chat/>} />
       </Routes>
     </BrowserRouter>
   );
