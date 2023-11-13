@@ -8,6 +8,8 @@ import NuevaContra from './NuevaContra';
 import TipoUsuario from './TipoUsuario';
 import PerfilArrendador from './PerfilArrendador';
 import Chat from './Chat';
+import HomeArrendador from './HomeArrendador';
+
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
         <Route path="/tipousuario" element={<TipoUsuario />} />
         <Route path="/perfilarrendador" element={<PerfilArrendador />} />
         <Route path="/chat" element={<Chat/>} />
+        <Route path="/homearrendador" element={<HomeArrendador />} />
       </Routes>
     </BrowserRouter>
   );
