@@ -9,6 +9,9 @@ import TipoUsuario from './TipoUsuario';
 import PerfilArrendador from './PerfilArrendador';
 import Chat from './Chat';
 import HomeArrendador from './HomeArrendador';
+import HomeArrendatario from './HomeArrendatario';
+import ListaInmuebles from './ListaInmuebles';
+
 
 
 function App() {
@@ -24,6 +27,8 @@ function App() {
         <Route path="/perfilarrendador" element={<PerfilArrendador />} />
         <Route path="/chat" element={<Chat/>} />
         <Route path="/homearrendador" element={<HomeArrendador />} />
+        <Route path="/homearrendatario" element={<HomeArrendatario />} />
+        <Route path="/listainmuebles" element={<ListaInmuebles />} />
       </Routes>
     </BrowserRouter>
   );

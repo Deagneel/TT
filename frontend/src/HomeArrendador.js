@@ -67,4 +67,4 @@ function HomeArrendador() {
   );
 }
 
-export default HomeArrendador;
+export default HomeArrendador

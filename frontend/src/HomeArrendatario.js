@@ -2,6 +2,8 @@ import React from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
 
+//eyou este es un comentario
+
 function Navbar() {
   const handleBellClick = () => {
     // Manejar la acción cuando se hace clic en el ícono de la campana (bell)
@@ -19,8 +21,7 @@ function Navbar() {
         <input type="text" placeholder="Buscar" style={{ width: '175%' }} />
       </div>
       <div>
-        <button className="white-text-button" style={{ marginRight: '75px' }}>Inicio de sesión</button>
-        <button className="white-text-button" style={{ marginRight: '75px' }}>Registrarse</button>
+        <button className="white-text-button" style={{ marginRight: '75px' }}>Perfil</button>
         <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
       </div>
@@ -48,7 +49,7 @@ function PageContent() {
     );
   }
 
-function Home() {
+function HomeArrendatario() {
   return (
     <div style={{ height: '100vh' }}>
       <Navbar />
@@ -62,4 +63,4 @@ function Home() {
   );
 }
 
-export default Home
+export default HomeArrendatario
