@@ -11,6 +11,7 @@ import Chat from './Chat';
 import HomeArrendador from './HomeArrendador';
 import HomeArrendatario from './HomeArrendatario';
 import ListaInmuebles from './ListaInmuebles';
+import InfoInmueble from './InfoInmueble';
 
 
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/homearrendador" element={<HomeArrendador />} />
         <Route path="/homearrendatario" element={<HomeArrendatario />} />
         <Route path="/listainmuebles" element={<ListaInmuebles />} />
+        <Route path="/infoinmueble" element={<InfoInmueble />} />
       </Routes>
     </BrowserRouter>
   );
