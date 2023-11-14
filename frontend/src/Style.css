@@ -8,3 +8,71 @@
     outline: inherit;
     font-size: 18px;
   }
+
+/* RegistroInmueble.css */
+
+.registro-inmueble-container {
+  min-height: 100vh;
+  background-color: #D6D6D6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: auto;
+}
+
+/* Estilo para el botón de cerrar ventana */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #422985;
+  border: none;
+  color: #D6D6D6;
+  font-size: 18px;
+  cursor: pointer;
+  padding: .02px 7px;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70%;
+  margin: 20px;
+  margin-bottom: auto; /* Asegura que el contenido se alinee en la parte superior */
+}
+
+/* Estilos para los input boxes, textarea y botones */
+.input-box,
+.small-input-box,
+.large-input-box,
+.add-button,
+.register-button {
+  /* Agrega los estilos según tus necesidades */
+  font-size: 16px; /* Modificar tamaño de texto */
+  font-family: 'Helvetica', sans-serif; /* Modificar tipo de texto */
+}
+
+/* Estilos adicionales según tus necesidades */
+.price-period {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-names-container {
+  /* Estilos para mostrar los nombres de las imágenes */
+}
+
+.privacy-policy {
+  margin-top: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.privacy-policy label {
+  margin-left: 5px;
+  /* Modificar tamaño y tipo de texto */
+  font-size: 14px;
+  font-family: 'Verdana', sans-serif;
+}

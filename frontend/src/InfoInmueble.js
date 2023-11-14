@@ -60,7 +60,7 @@ const InfoInmueble = () => {
 
 const styles = {
   container: {
-    backgroundColor: '#f0f0f0', // Fondo gris claro
+    backgroundColor: '#D6D6D6', // Fondo gris claro
     padding: '20px',
     borderRadius: '10px',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',

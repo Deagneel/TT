@@ -1,0 +1,58 @@
+import React from 'react';
+import './Style.css'; 
+
+function RegistroInmueble() {
+  return (
+    <div className="registro-inmueble-container">
+      {/* Icono para cerrar ventana */}
+      <button className="close-button">X</button>
+
+      {/* Contenido centrado */}
+      <div className="centered-content">
+        <h1 style={{ fontSize: '28px', fontWeight:'bold'}}>Registrar nuevo inmueble</h1>
+        <h2 style={{ fontSize: '20px' }}>Titulo del anuncio</h2>
+        <input type="text" style={{ width:'338px'}} placeholder="Ingresa el titulo del anuncio..." />
+
+        <h2 style={{ fontSize: '20px' }}>Dirección</h2>
+        <input type="text" style={{ width:'338px'}} className="input-box" placeholder="Ingrese la dirección" />
+
+        <h2 style={{ fontSize: '20px' }}>Coordenadas de Google Maps</h2>
+        <input type="text" style={{ width:'338px'}}  className="input-box" placeholder="Ingrese las coordenadas" />
+
+        <div className="price-period">
+          <div>
+            <h2 style={{ fontSize: '20px' }}>Precio</h2>
+            <input type="text" className="input-box" placeholder="Ingrese el precio" />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '20px' }}>Periodo</h2>
+            <input type="text" className="input-box" placeholder="Ingrese el periodo" />
+          </div>
+        </div>
+
+        <h2 style={{ fontSize: '20px' }}>Numero de habitaciones</h2>
+        <input type="text" className="small-input-box" placeholder="Ingrese el número" />
+
+        <h2 style={{ fontSize: '20px' }}>Reglamento</h2>
+        <textarea className="large-input-box" placeholder="Ingrese el reglamento"></textarea>
+
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '20px', margin: '0' }}>Imágenes</h2>
+            <button className="add-button" style={{ backgroundColor: '#422985', color: 'white', marginLeft: '10px' }}>Agregar</button>
+        </div>
+        <div className="image-names-container">
+          {/* Aquí se mostrarán los nombres de las imágenes agregadas */}
+        </div>
+
+        <div className="privacy-policy">
+          <input type="checkbox" id="privacy-checkbox" />
+          <label htmlFor="privacy-checkbox" style={{ fontSize: '15px' }}>Acepto políticas de privacidad</label>
+        </div>
+
+        <button className="register-button" style={{backgroundColor:'#422985', color:'white', height:'43px', width:'108px'}}>Registrar</button>
+      </div>
+    </div>
+  );
+}
+
+export default RegistroInmueble
