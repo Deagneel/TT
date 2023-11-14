@@ -21,17 +21,26 @@ function RegistroInmueble() {
 
         <div className="price-period">
           <div>
-            <h2 style={{ fontSize: '20px' }}>Precio</h2>
-            <input type="text" className="input-box" placeholder="Ingrese el precio" />
+            <h2 style={{ fontSize: '20px', marginLeft:'49px' }}>Precio</h2>
+            <input type="text" style={{marginRight: '40px', width:'150px'}} className="input-box" placeholder="Ingrese el precio" />
           </div>
           <div>
-            <h2 style={{ fontSize: '20px' }}>Periodo</h2>
-            <input type="text" className="input-box" placeholder="Ingrese el periodo" />
+            <h2 style={{ fontSize: '20px', marginLeft:'39px' }}>Periodo</h2>
+            <select style={{ width: '150px', fontSize: '16px', height:'49%' }} className="input-box">
+                <option value="mensual">Mensual</option>
+                <option value="bimestral">Bimestral</option>
+                <option value="trimestral">Tremestral</option>
+                <option value="semestral">Semestral</option>
+            </select>
           </div>
+
         </div>
 
-        <h2 style={{ fontSize: '20px' }}>Numero de habitaciones</h2>
-        <input type="text" className="small-input-box" placeholder="Ingrese el número" />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            <h2 style={{ fontSize: '20px', marginRight: '10px' }}>Número de habitaciones</h2>
+            <input type="text" style={{ width:'113px'}} className="small-input-box" placeholder="..." />
+        </div>
+
 
         <h2 style={{ fontSize: '20px' }}>Reglamento</h2>
         <textarea className="large-input-box" placeholder="Ingrese el reglamento"></textarea>

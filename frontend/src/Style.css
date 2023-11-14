@@ -31,7 +31,7 @@
   color: #D6D6D6;
   font-size: 18px;
   cursor: pointer;
-  padding: .02px 7px;
+  padding: .02px 8.5px;
 }
 
 .centered-content {
@@ -58,10 +58,6 @@
 .price-period {
   display: flex;
   justify-content: space-between;
-}
-
-.image-names-container {
-  /* Estilos para mostrar los nombres de las imágenes */
 }
 
 .privacy-policy {
