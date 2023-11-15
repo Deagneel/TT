@@ -14,9 +14,6 @@ import ListaInmuebles from './ListaInmuebles';
 import InfoInmueble from './InfoInmueble';
 import RegistroInmueble from './RegistroInmueble';
 import EditarInmueble from './EditarInmueble';
-import BuscarArrendador from './BuscarArrendador';
-import CalificaInmuebleArrendador from './CalificaInmuebleArrendador';
-import CalificaArrendatario from './CalificaArrendatario';
 
 
 
@@ -26,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/recuperarcontra" element={<RecuperarContra />} />
         <Route path="/nuevacontra" element={<NuevaContra />} />
