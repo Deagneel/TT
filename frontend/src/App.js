@@ -13,7 +13,7 @@ import HomeArrendatario from './HomeArrendatario';
 import ListaInmuebles from './ListaInmuebles';
 import InfoInmueble from './InfoInmueble';
 import RegistroInmueble from './RegistroInmueble';
-import EditarInmueble from './EditarInmueble';
+import EditarInmueble from './EditarInmueble/EditarInmueble';
 import BuscarArrendador from './BuscarArrendador';
 import CalificaInmuebleArrendador from './CalificaInmuebleArrendador';
 import CalificaArrendatario from './CalificaArrendatario';
