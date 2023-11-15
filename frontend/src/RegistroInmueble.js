@@ -43,7 +43,7 @@ function RegistroInmueble() {
 
 
         <h2 style={{ fontSize: '20px', marginTop:'15px' }}>Reglamento</h2>
-        <textarea className="large-input-box" style={{ width:'338px', height:'200px', marginBottom: '25px'}} placeholder="Ingrese el reglamento"></textarea>
+        <textarea className="large-input-box" style={{ width:'338px', height:'200px', marginBottom: '25px', resize: 'none'}} placeholder="Ingrese el reglamento"></textarea>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
             <h2 style={{ fontSize: '20px', margin: '0' }}>Imágenes</h2>

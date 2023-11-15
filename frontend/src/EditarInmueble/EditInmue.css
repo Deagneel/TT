@@ -1,0 +1,28 @@
+
+  body {
+    margin: 0;
+    /* Otros estilos para el body si es necesario */
+  }
+  
+  .app-container {
+    /* Estilos para tu contenedor principal */
+    margin-left: 0px;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #C7B3FF; /* Color de fondo para el contenedor */
+    padding: 20px; /* Añade espacio alrededor del contenido */
+  }
+
+  .color-icon{
+    background: none;
+    color: #422985;
+    border: none; 
+    font-size: 24px;
+  }
+
+  .fondo-placeholder{
+    background-color: #D6D6D6;
+    color: black;
+  }
