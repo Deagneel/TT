@@ -25,7 +25,7 @@ function EditarInmueble() {
         </div>
 
         {/* Placeholder titulo */}
-        <div style={{ marginLeft:'124px', flex: '1', display: 'flex', alignItems: 'center' }}>
+        <div style={{ marginLeft:'122px', flex: '1', display: 'flex', alignItems: 'center' }}>
           <input type="text" placeholder="Titulo de la publicación" style={{ width: '400px' }} />
           <button className="edit-button" style={{ border: 'none', background: 'none', fontSize: '24px' }}>
             <FontAwesomeIcon icon={faEdit} />
@@ -35,9 +35,12 @@ function EditarInmueble() {
 
       {/* Carrusel de imágenes */}
       <div style={{ marginTop: '1px', border: '1px solid #000', width: '480px', height: '200px', margin: '0 auto' }}>
-  {/* Aquí irá el carrusel de imágenes */}
-</div>
-
+      {/* Aquí irá el carrusel de imágenes */}
+      <button className="edit-button" style={{ marginLeft:'490px', marginTop:'75px', border: 'none', background: 'none', fontSize: '24px' }}>
+        <FontAwesomeIcon icon={faEdit} />
+      </button>
+      </div>
+      
     </div>
   );
 }
