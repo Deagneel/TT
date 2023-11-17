@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+//RENEEEE
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
