@@ -47,18 +47,13 @@ function PageContent() {
     );
   }
 
-function HomeArrendatario() {
+function BuscarArrendador() {
   return (
     <div style={{ height: '100vh' }}>
       <Navbar />
-      <div style={{ backgroundColor: '#808080', display: 'flex', justifyContent: 'space-between', height: '8%' }}>
-        <button className="white-text-button" style={{ marginLeft: '50px' }}>Escuelas</button>
-        <button className="white-text-button">Arrendadores</button>
-        <button className="white-text-button" style={{ marginRight: '50px' }}>Favoritos</button>
-      </div>
       <PageContent />
     </div>
   );
 }
 
-export default HomeArrendatario
+export default BuscarArrendador

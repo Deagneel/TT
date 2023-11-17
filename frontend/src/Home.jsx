@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
+import axios from 'axios'
 
 function Navbar() {
   const handleBellClick = () => {
@@ -19,7 +20,8 @@ function Navbar() {
         <input type="text" placeholder="Buscar" style={{ width: '175%' }} />
       </div>
       <div>
-        <button className="white-text-button" style={{ marginRight: '75px' }}>Perfil</button>
+        <button className="white-text-button" style={{ marginRight: '75px' }}>Inicio de sesión</button>
+        <button className="white-text-button" style={{ marginRight: '75px' }}>Registrarse</button>
         <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
       </div>
@@ -47,7 +49,14 @@ function PageContent() {
     );
   }
 
-function HomeArrendatario() {
+function Home() {
+  
+   useEffect(()=> {
+      axios.get('mysql://root:HB45B21gFBag-H4G1E5cHAFe3gb3Cd5g@viaduct.proxy.rlwy.net:30262/railway')
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+    }, [])
+
   return (
     <div style={{ height: '100vh' }}>
       <Navbar />
@@ -61,4 +70,4 @@ function HomeArrendatario() {
   );
 }
 
-export default HomeArrendatario
+export default Home
