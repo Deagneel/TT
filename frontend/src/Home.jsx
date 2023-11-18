@@ -52,7 +52,7 @@ function PageContent() {
 function Home() {
   
    useEffect(()=> {
-      axios.get('mysql://root:HB45B21gFBag-H4G1E5cHAFe3gb3Cd5g@viaduct.proxy.rlwy.net:30262/railway')
+      axios.get('http://localhost:3031/')
       .then(res => console.log(res))
       .catch(err => console.log(err));
     }, [])

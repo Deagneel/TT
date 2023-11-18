@@ -13,7 +13,6 @@ function Signup() {
     confirmar_contrasena: '',
     tipo_de_usuario: 0,
     perfil_completado: 1,
-    nombre_usuario: '',
     aceptar_terminos: false,
     intento_envio: false,
   });
@@ -22,7 +21,6 @@ function Signup() {
   const [errors, setErrors] = useState({});
   const [emailError, setEmailError] = useState('');
   const [emailExistsError, setEmailExistsError] = useState('');
-
 
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -41,7 +39,7 @@ function Signup() {
     setValues((prev) => ({ ...prev, intento_envio: true }));
     const err = Validation(values);
     setErrors(err);
-  
+
     if (
       err.nombre === '' &&
       err.correo === '' &&
@@ -51,33 +49,22 @@ function Signup() {
     ) {
       try {
         const response = await axios.get(
-          `http://localhost:8081/checkEmail?correo=${values.correo}`
+          `http://localhost:3031/checkEmail?correo=${values.correo}`
         );
-  
+
         if (response.data.exists) {
           setEmailExistsError(response.data.error);
         } else {
-          const nombreUsuario =
-            values.nombre.substring(0, 8) +
-            generateRandomNumber() +
-            generateRandomNumber() +
-            generateRandomNumber(); // Genera el nombre de usuario
-  
-          const updatedValues = {
-            ...values,
-            nombre_usuario: nombreUsuario,
-          };
-  
           const signupResponse = await axios.post(
-            'http://localhost:8081/signup',
-            updatedValues
+            'http://localhost:3031/signup',
+            values
           );
-  
+
           if (signupResponse.data === 'Error') {
             console.log('Error al registrar el usuario');
             return; // Puedes mostrar un mensaje de error si deseas
           }
-  
+
           navigate('/');
         }
       } catch (error) {
@@ -85,14 +72,13 @@ function Signup() {
       }
     }
   };
-  
 
   useEffect(() => {
     if (values.intento_envio && values.correo !== '') {
       try {
         const checkEmail = async () => {
           const response = await axios.get(
-            `http://localhost:8081/checkEmail?correo=${values.correo}`
+            `http://localhost:3031/checkEmail?correo=${values.correo}`
           );
           if (response.data.exists) {
             setEmailError('El correo ya está registrado');
@@ -164,7 +150,7 @@ function Signup() {
                     type="text"
                     placeholder="Ingresar nombre"
                     name="nombre"
-                    autocomplete="off"
+                    autoComplete="off"
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
@@ -172,7 +158,7 @@ function Signup() {
                     <span className="text-danger">{errors.nombre}</span>
                   )}
                 </div>
-  
+
                 <div className="mb-3">
                   <label htmlFor="correo">
                     <strong>Correo</strong>
@@ -181,7 +167,7 @@ function Signup() {
                     type="email"
                     placeholder="Ingresar correo"
                     name="correo"
-                    autocomplete="off"
+                    autoComplete="off"
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
@@ -192,7 +178,7 @@ function Signup() {
                     <span className="text-danger">{emailError}</span>
                   )}
                 </div>
-  
+
                 <div className="mb-3">
                   <label htmlFor="contrasena">
                     <strong>Contraseña</strong>
@@ -208,7 +194,7 @@ function Signup() {
                     <span className="text-danger">{errors.contrasena}</span>
                   )}
                 </div>
-  
+
                 <div className="mb-3">
                   <label htmlFor="confirmar_contrasena">
                     <strong>Confirmar Contraseña</strong>
@@ -227,7 +213,7 @@ function Signup() {
                       </span>
                     )}
                 </div>
-  
+
                 <div className="mb-3">
                   <label htmlFor="aceptar_terminos">
                     <input
@@ -246,7 +232,7 @@ function Signup() {
                     <span className="text-danger">{errors.correo}</span>
                   )}
                 </div>
-  
+
                 <div className="d-flex flex-column align-items-center">
                   <button
                     type="submit"
@@ -261,7 +247,7 @@ function Signup() {
                   >
                     Registrarse
                   </button>
-  
+
                   <Link
                     to="/"
                     className="btn btn-success rounded-0"
@@ -290,7 +276,7 @@ function Signup() {
         </div>
       </div>
     </div>
-  );  
+  );
 }
 
-export default Signup
+export default Signup;
