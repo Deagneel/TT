@@ -29,6 +29,7 @@ function ArrendadorNavbar() {
         <button className="white-text-button" onClick={handleRegisterClick}>Registrar Inmueble</button>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
+      <button className="white-text-button" style={{ marginRight: '75px' }}>Cerrar Sesión</button>
         <button className="white-text-button" style={{ marginRight: '75px' }}>Perfil</button>
         <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
@@ -64,11 +65,14 @@ function HomeArrendador() {
   const [name, setName] = useState('');
   const navigate = useNavigate();
 
+  axios.defaults.withCredentials = true;
   useEffect(()=> {
     axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
         setName(res.data.nombre);
+      } else {
+        navigate('/login');
       }
     })
   })

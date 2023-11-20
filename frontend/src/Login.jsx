@@ -30,7 +30,11 @@ function Login() {
             const data = response.data;
 
             if (data.Login) {
-              navigate('/homearrendador');
+              if(response.data.tipo_de_usuario === 0) {
+                navigate('/homearrendador');
+              } else {
+                navigate('/homearrendatario');
+              }
           } else {
               alert(data.message || 'Error de inicio de sesión');
               console.log('Respuesta del servidor:', response);

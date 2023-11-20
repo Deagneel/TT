@@ -121,7 +121,7 @@ app.post('/login', (req, res) => {
                 if (response) {
                     req.session.nombre = data[0].nombre;
                     console.log(req.session.nombre);
-                    return res.json({ Login: true});
+                    return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
                 }
                 return res.json({ Login: false });                
             });
