@@ -1,7 +1,9 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 // Definición del componente Navbar para la página de arrendador
 function ArrendadorNavbar() {
@@ -59,9 +61,21 @@ function ArrendadorPageContent() {
 
 // Definición del componente HomeArrendador
 function HomeArrendador() {
+  const [name, setName] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+        setName(res.data.nombre);
+      }
+    })
+  })
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ArrendadorNavbar />
+      <div><h1>Bienvenido, {name}</h1></div>
       <ArrendadorPageContent />
     </div>
   );

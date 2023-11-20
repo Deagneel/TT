@@ -17,6 +17,8 @@ function Login() {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
+  axios.defaults.withCredentials = true;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const err = Validation(values);

@@ -50,12 +50,6 @@ function PageContent() {
   }
 
 function Home() {
-  
-   useEffect(()=> {
-      axios.get('http://localhost:3031/')
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-    }, [])
 
   return (
     <div style={{ height: '100vh' }}>

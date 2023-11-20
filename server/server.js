@@ -2,12 +2,31 @@ import express, { response } from 'express';
 import mysql from 'mysql';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
-const salt = 10;
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
+const salt = 10;
 const app = express();
 
-app.use(cors());
-app.use(express.json()); 
+app.use(express.json());
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["POST", "GET"],
+    credentials: true
+}))
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(session({
+    secret: 'secret', //llave secreta para cifrar la cookie de la sesión
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        maxAge: 100*60*60*24
+    } //propiedades de la cookie
+
+}))
 
 const db = mysql.createConnection({
     host: "bccdb0knkukccxehxrur-mysql.services.clever-cloud.com",
@@ -23,6 +42,14 @@ db.connect((err) => {
     }
     console.log('Conexión a la base de datos establecida');
 });
+
+app.get('/', (req, res) => {
+    if(req.session.nombre) {
+        return res.json({valid: true, username: req.session.nombre})
+    } else {
+        return res.json({valid:false})
+    }
+})
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/signup', (req, res) => {
@@ -92,6 +119,7 @@ app.post('/login', (req, res) => {
                 console.log('Resultado de la comparación de contraseñas:', response);
 
                 if (response) {
+                    req.session.nombre = res.nombre;
                     return res.json({ Login: true });
                 }
                 return res.json({ Login: false });                
