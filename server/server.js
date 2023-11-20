@@ -10,6 +10,7 @@ const salt = 10;
 const app = express();
 //YIYI
 //estoy con cepilliiiiiiiin
+//Mayonesa Casera
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000"],
