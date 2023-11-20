@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import Validation from './SignupValidation.js';
 import axios from 'axios';
 
 function Signup() {
@@ -17,6 +18,7 @@ function Signup() {
   });
 
   const navigate = useNavigate();
+  const[errors, setErrors] = useState({});
 
   const handleInput = (event) => {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
@@ -29,9 +31,14 @@ function Signup() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setValues((prev) => ({ ...prev, intento_envio: true, boton_deshabilitado: true }));
+    const err = Validation(values);
+    setErrors(err);
   
     try {
       if (
+        err.nombre === '' &&
+        err.correo === '' &&
+        err.contrasena === '' &&
         values.contrasena === values.confirmar_contrasena &&
         values.aceptar_terminos
       ) {
@@ -51,8 +58,8 @@ function Signup() {
   
         navigate('/');
       }
-    } catch (error) {
-      console.error('Error en la solicitud de registro:', error);
+    } catch (err) {
+      console.error('Error en la solicitud de registro:', err);
     } finally {
       setValues((prev) => ({ ...prev, boton_deshabilitado: false }));
     }
@@ -120,6 +127,9 @@ function Signup() {
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
+                  {errors.nombre && (
+                    <span className="text-danger">{errors.nombre}</span>
+                  )}
                 </div>
 
                 <div className="mb-3">
@@ -134,6 +144,9 @@ function Signup() {
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
+                  {errors.correo && (
+                    <span className="text-danger">{errors.correo}</span>
+                  )}
                 </div>
 
                 <div className="mb-3">
@@ -147,6 +160,9 @@ function Signup() {
                     onChange={handleInput}
                     className="form-control rounded-0"
                   />
+                  {errors.contrasena && (
+                    <span className="text-danger">{errors.contrasena}</span>
+                  )}
                 </div>
 
 
