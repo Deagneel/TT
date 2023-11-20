@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 
 const salt = 10;
 const app = express();
-
+//YIYI
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000"],
