@@ -12,6 +12,7 @@ const app = express();
 //estoy con cepilliiiiiiiin
 //Mayonesa Casera
 //eyou
+//aa
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000"],
