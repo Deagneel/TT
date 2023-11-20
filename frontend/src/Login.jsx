@@ -7,8 +7,8 @@ import Validation from './LoginValidation';
 
 function Login() {
   const [values, setValues] = useState({
-    correo: '',
-    contrasena: '',
+    correo: ''.trim(),
+    contrasena: ''.trim(),
   });
   const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
@@ -23,36 +23,33 @@ function Login() {
     setErrors(err);
 
     if (err.correo === '' && err.contrasena === '') {
-      try {
-        const response = await axios.post('http://localhost:3031/login', values);
-        const data = response.data;
-    
-        if (data.errors) {
-          setErrors(data.errors);
-        } else {
-          setErrors([]);
-    
-          if (data.status === 'Success') {
-            navigate('/home');
+        try {
+            const response = await axios.post('http://localhost:3031/login', values);
+            const data = response.data;
+
+            if (data.Login) {
+              navigate('/home');
           } else {
-            alert('No se encontraron registros');
+              alert(data.message || 'Error de inicio de sesión');
+              console.log('Respuesta del servidor:', response);
           }
+          
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+
+            // Manejo específico de errores del servidor
+            if (error.response) {
+                console.error('Respuesta del servidor:', error.response.data);
+                alert(error.response.data.error || 'Error interno del servidor');
+            } else if (error.request) {
+                console.error('No hay respuesta del servidor');
+            } else {
+                console.error('Error general:', error.message);
+            }
         }
-      } catch (error) {
-        console.error('Error en la solicitud:', error);
-    
-        // Manejo específico de errores del servidor
-        if (error.response) {
-          console.error('Respuesta del servidor:', error.response.data);
-        } else if (error.request) {
-          console.error('No hay respuesta del servidor');
-        } else {
-          console.error('Error general:', error.message);
-        }
-      }
     }
-    
-  };
+};
+
 
   return (
     <div className="d-flex justify-content-center align-items-center bg-white vh-100">
