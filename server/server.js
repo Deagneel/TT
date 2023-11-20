@@ -45,7 +45,7 @@ db.connect((err) => {
 
 app.get('/', (req, res) => {
     if(req.session.nombre) {
-        return res.json({valid: true, username: req.session.nombre})
+        return res.json({valid: true, nombre: req.session.nombre})
     } else {
         return res.json({valid:false})
     }
@@ -119,8 +119,9 @@ app.post('/login', (req, res) => {
                 console.log('Resultado de la comparación de contraseñas:', response);
 
                 if (response) {
-                    req.session.nombre = res.nombre;
-                    return res.json({ Login: true });
+                    req.session.nombre = data[0].nombre;
+                    console.log(req.session.nombre);
+                    return res.json({ Login: true});
                 }
                 return res.json({ Login: false });                
             });
