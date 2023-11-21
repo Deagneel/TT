@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import Validation from './SignupValidation.js';
 import axios from 'axios';
 
 function RegistroInmueble() {
 
   axios.defaults.withCredentials = true;
+  const [escuelas, setEscuelas] = useState([]);
+  useEffect(() => {
+    axios.get('http://localhost:3031/obtenerEscuelas')
+      .then(response => {
+        setEscuelas(response.data); // Establecer los nombres de las escuelas en el estado
+      })
+      .catch(error => {
+        console.error('Error al obtener las escuelas:', error);
+      });
+  }, []);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -18,6 +25,7 @@ function RegistroInmueble() {
     numRooms: '',
     regulations: '',
     images: '',
+    idEscuela: '',
     privacyAccepted: false,
   });
 
@@ -46,7 +54,6 @@ function RegistroInmueble() {
   const handleRegister = async () => {
 
     try {
-
       // Handle image upload
     const formImage = new FormData();
     formImage.append('image', file);
@@ -62,6 +69,7 @@ function RegistroInmueble() {
         numRooms: formData.numRooms,
         regulations: formData.regulations,
         images: imageResponse.data.url,
+        idEscuela: formData.idEscuela,
       });
 
       console.log(response.data);
@@ -122,6 +130,21 @@ function RegistroInmueble() {
         className="input-box"
         placeholder="Ingrese las coordenadas"
       />
+      <div>
+          <h2 style={{ fontSize: '20px', marginLeft: '100px' }}>Escuela cercana</h2>
+          <select
+            name="idEscuela"
+            value={formData.idEscuela}
+            onChange={handleChange}
+            style={{ width: '338px', marginBottom: '10px',  height: '49%' }}
+            className="input-box"
+          >
+            {/* Mapear las opciones obtenidas de la base de datos */}
+            {escuelas.map((escuela, index) => (
+              <option key={index} value={escuela.id_escuela}> {escuela.nombre}</option>
+            ))}
+          </select>
+        </div>
 
       <div className="price-period">
         <div>
