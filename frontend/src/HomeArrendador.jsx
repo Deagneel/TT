@@ -26,6 +26,8 @@ function ArrendadorNavbar() {
     console.log('Clic en el sobre');
   };
 
+ 
+
   const [auth, setAuth] = useState(false)
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
@@ -63,25 +65,43 @@ function ArrendadorNavbar() {
   
 // Definición del componente PageContent para la página de arrendador
 function ArrendadorPageContent() {
-  // Información de la base de datos mapeada en rectángulos
-  const registeredProperties = [
-    { image: 'url1', content: 'Propiedad 1' },
-    { image: 'url2', content: 'Propiedad 2' },
-    // ... Información de la base de datos
-  ];
+  // Información de inmuebles de la base de datos mapeada en rectángulos
+  const [registeredProperties, setRegisteredProperties] = useState([]);
+
+  const handleEditClick = () => {
+    // Manejar la acción cuando se hace clic en el ícono de la campana (bell)
+    console.log('Clic en editar');
+  };
+
+  useEffect(() => {
+    // Fetch solo la información relevante de la tabla inmueble
+    axios.get('http://localhost:3031/inmuebles') // Actualiza el endpoint según sea necesario
+      .then((response) => {
+        setRegisteredProperties(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de propiedades:', error);
+      });
+  }, []);
 
   return (
-    <div style={{ height: '20%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'black' }}>
-      <h2>Inmuebles Registrados</h2>
+    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start', height: '20vh', marginTop: '20px' }}>
+      <h2 style={{ width: '100%', textAlign: 'center' }}>Inmuebles Registrados</h2>
       {registeredProperties.map((property, index) => (
-        <div key={index} className="rectangle">
-          <img src={property.image} alt="Imagen" />
-          <p>{property.content}</p>
+        <div key={index} className="rectangle" style={{ width: '30%', margin: '10px', border: '1px solid #ddd', padding: '10px' }}>
+          <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+          <p>{property.titulo}</p>
+          <p>Dirección: {property.direccion}</p>
+          <p>Precio: {property.precio}</p>
+          <button className="button" style={{ marginRight: '75px' }} onClick={handleEditClick}>Editar</button>
+          {/* Agrega otros detalles de propiedad según sea necesario */}
         </div>
       ))}
     </div>
   );
 }
+
+
 
 // Definición del componente HomeArrendador
 function HomeArrendador() {

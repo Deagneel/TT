@@ -11,11 +11,13 @@ import path from 'path';
 const salt = 10;
 const app = express();
 
+app.use(express.static('public'));
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/images')
     },
-    filname: (req, file, cb) => {
+    filename: (req, file, cb) => {
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
     }
 })
@@ -43,6 +45,8 @@ app.use(session({
 
 }))
 
+
+
 const db = mysql.createConnection({
     host: "bccdb0knkukccxehxrur-mysql.services.clever-cloud.com",
     user: "u0umkw3bjydys9qe",
@@ -60,7 +64,7 @@ db.connect((err) => {
 
 app.post('/upload', upload.single('image'), (req, res) => {
     console.log(req.file);
-    res.json({url: '/images/' + req.file.filename});
+    res.json({url: req.file.filename});
 })
 
 app.get('/', (req, res) => {
@@ -200,6 +204,31 @@ app.get('/', (req, res) => {
         return res.json(result);
     });
 });
+
+// Ruta para obtener datos de la tabla "escuela"
+app.get('/obtenerEscuelas', (req, res) => {
+    const sql = "SELECT * FROM escuela"; // Selecciona solo el campo "nombre" de la tabla
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error al obtener datos de escuela:', err);
+            return res.json({ message: "Error al obtener datos de escuela" });
+        }
+        return res.json(result);
+    });
+});
+
+app.get('/inmuebles', (req, res) => {
+    // Realiza la consulta a tu base de datos para obtener los datos de la tabla inmueble
+    db.query('SELECT * FROM inmueble', (err, result) => {
+      if (err) {
+        console.error('Error al obtener datos de la tabla inmueble:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json(result);
+      }
+    });
+  });
+  
 
 const PORT = process.env.PORT || 3031;
 app.listen(PORT, () => {
