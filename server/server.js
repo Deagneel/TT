@@ -169,7 +169,7 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
     const values = [
         req.body.title,
         req.body.address,
@@ -179,7 +179,8 @@ app.post('/registroinmueble', (req, res) => {
         req.body.numRooms,
         req.body.regulations,
         req.body.images,
-        req.session.user.id
+        req.session.user.id,
+        req.body.idEscuela
     ];
     console.log(req.session.user.id);
     db.query(sql, values, (err, data) => {
@@ -204,4 +205,16 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3031;
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
+});
+
+// Ruta para obtener datos de la tabla "escuela"
+app.get('/obtenerEscuelas', (req, res) => {
+    const sql = "SELECT * FROM escuela"; // Selecciona solo el campo "nombre" de la tabla
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error al obtener datos de escuela:', err);
+            return res.json({ message: "Error al obtener datos de escuela" });
+        }
+        return res.json(result);
+    });
 });
