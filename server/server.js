@@ -5,9 +5,24 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import multer from 'multer';
+import path from 'path';
 
 const salt = 10;
 const app = express();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images')
+    },
+    filname: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
+    }
+})
+
+const upload = multer ({
+    storage: storage 
+})
 
 app.use(express.json());
 app.use(cors({
@@ -43,12 +58,22 @@ db.connect((err) => {
     console.log('Conexión a la base de datos establecida');
 });
 
+app.post('/upload', upload.single('image'), (req, res) => {
+    console.log(req.file);
+    res.json({url: '/images/' + req.file.filename});
+})
+
 app.get('/', (req, res) => {
-    if(req.session.nombre) {
-        return res.json({valid: true, nombre: req.session.nombre})
+    if(req.session.user.nombre) {
+        return res.json({valid: true, nombre: req.session.user.nombre})
     } else {
         return res.json({valid:false})
     }
+})
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    return res.json({Status: "Success"});
 })
 
 // Ruta para manejar la solicitud POST de registro de usuarios
@@ -94,6 +119,8 @@ app.post('/signup', (req, res) => {
 
 // Ruta para manejar la solicitud POST de inicio de sesión
 app.post('/login', (req, res) => {
+
+
     const sql = "SELECT * FROM usuario WHERE correo = ?";
     console.log('Correo proporcionado:', req.body.correo);
 
@@ -119,8 +146,11 @@ app.post('/login', (req, res) => {
                 console.log('Resultado de la comparación de contraseñas:', response);
 
                 if (response) {
-                    req.session.nombre = data[0].nombre;
-                    console.log(req.session.nombre);
+                    req.session.user = {
+                        id: data[0].id_usuario,
+                        nombre: data[0].nombre
+                    };
+                    console.log(req.session.user);
                     return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
                 }
                 return res.json({ Login: false });                
@@ -132,7 +162,35 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Ruta para manejar la solicitud POST de registro de usuarios
+app.post('/registroinmueble', (req, res) => {
 
+    if (!req.session.user || !req.session.user.id) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const values = [
+        req.body.title,
+        req.body.address,
+        req.body.coordinates,
+        req.body.price,
+        req.body.period,
+        req.body.numRooms,
+        req.body.regulations,
+        req.body.images,
+        req.session.user.id
+    ];
+    console.log(req.session.user.id);
+    db.query(sql, values, (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.json("Error inserting into database");
+        }
+
+        return res.json(data);
+    });
+});
 
 // Ruta para obtener datos de la tabla "escuela"
 app.get('/', (req, res) => {

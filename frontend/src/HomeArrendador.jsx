@@ -7,9 +7,13 @@ import { useState } from 'react';
 
 // Definición del componente Navbar para la página de arrendador
 function ArrendadorNavbar() {
+
+  const navigate = useNavigate();
+
   const handleRegisterClick = () => {
     // Manejar la acción cuando se hace clic en el botón de registrar inmueble
     console.log('Clic en Registrar Inmueble');
+    navigate('/registroinmueble');
   };
 
   const handleBellClick = () => {
@@ -22,6 +26,25 @@ function ArrendadorNavbar() {
     console.log('Clic en el sobre');
   };
 
+  const [auth, setAuth] = useState(false)
+  const [name, setName] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleLogoutClick = () => {
+    axios.get('http://localhost:3031/logout')
+    .then(res => {
+      if (res.data.Status === "Success") {
+        navigate('/login');
+      } else {
+        alert("error");
+      }
+    }).catch(err => console.log(err))
+  };
+
+  const handlePerfilClick = () => {
+
+  };
+
   return (
     <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
       <div style={{ marginLeft: '50px' }}>
@@ -29,8 +52,8 @@ function ArrendadorNavbar() {
         <button className="white-text-button" onClick={handleRegisterClick}>Registrar Inmueble</button>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
-      <button className="white-text-button" style={{ marginRight: '75px' }}>Cerrar Sesión</button>
-        <button className="white-text-button" style={{ marginRight: '75px' }}>Perfil</button>
+      <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handleLogoutClick}>Cerrar Sesión</button>
+        <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handlePerfilClick} >Perfil</button>
         <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
       </div>
@@ -48,7 +71,7 @@ function ArrendadorPageContent() {
   ];
 
   return (
-    <div style={{ height: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'black' }}>
+    <div style={{ height: '20%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'black' }}>
       <h2>Inmuebles Registrados</h2>
       {registeredProperties.map((property, index) => (
         <div key={index} className="rectangle">
