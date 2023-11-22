@@ -179,6 +179,7 @@ function RegistroInmueble() {
             <option value="Bimestral">Bimestral</option>
             <option value="Trimestral">Trimestral</option>
             <option value="Cuatrimestral">Cuatrimestral</option>
+            <option value="Semestral">Semestral</option>
             <option value="Anual">Anual</option>
           </select>
         </div>

@@ -11,7 +11,7 @@ import Chat from './Chat';
 import HomeArrendador from './HomeArrendador';
 import HomeArrendatario from './HomeArrendatario';
 import ListaInmuebles from './ListaInmuebles';
-import InfoInmueble from './InfoInmueble';
+import InfoInmueble from './EditarInmueble/InfoInmueble';
 import RegistroInmueble from './RegistroInmueble';
 import EditarInmueble from './EditarInmueble/EditarInmueble';
 import Incidencia from './Incidencia';
