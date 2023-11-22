@@ -35,7 +35,7 @@ function App() {
         <Route path="/listainmuebles" element={<ListaInmuebles />} />
         <Route path="/infoinmueble" element={<InfoInmueble />} />
         <Route path="/registroinmueble" element={<RegistroInmueble />} />
-        <Route path="/editarinmueble" element={<EditarInmueble />} />
+        <Route path="/EditarInmueble/:id_inmueble" element={<EditarInmueble />} />
       </Routes>
     </BrowserRouter>
   );

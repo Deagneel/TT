@@ -93,7 +93,13 @@ function RegistroInmueble() {
   return (
     <div className="registro-inmueble-container">
     {/* Icono para cerrar ventana */}
-    <button className="close-button">X</button>
+    <nav style={{position: 'absolute', top: 0, left: 0}}>
+      <a href="/homearrendador" style={{color: 'purple', fontSize: '20px', padding: '10px'}}>Regresar</a>
+    </nav>
+
+
+
+
 
     {/* Contenido centrado */}
     <div className="centered-content">

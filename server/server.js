@@ -29,7 +29,7 @@ const upload = multer ({
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000"],
-    methods: ["POST", "GET"],
+    methods: ["POST", "GET", "PUT"],
     credentials: true
 }))
 app.use(cookieParser());
@@ -218,9 +218,13 @@ app.get('/obtenerEscuelas', (req, res) => {
     });
 });
 
+// Ruta para obtener datos de la tabla "inmueble"
 app.get('/inmuebles', (req, res) => {
+    // Obtiene el valor del parámetro id_usuario de la solicitud
+    const id_usuario = req.session.user.id;
+  
     // Realiza la consulta a tu base de datos para obtener los datos de la tabla inmueble
-    db.query('SELECT * FROM inmueble', (err, result) => {
+    db.query('SELECT * FROM inmueble WHERE id_usuario = ?', [id_usuario], (err, result) => {
       if (err) {
         console.error('Error al obtener datos de la tabla inmueble:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
@@ -229,6 +233,103 @@ app.get('/inmuebles', (req, res) => {
       }
     });
   });
+
+  // Ruta para obtener información de un inmueble por ID
+app.get('/infoinmuebles/:id_inmueble', (req, res) => {
+    const id_inmueble = req.params.id_inmueble;
+  
+    // Consulta SQL para obtener la información del inmueble
+    const sql = `SELECT * FROM inmueble WHERE id_inmueble = ?`;
+  
+    db.query(sql, [id_inmueble], (err, result) => {
+      if (err) {
+        console.error('Error al obtener el inmueble:', err);
+        res.status(500).send('Error interno del servidor');
+      } else {
+        if (result.length > 0) {
+          // Si se encuentra el inmueble, envía la información al cliente
+          res.json(result[0]);
+        } else {
+          // Si no se encuentra el inmueble, devuelve un mensaje de error
+          res.status(404).send('Inmueble no encontrado');
+        }
+      }
+    });
+  });
+
+  // Actualizar información de un inmueble por ID
+app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
+    const id_inmueble = req.params.id_inmueble;
+    const updatedData = {
+      title: req.body.title,
+      address: req.body.address,
+      coordinates: req.body.coordinates,
+      price: req.body.price,
+      period: req.body.period,
+      numRooms: req.body.numRooms,
+      regulations: req.body.regulations,
+      idEscuela: req.body.idEscuela,
+    }; // Datos actualizados del inmueble
+  
+    // Consulta SQL para actualizar la información del inmueble
+    const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
+  
+    db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el inmueble:', err);
+        res.status(500).send('Error interno del servidor');
+      } else {
+        if (result.affectedRows > 0) {
+          // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
+          res.status(200).send('Inmueble actualizado correctamente');
+        } else {
+          // Si no se encuentra el inmueble, devuelve un mensaje de error
+          res.status(404).send('Inmueble no encontrado');
+        }
+      }
+    });
+  });
+
+  app.put('/editarinmueble/:id_inmueble', upload.none(), (req, res) => {
+    // Obtén el ID del inmueble de los parámetros de la URL
+    const id_inmueble = req.params.id_inmueble;
+
+    // Verifica si el usuario está autenticado
+    if (!req.session.user || !req.session.user.id) {
+        return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    // Datos actualizados del inmueble
+    const updatedData = {
+        titulo: req.body.title,
+        direccion: req.body.address,
+        coordenadas: req.body.coordinates,
+        precio: req.body.price,
+        periodo_de_renta: req.body.period,
+        no_habitaciones: req.body.numRooms,
+        reglamento: req.body.regulations,
+    };
+
+    // Consulta SQL para actualizar la información del inmueble
+    const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
+
+    // Ejecuta la consulta SQL
+    db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar el inmueble:', err);
+            return res.status(500).json('Error interno del servidor');
+        } else {
+            if (result.affectedRows > 0) {
+                // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
+                return res.status(200).json('Inmueble actualizado correctamente');
+            } else {
+                // Si no se encuentra el inmueble, devuelve un mensaje de error
+                return res.status(404).json('Inmueble no encontrado');
+            }
+        }
+    });
+});
+
   
 
 const PORT = process.env.PORT || 3031;

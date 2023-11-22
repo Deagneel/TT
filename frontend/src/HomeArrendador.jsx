@@ -65,17 +65,25 @@ function ArrendadorNavbar() {
   
 // Definición del componente PageContent para la página de arrendador
 function ArrendadorPageContent() {
-  // Información de inmuebles de la base de datos mapeada en rectángulos
+  const navigate = useNavigate();
   const [registeredProperties, setRegisteredProperties] = useState([]);
 
-  const handleEditClick = () => {
-    // Manejar la acción cuando se hace clic en el ícono de la campana (bell)
-    console.log('Clic en editar');
-  };
 
+  const handleEditClick = (idInmueble) => {
+    if (idInmueble) {
+      const url = `/EditarInmueble/${idInmueble}`;
+      console.log('URL:', url);
+      navigate(url);
+      console.log('Navegación realizada a /EditarInmueble');
+    } else {
+      console.error('Error: ID del inmueble no válido');
+    }
+  };
+  
+  
+  
   useEffect(() => {
-    // Fetch solo la información relevante de la tabla inmueble
-    axios.get('http://localhost:3031/inmuebles') // Actualiza el endpoint según sea necesario
+    axios.get('http://localhost:3031/inmuebles')
       .then((response) => {
         setRegisteredProperties(response.data);
       })
@@ -93,13 +101,13 @@ function ArrendadorPageContent() {
           <p>{property.titulo}</p>
           <p>Dirección: {property.direccion}</p>
           <p>Precio: {property.precio}</p>
-          <button className="button" style={{ marginRight: '75px' }} onClick={handleEditClick}>Editar</button>
-          {/* Agrega otros detalles de propiedad según sea necesario */}
+          <button className="button" style={{ marginRight: '75px' }} onClick={() => handleEditClick(property.id_inmueble)}>Editar</button>
         </div>
       ))}
     </div>
   );
 }
+
 
 
 
