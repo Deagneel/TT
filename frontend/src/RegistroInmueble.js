@@ -139,6 +139,7 @@ function RegistroInmueble() {
             style={{ width: '338px', marginBottom: '10px',  height: '49%' }}
             className="input-box"
           >
+            <option value="">Selecciona una escuela</option>
             {/* Mapear las opciones obtenidas de la base de datos */}
             {escuelas.map((escuela, index) => (
               <option key={index} value={escuela.id_escuela}> {escuela.nombre}</option>
@@ -168,10 +169,12 @@ function RegistroInmueble() {
             style={{ width: '150px', fontSize: '16px', height: '49%' }}
             className="input-box"
           >
-            <option value="mensual">Mensual</option>
-            <option value="bimestral">Bimestral</option>
-            <option value="trimestral">Trimestral</option>
-            <option value="semestral">Semestral</option>
+            <option value="">Selecciona un periodo</option>
+            <option value="Mensual">Mensual</option>
+            <option value="Bimestral">Bimestral</option>
+            <option value="Trimestral">Trimestral</option>
+            <option value="Cuatrimestral">Cuatrimestral</option>
+            <option value="Anual">Anual</option>
           </select>
         </div>
       </div>
