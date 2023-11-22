@@ -265,3 +265,25 @@ app.get('/inmueblearrendatario', (req, res) => {
       }
     });
   });
+
+  // Ruta para obtener datos de la tabla reporte
+  app.post('/generarReporte', (req, res) => {
+    const sql = "INSERT INTO reporte (asunto, descripción, fecha, estado, id_usuario , id_inmueble) VALUES (?, ?, ?, ?, ?, ?)";
+    const values = [
+        req.body.aff,
+        req.body.description,
+        req.body.date,
+        req.body.state,
+        req.body.id_usuario,
+        req.body.id_inmueble
+    ];
+    console.log(req.session.user.id);
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error al insertar en la base de datos:', err);
+            return res.status(500).json({ error: 'Error interno del servidor' });
+        }
+        
+        return res.json({ message: 'Datos insertados correctamente' });
+    });
+});

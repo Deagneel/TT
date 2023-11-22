@@ -90,10 +90,15 @@ function RegistroInmueble() {
     }
   };
 
+  const handleregresarClick = () => {
+    // Manejar la acción cuando se hace clic en cerrar
+    navigate('/homearrendador');
+  };
+
   return (
     <div className="registro-inmueble-container">
     {/* Icono para cerrar ventana */}
-    <button className="close-button">X</button>
+    <button className="close-button" onClick={handleregresarClick}>X</button>
 
     {/* Contenido centrado */}
     <div className="centered-content">
