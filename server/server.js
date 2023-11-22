@@ -247,3 +247,21 @@ app.get('/obtenerEscuelas', (req, res) => {
         return res.json(result);
     });
 });
+
+//Consulta en union de la tabla escuela e inmueble para HomeArrendatario
+app.get('/inmueblearrendatario', (req, res) => {
+    const sql = `
+      SELECT i.*, e.nombre AS nombre_escuela 
+      FROM inmueble AS i 
+      LEFT JOIN escuela AS e ON i.id_escuela = e.id_escuela
+    `;
+    
+    db.query(sql, (err, result) => {
+      if (err) {
+        console.error('Error al obtener datos de la tabla inmueble:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json(result);
+      }
+    });
+  });
