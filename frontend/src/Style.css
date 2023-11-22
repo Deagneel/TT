@@ -72,3 +72,48 @@
   font-size: 14px;
   font-family: 'Verdana', sans-serif;
 }
+
+
+.propertyDetails {
+  width: 80%;
+  margin-left: 20px;
+  background-color: #C7B3FF;
+}
+
+.homearrendatario {
+  font-family: inherit;
+  font-size: 15px;
+}
+.homearrendatariotitle {
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.rectangle{
+  background-color: #C7B3FF;
+  width: 95%;
+  margin: 10px;
+  border: 2px solid #422985;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.image-container{
+  background-Color: #C7B3FF;
+  width: 95%;
+  border: 2px solid #ddd;
+  width: 27%;
+  height: 27%;
+}
+
+.general-container{
+  display: flex;
+  flex-Direction: row;
+  flex-Wrap: wrap;
+  justify-Content: center;
+  align-items: flex-start;
+  height: 20vh;
+  margin-top: 20px;
+}
