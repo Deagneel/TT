@@ -82,7 +82,7 @@ function InfoInmueble() {
 
       {/* Carrusel de imágenes */}
       <div style={{ marginLeft: '350px', marginTop: '1px', border: '1px solid #000', width: '550px', height: '270px', margin: '0 auto' }}>
-        <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+        <img src={'http://localhost:3031/images/'+ property.foto }  alt="Imagen" style={{ width: '550px', height: '270px'}} />
       </div>
 
       {/* Aquí comienzan los detalles del departamento */}
