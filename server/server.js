@@ -460,3 +460,28 @@ app.post('/recuperar-contrasena', (req, res) => {
       throw error;
     }
   };
+
+  //Actualizar contraseña encriptada
+// Ruta para actualizar la contraseña encriptada
+app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
+    const id_usuario = req.params.id_usuario;
+    const nuevaContrasena = req.body.contrasena;
+  
+    try {
+      const hashedPassword = await bcrypt.hash(nuevaContrasena, 10); // Hash de la nueva contraseña
+  
+      const updatePasswordSql = 'UPDATE usuario SET contrasena = ? WHERE id_usuario = ?';
+      db.query(updatePasswordSql, [hashedPassword, id_usuario], (err, result) => {
+        if (err) {
+          console.error('Error al actualizar la contraseña:', err);
+          res.status(500).json({ error: 'Error interno del servidor' });
+        } else {
+          res.json({ message: 'Contraseña actualizada exitosamente' });
+        }
+      });
+    } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  });
+  

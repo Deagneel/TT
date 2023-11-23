@@ -1,10 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams, } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function NuevaContra() {
+  const { id_usuario } = useParams();
   const [contrasena, setContrasena] = useState('');
   const [confirmarContrasena, setConfirmarContrasena] = useState('');
   const navigate = useNavigate();
@@ -16,14 +17,22 @@ function NuevaContra() {
   const handleConfirmarContrasenaInput = (event) => {
     setConfirmarContrasena(event.target.value);
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Validar contraseñas y realizar la lógica necesaria para cambiar la contraseña
+
     if (contrasena !== '' && contrasena === confirmarContrasena) {
-      // Aquí puedes implementar la lógica para cambiar la contraseña
-      navigate('/exito');
+      axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
+        contrasena: contrasena,
+      })
+      .then((response) => {
+        navigate('/exito');
+      })
+      .catch((error) => {
+        console.error('Error al cambiar la contraseña:', error);
+        alert('Error al cambiar la contraseña');
+      });
     } else {
-      // Mostrar mensaje de error si las contraseñas no coinciden
       alert('Las contraseñas no coinciden');
     }
   };
