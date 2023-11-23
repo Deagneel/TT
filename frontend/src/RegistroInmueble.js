@@ -27,6 +27,7 @@ function RegistroInmueble() {
     images: '',
     idEscuela: '',
     privacyAccepted: false,
+    Tvivienda: '',
   });
 
   const [file, setFile] = useState();
@@ -70,6 +71,7 @@ function RegistroInmueble() {
         regulations: formData.regulations,
         images: imageResponse.data.url,
         idEscuela: formData.idEscuela,
+        Tvivienda: formData.Tvivienda,
       });
 
       console.log(response.data);
@@ -155,6 +157,21 @@ function RegistroInmueble() {
             {escuelas.map((escuela, index) => (
               <option key={index} value={escuela.id_escuela}> {escuela.nombre}</option>
             ))}
+          </select>
+        </div>
+
+        <div>
+          <h2 style={{ fontSize: '20px', marginLeft: '39px' }}>Tipo de vivienda</h2>
+          <select
+            name="Tvivienda"
+            value={formData.Tvivienda}
+            onChange={handleChange}
+            style={{ width: '338px', marginBottom: '10px',  height: '49%'  }}
+            className="input-box"
+          >
+            <option value="">Selecciona un tipo de vivienda</option>
+            <option value="0">Individual</option>
+            <option value="1">Compartida</option>
           </select>
         </div>
 

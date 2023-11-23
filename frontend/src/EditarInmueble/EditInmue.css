@@ -10,7 +10,6 @@
     margin-top: 0px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     background-color: #C7B3FF; /* Color de fondo para el contenedor */
     padding: 20px; /* Añade espacio alrededor del contenido */
   }
@@ -23,6 +22,6 @@
   }
 
   .fondo-placeholder{
-    background-color: #D6D6D6;
+    background-color: #ece2e2;
     color: black;
   }

@@ -173,7 +173,7 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
@@ -184,7 +184,8 @@ app.post('/registroinmueble', (req, res) => {
         req.body.regulations,
         req.body.images,
         req.session.user.id,
-        req.body.idEscuela
+        req.body.idEscuela,
+        req.body.Tvivienda
     ];
     console.log(req.session.user.id);
     db.query(sql, values, (err, data) => {
@@ -386,5 +387,18 @@ app.get('/inmueblearrendatario', (req, res) => {
         }
         
         return res.json({ message: 'Datos insertados correctamente' });
+    });
+});
+
+// Ruta para obtener datos de la tabla "inmueble"
+app.get('/obtenerInmuebleInfo/:id_inmueble', (req, res) => {
+    const id_inmueble = req.params.id_inmueble;
+    const sql = "SELECT * FROM inmueble WHERE id_inmueble = ?"; // Selecciona solo el campo "nombre" de la tabla
+    db.query(sql, [id_inmueble], (err, result) => {
+        if (err) {
+            console.error('Error al obtener datos de inmueble:', err);
+            return res.json({ message: "Error al obtener datos de inmueble" });
+        }
+        return res.json(result);
     });
 });
