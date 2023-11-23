@@ -21,7 +21,7 @@ function Navbar() {
   };
 
   const handlePerfilClick = () => {
-    navigate('/perfilarrendador');
+    navigate('/perfilarrendatario');
     console.log('Clic en el sobre');
   };
   

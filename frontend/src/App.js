@@ -15,6 +15,7 @@ import InfoInmueble from './EditarInmueble/InfoInmueble';
 import RegistroInmueble from './RegistroInmueble';
 import EditarInmueble from './EditarInmueble/EditarInmueble';
 import Incidencia from './Incidencia';
+import PerfilArrendatario from './PerfilArrendatario';
 
 
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="/registroinmueble" element={<RegistroInmueble />} />
         <Route path="/EditarInmueble/:id_inmueble" element={<EditarInmueble />} />
         <Route path="/incidencia" element={<Incidencia />} />
+        <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function EditarInmueble() {
   const { id_inmueble } = useParams();
@@ -135,7 +136,6 @@ function EditarInmueble() {
             style={{ width: '338px', marginBottom: '10px', height: '49%' }}
             className="input-box"
           >
-            <option value="">Seleccionar una escuela</option>
             {/* Mapear las opciones obtenidas de la base de datos */}
             {escuelas.map((escuela, index) => (
               <option key={index} value={escuela.id_escuela}> {escuela.nombre}</option>
@@ -165,13 +165,10 @@ function EditarInmueble() {
               style={{ width: '150px', fontSize: '16px', height: '49%' }}
               className="input-box"
             >
-              <option value="">Seleccionar un periodo</option>
               <option value="mensual">Mensual</option>
-                <option value="bimestral">Bimestral</option>
-                <option value="trimestral">Tremestral</option>
-                <option value="Cuatrimestral">Cuatrimestral</option>
-                <option value="Semestral">Semestral</option>
-                <option value="Anual">Anual</option>
+              <option value="bimestral">Bimestral</option>
+              <option value="trimestral">Trimestral</option>
+              <option value="semestral">Semestral</option>
             </select>
           </div>
         </div>
@@ -217,15 +214,19 @@ function EditarInmueble() {
 
         <button
           className="register-button"
-          style={{ backgroundColor: '#422985', color: 'white', height: '40px', width: '108px', marginTop: '10px', opacity: formData.privacyAccepted ? '1' : '0.5' }}
+          style={{ backgroundColor: '#422985', color: 'white', height: '60px', width: '108px', marginTop: '10px' }}
           onClick={handleEdit}
-          disabled={!formData.privacyAccepted}
         >
-          Aceptar
+          Editar Inmueble
         </button>
         </div>
       </div>
   );
+  
+  
+  
+  
+  
 }
 
 export default EditarInmueble;

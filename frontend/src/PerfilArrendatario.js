@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const PerfilArrendador = () => {
+const PerfilArrendatario = () => {
 
   const [formData, setFormData] = useState({
     id: '',
@@ -68,6 +68,16 @@ const PerfilArrendador = () => {
 
   const handleCambiarContraseña = () => {
     console.log('Cambiar contraseña');
+  };
+
+  const handleCredencialEstudiante = () => {
+    console.log('Ver CREDENCIAL DE ESTUDIANTE');
+    // Agrega el código para manejar la acción del botón aquí
+  };
+
+  const handleComprobanteInscripcion = () => {
+    console.log('Ver COMPROBANTE DE INSCRIPCIÓN');
+    // Agrega el código para manejar la acción del botón aquí
   };
 
   const handleNombreChange = (e) => {
@@ -143,13 +153,25 @@ const PerfilArrendador = () => {
           </div>
 
           <div className="profile-section" style={{ marginBottom: '20px' }}>
+          <button className="btn btn-success" onClick={handleCredencialEstudiante}>
+             Subir / ActualizarCredencial de Estudiante
+          </button>
+        </div>
+
+        <div className="profile-section" style={{ marginBottom: '20px' }}>
+          <button className="btn btn-danger" onClick={handleComprobanteInscripcion}>
+            Subir / Actualizar Comprobante de Inscripción
+          </button>
+        </div>
+
+          <div className="profile-section" style={{ marginBottom: '20px' }}>
             <button className="btn btn-warning" onClick={handleCambiarContraseña}>
               Cambiar Contraseña
             </button>
           </div>
 
           <Link
-            to="/homearrendador" // Reemplaza con la ruta a la que deseas volver
+            to="/homearrendatario" // Reemplaza con la ruta a la que deseas volver
             className="return-link"
             style={{
               position: 'absolute',
@@ -168,4 +190,4 @@ const PerfilArrendador = () => {
   );
 };
 
-export default PerfilArrendador;
+export default PerfilArrendatario;

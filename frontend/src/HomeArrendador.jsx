@@ -9,6 +9,7 @@ import { useState } from 'react';
 function ArrendadorNavbar() {
 
   const navigate = useNavigate();
+  
 
   const handleRegisterClick = () => {
     // Manejar la acción cuando se hace clic en el botón de registrar inmueble
@@ -44,7 +45,7 @@ function ArrendadorNavbar() {
   };
 
   const handlePerfilClick = () => {
-
+    navigate('/perfilarrendador');
   };
 
   return (
@@ -93,17 +94,67 @@ function ArrendadorPageContent() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start', height: '20vh', marginTop: '20px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
       <h2 style={{ width: '100%', textAlign: 'center' }}>Inmuebles Registrados</h2>
-      {registeredProperties.map((property, index) => (
-        <div key={index} className="rectangle" style={{ width: '30%', margin: '10px', border: '1px solid #ddd', padding: '10px' }}>
-          <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-          <p>{property.titulo}</p>
-          <p>Dirección: {property.direccion}</p>
-          <p>Precio: {property.precio}</p>
-          <button className="button" style={{ marginRight: '75px' }} onClick={() => handleEditClick(property.id_inmueble)}>Editar</button>
-        </div>
-      ))}
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
+        {registeredProperties.map((property, index) => (
+          <div key={index} className="rectangle">
+            <div className="image-container">
+              <img src={`http://localhost:3031/images/${property.foto}`} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+            </div>
+            <div className="propertyDetails">
+              <p className="homearrendatariotitle">{property.titulo}</p>
+              <p className="homearrendatario">Dirección: {property.direccion}</p>
+
+              <p className="homearrendatario">Precio: {property.precio}</p>
+              <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleEditClick(property.id_inmueble)}>Editar</button>
+              {/* Agrega otros detalles de propiedad según sea necesario */}
+            </div>
+          </div>
+        ))}
+      </div>
+      <style>{`
+        .property-list {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 20px;
+        }
+
+        .property-list h2 {
+          width: 100%;
+          text-align: center;
+        }
+
+        .rectangle {
+          width: 40%;
+          margin: 10px;
+          border: 1px solid #ddd;
+          padding: 10px;
+        }
+
+        .image-container img {
+          width: 100%;
+          height: auto;
+        }
+
+        .propertyDetails {
+          margin-left: 10px;
+        }
+
+        .homearrendatariotitle {
+          font-weight: bold;
+        }
+
+        .homearrendatario {
+          margin-top: 5px;
+        }
+
+        .button {
+          margin-top: 10px;
+          border: 2px solid #422985;
+        }
+      `}</style>
     </div>
   );
 }

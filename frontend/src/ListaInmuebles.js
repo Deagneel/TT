@@ -1,6 +1,14 @@
+"use client";
 import React, { useState } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  Pin,
+  InfoWindow,
+} from "@vis.gl/react-google-maps";
 
 function Navbar() {
   const handleBellClick = () => {
@@ -10,6 +18,8 @@ function Navbar() {
   const handleEnvelopeClick = () => {
     console.log('Clic en el sobre');
   };
+
+  
 
   return (
     <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
@@ -26,19 +36,29 @@ function Navbar() {
 }
 
 function PageContent() {
-  const rectangles = [
-
-  ];
+  const position = { lat: 19.5048515447674054, lng: -99.14623717266865 };
+  const [open, setOpen] = useState(false);
 
   return (
-    <div style={{ height: '50%' }}>
-      {rectangles.map((rectangle, index) => (
-        <div key={index} className="rectangle">
-          <img src={rectangle.image} alt="Imagen" />
-          <p>{rectangle.content}</p>
-        </div>
-      ))}
-    </div>
+    <APIProvider apiKey={'AIzaSyArrTAZutsOGQ0qEXumdsKfqz6sryLq3bw'}>
+      <div style={{ height: "100vh", width: "100%" }}>
+        <Map zoom={17} center={position} mapId={'817a42045fb506a5'}>
+          <AdvancedMarker position={position} onClick={() => setOpen(true)}>
+            <Pin
+              background={"purple"}
+              borderColor={"green"}
+              glyphColor={"grey"}
+            />
+          </AdvancedMarker>
+
+          {open && (
+            <InfoWindow position={position} onCloseClick={() => setOpen(false)}>
+              <p>Escuela 1</p>
+            </InfoWindow>
+          )}
+        </Map>
+      </div>
+    </APIProvider>
   );
 }
 
