@@ -164,7 +164,7 @@ function RegistroInmueble() {
         </div>
 
         <div>
-          <h2 style={{ fontSize: '20px', marginLeft: '39px' }}>Tipo de vivienda</h2>
+          <h2 style={{ fontSize: '20px', marginLeft: '99px' }}>Tipo de vivienda</h2>
           <select
             name="Tvivienda"
             value={formData.Tvivienda}
