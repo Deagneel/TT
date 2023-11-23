@@ -5,11 +5,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function RecuperarContrasena() {
-
+  const [correo, setCorreo] = useState('');
 
   const handleInput = (event) => {
-
+    event.preventDefault();
+  
+    axios.post('http://localhost:3031/recuperar-contrasena', { correo })
+      .then((response) => {
+        console.log(response.data);
+        // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito o error al usuario
+      })
+      .catch((error) => {
+        console.error('Error al recuperar la contraseña:', error);
+        // Manejar el error, mostrar un mensaje al usuario, etc.
+      });
   };
+
+  const handleChange = (event) => {
+    setCorreo(event.target.value);
+  };
+  
+  
+
 
 
   return (
@@ -44,7 +61,7 @@ function RecuperarContrasena() {
               <br />
               <br></br>
               <br></br>
-              <form >
+              <form onSubmit={handleInput}>
                 <div className="mb-3">
                   <label htmlFor="correo">
                     <strong>Correo</strong>
@@ -52,7 +69,8 @@ function RecuperarContrasena() {
                   <input
                     placeholder="Ingresar correo"
                     name="correo"
-                    onChange={handleInput}
+                    value={correo}
+                    onChange={handleChange}
                     className="form-control rounded-0"
                     style={{ width: '100%' }}
                   />
@@ -60,7 +78,7 @@ function RecuperarContrasena() {
                 <br />
                 <br />
                 <div className="d-flex justify-content-center">
-                  <button onClick={handleInput}
+                  <button
                     type="submit"
                     className="btn btn-success rounded-0"
                     style={{

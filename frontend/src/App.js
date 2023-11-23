@@ -27,7 +27,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/recuperarcontra" element={<RecuperarContra />} />
-        <Route path="/nuevacontra" element={<NuevaContra />} />
+        <Route path="/nuevacontra/:id_usuario" element={<NuevaContra />} />
         <Route path="/tipousuario" element={<TipoUsuario />} />
         <Route path="/perfilarrendador" element={<PerfilArrendador />} />
         <Route path="/chat" element={<Chat/>} />
