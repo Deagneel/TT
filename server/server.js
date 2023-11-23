@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 import path from 'path';
+import nodemailer from 'nodemailer';
 
 const salt = 10;
 const app = express();
@@ -194,7 +195,7 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
@@ -205,7 +206,8 @@ app.post('/registroinmueble', (req, res) => {
         req.body.regulations,
         req.body.images,
         req.session.user.id,
-        req.body.idEscuela
+        req.body.idEscuela,
+        req.body.Tvivienda
     ];
     console.log(req.session.user.id);
     db.query(sql, values, (err, data) => {
@@ -489,6 +491,74 @@ app.get('/inmueblearrendatario', (req, res) => {
         
         return res.json({ message: 'Datos insertados correctamente' });
     });
-
-    
 });
+
+// Ruta para obtener datos de la tabla "inmueble"
+app.get('/obtenerInmuebleInfo/:id_inmueble', (req, res) => {
+    const id_inmueble = req.params.id_inmueble;
+    const sql = "SELECT * FROM inmueble WHERE id_inmueble = ?"; // Selecciona solo el campo "nombre" de la tabla
+    db.query(sql, [id_inmueble], (err, result) => {
+        if (err) {
+            console.error('Error al obtener datos de inmueble:', err);
+            return res.json({ message: "Error al obtener datos de inmueble" });
+        }
+        return res.json(result);
+    });
+});
+
+// Ruta para manejar la solicitud de recuperación de contraseña
+app.post('/recuperar-contrasena', (req, res) => {
+    const { correo } = req.body;
+    const sql = "SELECT * FROM usuario WHERE correo = ?";
+    
+    db.query(sql, [correo], (err, data) => {
+      if (err) {
+        console.error('Error al buscar el correo en la base de datos:', err);
+        return res.json("Error interno del servidor");
+      } 
+  
+      if (data.length > 0) {
+        // El correo existe, ahora se enviará un correo con un link para cambiar la contraseña
+        const usuario = data[0];
+        const link = `http://localhost:3000/nuevacontra/${usuario.id_usuario}`;
+
+        enviarCorreoRecuperacion(usuario.correo, link)
+          .then(() => {
+            return res.json({ message: 'Se ha enviado un correo para restablecer la contraseña' });
+          })
+          .catch((error) => {
+            console.error('Error al enviar el correo de recuperación:', error);
+            return res.json("Error al enviar el correo de recuperación");
+          });
+      } else {
+        // El correo no existe en la base de datos
+        return res.json("El correo proporcionado no está registrado");
+      }
+    });
+  });
+
+
+  //Seccion para enviar correo de recuperacion
+  const enviarCorreoRecuperacion = async (correo, link) => {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+        pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+      },
+    });
+  
+    const mailOptions = {
+      from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      to: correo,
+      subject: 'Recuperación de contraseña',
+      html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${link}">${link}</a></p>`,
+    };
+  
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log('Correo de recuperación enviado a:', correo);
+    } catch (error) {
+      throw error;
+    }
+  };

@@ -6,29 +6,28 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function RecuperarContrasena() {
   const [correo, setCorreo] = useState('');
-  const navigate = useNavigate();
 
   const handleInput = (event) => {
+    event.preventDefault();
+  
+    axios.post('http://localhost:3031/recuperar-contrasena', { correo })
+      .then((response) => {
+        console.log(response.data);
+        // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito o error al usuario
+      })
+      .catch((error) => {
+        console.error('Error al recuperar la contraseña:', error);
+        // Manejar el error, mostrar un mensaje al usuario, etc.
+      });
+  };
+
+  const handleChange = (event) => {
     setCorreo(event.target.value);
   };
+  
+  
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Enviar correo de recuperación de contraseña con los datos ingresados
-    // Aquí puedes realizar la lógica para enviar el correo usando el correo ingresado
-    const mensaje = `Estimado(a) ${correo},
 
-Para concluir con la recuperación y restablecimiento de tu contraseña ingresa al enlace que se encuentra a continuación: [Un enlace para otra página llamada Cambiar_contraseña]
-
-Agradecemos su preferencia.
-
-`;
-
-    // Aquí puedes realizar la lógica para enviar el correo con el mensaje generado
-
-    // Redirigir a la página de éxito o agradecimiento
-    navigate('/exito');
-  };
 
   return (
     <div className="d-flex justify-content-center align-items-center bg-white vh-100">
@@ -62,17 +61,16 @@ Agradecemos su preferencia.
               <br />
               <br></br>
               <br></br>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleInput}>
                 <div className="mb-3">
                   <label htmlFor="correo">
                     <strong>Correo</strong>
                   </label>
                   <input
-                    type="correo"
                     placeholder="Ingresar correo"
                     name="correo"
                     value={correo}
-                    onChange={handleInput}
+                    onChange={handleChange}
                     className="form-control rounded-0"
                     style={{ width: '100%' }}
                   />

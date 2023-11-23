@@ -59,16 +59,11 @@ function HomeArrendatario() {
     const [showSchools, setShowSchools] = useState(false);
     const [showInmuebles, setShowInmuebles] = useState(true);
 
-    const handleEditClick = () => {
-      // Manejar la acción cuando se hace clic en mostrar información de inmuebles
+    const handleInfoEscuelaClick = (idInmueble) => {
+      navigate(`/infoinmueble?id_inmueble=${idInmueble}`);
       console.log('Clic en editar');
     };
 
-    const handleInfoEscuelaClick = () => {
-      // Manejar la acción cuando se hace clic en mostrar información de escuela
-      console.log('Clic en editar');
-    };
-  
   
     useEffect(() => {
       // Fetch solo la información relevante de la tabla inmueble
@@ -137,7 +132,6 @@ function HomeArrendatario() {
             <div className="propertyDetails">
               <p className="homearrendatariotitle">{property.nombre}</p>
               <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-              <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={handleEditClick}>Mostrar inmuebles</button>
               {/* Agrega otros detalles de propiedad según sea necesario */}
             </div>
           </div>
@@ -157,7 +151,7 @@ function HomeArrendatario() {
             <p className="homearrendatario">Dirección: {property.direccion}</p>
             <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
             <p className="homearrendatario">Precio: {property.precio}</p>
-            <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={handleInfoEscuelaClick}>Mostrar información</button>
+            <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
           {/* Agrega otros detalles de propiedad según sea necesario */}
         </div>
         </div>
