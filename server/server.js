@@ -75,6 +75,27 @@ app.get('/', (req, res) => {
     }
 })
 
+app.get('/perfil', (req, res) => {
+    const id_usuario = req.session.user ? req.session.user.id : null;
+
+    if (id_usuario) {
+        db.query('SELECT id_usuario, nombre, correo FROM usuario WHERE id_usuario = ?', [id_usuario], (err, result) => {
+            if (err) {
+                console.error('Error al obtener datos de la tabla usuario:', err);
+                res.status(500).json({ error: 'Error interno del servidor' });
+            } else {
+                // Verifica si hay al menos un resultado
+                const perfil = result.length > 0 ? result[0] : null;
+                res.json(perfil);
+            }
+        });
+    } else {
+        res.status(401).json({ error: 'No se proporcionó un usuario válido en la sesión.' });
+    }
+});
+
+  
+
 app.get('/logout', (req, res) => {
     res.clearCookie('token');
     return res.json({Status: "Success"});
@@ -257,6 +278,87 @@ app.get('/infoinmuebles/:id_inmueble', (req, res) => {
     });
   });
 
+  app.put('/newName/:id', (req, res) => {
+    const userId = req.params.id;
+    const nuevoNombre = req.body.nombre; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nuevoNombre) {
+      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET nombre = ? WHERE id_usuario = ?';
+    db.query(sql, [nuevoNombre, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el nombre: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
+    });
+  });
+
+  app.put('/newName/:id', (req, res) => {
+    const userId = req.params.id;
+    const nuevoNombre = req.body.nombre; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nuevoNombre) {
+      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET nombre = ? WHERE id_usuario = ?';
+    db.query(sql, [nuevoNombre, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el nombre: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
+    });
+  });
+
+  app.put('/newMail/:id', (req, res) => {
+    const userId = req.params.id;
+    const nuevoCorreo = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nuevoCorreo) {
+      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET correo = ? WHERE id_usuario = ?';
+    db.query(sql, [nuevoCorreo, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el nombre: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
+    });
+  });
+  
   // Actualizar información de un inmueble por ID
 app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     const id_inmueble = req.params.id_inmueble;
@@ -387,4 +489,6 @@ app.get('/inmueblearrendatario', (req, res) => {
         
         return res.json({ message: 'Datos insertados correctamente' });
     });
+
+    
 });
