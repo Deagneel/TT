@@ -46,13 +46,11 @@ app.use(session({
 
 }))
 
-
-
 const db = mysql.createConnection({
-    host: "bccdb0knkukccxehxrur-mysql.services.clever-cloud.com",
-    user: "u0umkw3bjydys9qe",
-    password: "jS9hYCGfJdgbZ4wHnbyg",
-    database: 'bccdb0knkukccxehxrur'
+  host: "bccdb0knkukccxehxrur-mysql.services.clever-cloud.com",
+  user: "u0umkw3bjydys9qe",
+  password: "jS9hYCGfJdgbZ4wHnbyg",
+  database: 'bccdb0knkukccxehxrur'
 });
 
 db.connect((err) => {
