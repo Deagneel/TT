@@ -1,8 +1,8 @@
 import React from 'react';
+import Home from './Home';
 import Login from './Login';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './Signup';
-import Home from './Home';
 import RecuperarContra from './RecuperarContra';
 import NuevaContra from './NuevaContra';
 import TipoUsuario from './TipoUsuario';
@@ -29,7 +29,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />

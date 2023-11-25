@@ -1,8 +1,8 @@
 import React from 'react';
+import Home from './Home';
 import Login from './Login';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './Signup';
-import Home from './Home';
 import RecuperarContra from './RecuperarContra';
 import NuevaContra from './NuevaContra';
 import TipoUsuario from './TipoUsuario';
@@ -16,6 +16,7 @@ import RegistroInmueble from './RegistroInmueble';
 import EditarInmueble from './EditarInmueble/EditarInmueble';
 import Incidencia from './Incidencia';
 import PerfilArrendatario from './PerfilArrendatario';
+import HomeAdministrador from './HomeAdministrador';
 
 
 
@@ -40,6 +41,7 @@ function App() {
         <Route path="/EditarInmueble/:id_inmueble" element={<EditarInmueble />} />
         <Route path="/incidencia" element={<Incidencia />} />
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
+        <Route path="/homeadministrador" element={<HomeAdministrador />} />
       </Routes>
     </BrowserRouter>
   );
