@@ -8,6 +8,8 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import path from 'path';
 import nodemailer from 'nodemailer';
+import axios from 'axios';
+
 
 const salt = 10;
 const app = express();
@@ -68,7 +70,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 app.get('/', (req, res) => {
     if(req.session.user.nombre) {
-        return res.json({valid: true, nombre: req.session.user.nombre})
+        return res.json({valid: true, nombre: req.session.user.correo})
     } else {
         return res.json({valid:false})
     }
@@ -172,7 +174,8 @@ app.post('/login', (req, res) => {
                 if (response) {
                     req.session.user = {
                         id: data[0].id_usuario,
-                        nombre: data[0].nombre
+                        nombre: data[0].nombre,
+                        correo: data[0].correo
                     };
                     console.log(req.session.user);
                     return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
@@ -585,3 +588,17 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     }
   });
   
+
+
+  app.post("/loginchat", async (req, res) => {
+    const { mail } = req.body;
+    try {
+        const r = await axios.put(
+            'https://api.chatengine.io/users/',
+            { email: mail, username: mail, secret: mail, first_name: req.session.user.nombre },
+            { headers: { "PRIVATE-KEY": "70e0851a-a83d-4bd5-9ed6-6c7dfdc6ee37" } }
+        );
+    } catch (e) {
+        return res.status(500).json({ error: 'Error desconocido' });
+    }
+});

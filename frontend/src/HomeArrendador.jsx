@@ -25,6 +25,8 @@ function ArrendadorNavbar() {
   const handleEnvelopeClick = () => {
     // Manejar la acción cuando se hace clic en el ícono del sobre (envelope)
     console.log('Clic en el sobre');
+    navigate('/Chat');
+
   };
 
  
@@ -164,7 +166,7 @@ function ArrendadorPageContent() {
 
 // Definición del componente HomeArrendador
 function HomeArrendador() {
-  const [name, setName] = useState('');
+  const [correo, setCorreo] = useState('');
   const navigate = useNavigate();
 
   axios.defaults.withCredentials = true;
@@ -172,16 +174,17 @@ function HomeArrendador() {
     axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
-        setName(res.data.nombre);
+        setCorreo(res.data.nombre);
       } else {
         navigate('/login');
       }
     })
   })
+
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ArrendadorNavbar />
-      <div><h1>Bienvenido, {name}</h1></div>
+      <div><h1>Bienvenido, {correo}</h1></div>
       <ArrendadorPageContent />
     </div>
   );
