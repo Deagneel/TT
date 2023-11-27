@@ -55,7 +55,14 @@ function Signup() {
           console.log('Error al registrar el usuario:', signupResponse.data.error);
           return;
         }
+        
+
+      const signupChatResponse = axios.post('http://localhost:3031/registrochat', {
+          mail: values.correo,
+          name: values.nombre
+        });
   
+        console.log(signupChatResponse.data);
         navigate('/');
       }
     } catch (err) {

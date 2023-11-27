@@ -104,89 +104,87 @@ app.get('/logout', (req, res) => {
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/signup', (req, res) => {
-    const sql = "INSERT INTO usuario (nombre, correo, contrasena, tipo_de_usuario) VALUES (?, ?, ?, ?)";
-    
-    bcrypt.hash(req.body.contrasena, salt, (err, hash) => {
-        if (err) {
-            console.log(err);
-            return res.json("Error hashing password");
-        }
+  const sql = "INSERT INTO usuario (nombre, correo, contrasena, tipo_de_usuario) VALUES (?, ?, ?, ?)";
 
-        const values = [
-            req.body.nombre,
-            req.body.correo,
-            hash,
-            req.body.tipo_de_usuario
-        ];
+  bcrypt.hash(req.body.contrasena, salt, async (err, hash) => {
+      if (err) {
+          console.log(err);
+          return res.json("Error hashing password");
+      }
 
-        // Imprimir la contraseña en la consola (Solo para propósitos de depuración)
-        console.log('Contraseña:', req.body.contrasena);
+      const values = [
+          req.body.nombre,
+          req.body.correo,
+          hash,
+          req.body.tipo_de_usuario
+      ];
 
-        db.query(sql, values, (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.json("Error inserting into database");
-            }
+      // Imprimir la contraseña en la consola (Solo para propósitos de depuración)
+      console.log('Contraseña:', req.body.contrasena);
 
-            // Imprimir en la consola información relevante incluyendo la contraseña
-            console.log('Nuevo usuario registrado:', {
-                nombre: req.body.nombre,
-                correo: req.body.correo,
-                contrasena: req.body.contrasena,
-                tipo_de_usuario: req.body.tipo_de_usuario
-            });
+      db.query(sql, values, async (err, data) => {
+          if (err) {
+              console.log(err);
+              return res.json("Error inserting into database");
+          }
 
-            return res.json(data);
-        });
-    });
+          // Imprimir en la consola información relevante incluyendo la contraseña
+          console.log('Nuevo usuario registrado:', {
+              nombre: req.body.nombre,
+              correo: req.body.correo,
+              contrasena: req.body.contrasena,
+              tipo_de_usuario: req.body.tipo_de_usuario
+          });
+
+          return res.json(data);
+      });
+  });
 });
-
-
 
 // Ruta para manejar la solicitud POST de inicio de sesión
 app.post('/login', (req, res) => {
 
 
-    const sql = "SELECT * FROM usuario WHERE correo = ?";
-    console.log('Correo proporcionado:', req.body.correo);
+  const sql = "SELECT * FROM usuario WHERE correo = ?";
+  console.log('Correo proporcionado:', req.body.correo);
 
-    db.query(sql, [req.body.correo], (err, data) => {
-        if (err) {
-            console.error('Error en la consulta a la base de datos:', err);
-            return res.json("Error");
-        } 
+  db.query(sql, [req.body.correo], (err, data) => {
+      if (err) {
+          console.error('Error en la consulta a la base de datos:', err);
+          return res.json("Error");
+      } 
 
-        if (data.length > 0) {
-            console.log('Datos de la base de datos:', data);
+      if (data.length > 0) {
+          console.log('Datos de la base de datos:', data);
 
-            // Imprimir las contraseñas antes de la comparación
-            console.log('Contraseña proporcionada en la solicitud:', req.body.contrasena);
-            console.log('Contraseña almacenada en la base de datos:', data[0].contrasena);
+          // Imprimir las contraseñas antes de la comparación
+          console.log('Contraseña proporcionada en la solicitud:', req.body.contrasena);
+          console.log('Contraseña almacenada en la base de datos:', data[0].contrasena);
 
-            bcrypt.compare(req.body.contrasena.toString(), data[0].contrasena, (err, response) => {
-                if (err) {
-                    console.error('Error al comparar contraseñas:', err);
-                    return res.json("Error: Contraseña incorrecta");
-                }
+          bcrypt.compare(req.body.contrasena.toString(), data[0].contrasena, (err, response) => {
+              if (err) {
+                  console.error('Error al comparar contraseñas:', err);
+                  return res.json("Error: Contraseña incorrecta");
+              }
 
-                console.log('Resultado de la comparación de contraseñas:', response);
+              console.log('Resultado de la comparación de contraseñas:', response);
 
-                if (response) {
-                    req.session.user = {
-                        id: data[0].id_usuario,
-                        nombre: data[0].nombre,
-                        correo: data[0].correo
-                    };
-                    console.log(req.session.user);
-                    return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
-                }
-                return res.json({ Login: false });                
-            });
-        } else {
-            console.log('No se encontró ningún usuario con ese correo.');
-            return res.json("Fail: No coincide correo");
-        }
-    });
+              if (response) {
+                  req.session.user = {
+                      id: data[0].id_usuario,
+                      nombre: data[0].nombre,
+                      correo: data[0].correo
+                  };
+                  console.log(req.session.user);
+                  return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
+              }
+              return res.json({ Login: false });                
+          });
+      } else {
+          console.log('No se encontró ningún usuario con ese correo.');
+          return res.json("Fail: No coincide correo");
+      }
+  });
 });
 
 // Ruta para manejar la solicitud POST de registro de usuarios
@@ -590,15 +588,34 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
   
 
 
-  app.post("/loginchat", async (req, res) => {
-    const { mail } = req.body;
+  app.post("/registrochat", async (req, res) => {
+
+    // Desestructura directamente de req.body
+    const { mail, name } = req.body;
+
+    console.log("Nombre: ", name);
+    console.log("Correo: ", mail);
+
     try {
         const r = await axios.put(
-            'https://api.chatengine.io/users/',
-            { email: mail, username: mail, secret: mail, first_name: req.session.user.nombre },
-            { headers: { "PRIVATE-KEY": "70e0851a-a83d-4bd5-9ed6-6c7dfdc6ee37" } }
+            'https://api.chatengine.io/users',
+            { username: mail, secret: mail, first_name: name },
+            { headers: { "private-key": "70e0851a-a83d-4bd5-9ed6-6c7dfdc6ee37" } }
         );
     } catch (e) {
         return res.status(500).json({ error: 'Error desconocido' });
     }
-});
+  });
+
+  app.post("/newchat", async (req, res) => {
+    const { mail, destinatario } = req.body;
+    try {
+        const r = await axios.put(
+            'https://api.chatengine.io/chats/',
+            { username: mail, secret: mail, usernames: destinatario},
+            { headers: { "Project-ID": "1c5e1f42-db0c-47be-88e3-58413263e9e9" } }
+        );
+    } catch (e) {
+        return res.status(500).json({ error: 'Error desconocido' });
+    }
+  });

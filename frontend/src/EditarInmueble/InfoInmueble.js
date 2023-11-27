@@ -16,8 +16,15 @@ function InfoInmueble() {
   
   const handleInteresClick = () => {
     //Se activa al presionar el boton Me interesa
-    navigate('/chat');
     console.log('Clic en el sobre');
+    navigate('/chat');
+    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${idInmueble}`)
+      .then((response) => {
+        setRegisteredProperties(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos del inmueble', error);
+      });
   };
 
   const handleReportClick = () => {
