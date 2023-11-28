@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import axios from 'axios';
 
 function Navbar() {
+  const navigate = useNavigate();
+
   const handleBellClick = () => {
-    console.log('Clic en la campana');
+    //Boton notificaciones
   };
 
   const handleEnvelopeClick = () => {
-    console.log('Clic en el sobre');
+    //boton mensajes
+  };
+
+  const handleSignuplick = () => {
+    navigate('/tipousuario');
   };
 
   return (
     <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '11%' }}>
       <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
-        <button className="button white-text-button" style={{ marginRight: '75px' }}>Registrar Usuario</button>
+        <button onClick={handleSignuplick} className="button white-text-button" style={{ marginRight: '75px' }}>Registrar Usuario</button>
         <i className="fa fa-bell icon-button" style={{ fontSize: '20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
         <i className="fa fa-envelope icon-button" style={{ fontSize: '20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
       </div>
