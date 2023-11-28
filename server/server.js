@@ -607,15 +607,70 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     }
   });
 
-  app.post("/newchat", async (req, res) => {
-    const { mail, destinatario } = req.body;
-    try {
-        const r = await axios.put(
-            'https://api.chatengine.io/chats/',
-            { username: mail, secret: mail, usernames: destinatario},
-            { headers: { "Project-ID": "1c5e1f42-db0c-47be-88e3-58413263e9e9" } }
-        );
-    } catch (e) {
-        return res.status(500).json({ error: 'Error desconocido' });
-    }
+  app.post("/newchat/:idInmueble", async (req, res) => {
+    const id_inmueble = req.params.idInmueble;
+
+    // Consulta SQL para obtener id_usuario
+    const sql1 = "SELECT id_usuario FROM inmueble WHERE id_inmueble = ?";
+    db.query(sql1, [id_inmueble], (err, result1) => {
+        if (err) {
+            console.error('Error al obtener datos de inmueble:', err);
+            return res.status(500).json({ error: 'Error al obtener datos de inmueble' });
+        }
+
+        if (result1.length === 0) {
+            console.error('Inmueble no encontrado');
+            return res.status(404).json({ error: 'Inmueble no encontrado' });
+        }
+
+        const id_usuario = result1[0].id_usuario;
+        console.log("ID recibido: ", id_usuario);
+
+        // Consulta SQL para obtener correo del usuario
+        const sql2 = "SELECT correo FROM usuario WHERE id_usuario = ?";
+        db.query(sql2, [id_usuario], async (err, result2) => {
+            if (err) {
+                console.error('Error al obtener datos de usuario:', err);
+                return res.status(500).json({ error: 'Error al obtener datos de usuario' });
+            }
+
+            if (result2.length === 0) {
+                console.error('Usuario no encontrado');
+                return res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+
+            const destinatario = result2[0].correo;
+            console.log("Correo Recibido: ", destinatario);
+
+            const mail = req.session.user.correo;
+            console.log("Correo del remitente: ", mail);
+
+            try {
+                // Realizar la solicitud a la API de chat
+                const response = await axios.put(
+                    'https://api.chatengine.io/chats/',
+                    {
+                        usernames: [destinatario],
+                        title: "Chat",
+                        is_direct_chat: false
+                    },
+                    {
+                        headers: {
+                            "Project-ID": "1c5e1f42-db0c-47be-88e3-58413263e9e9",
+                            "User-Name": mail,
+                            "User-Secret": mail
+                        }
+                    }
+                );
+
+                // Puedes hacer algo con la respuesta si es necesario
+                console.log(response.data);
+
+                return res.status(200).json({ success: true });
+            } catch (error) {
+                console.error("Error en la solicitud a la API de chat:", error);
+                return res.status(500).json({ error: 'Error en la solicitud a la API de chat' });
+            }
+        });
+    });
   });
