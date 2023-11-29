@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const PerfilArrendador = () => {
 
@@ -9,6 +9,8 @@ const PerfilArrendador = () => {
     nombre: '',
     correo: '',
   });
+
+  const [file, setFile] = useState();
 
   useEffect(() => {
     const fetchPerfil = async () => {
@@ -55,16 +57,50 @@ const PerfilArrendador = () => {
       });
   
       console.log(response.data); // Puedes manejar la respuesta exitosa aquí
-  
+      
     } catch (error) {
       console.error('Error al actualizar el nombre:', error.message);
       // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     }
   };
 
-  const handleActualizarINE = () => {
-    console.log('Subir / Actualizar INE');
+  const handleFileChange = (e) => {
+    // Actualiza el estado del archivo cuando cambia el campo de entrada de archivo
+    setFile(e.target.files[0]);
   };
+
+  const handleActualizarINE = async () => {
+    try {
+        console.log('Subir / Actualizar INE');
+
+        // Verifica si hay un archivo seleccionado
+        if (!file) {
+            console.error('No se seleccionaron archivos');
+            return;
+        }
+
+        const formImage = new FormData();
+        formImage.append('image', file);
+
+        // Sube la imagen y obtén la URL
+        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        console.log(imageResponse.data);
+
+        // Realiza la solicitud PUT para actualizar el INE
+        const response = await axios.put(`http://localhost:3031/newIne/${formData.id}`, {
+            correo: imageResponse.data.url,
+        });
+
+        console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+    } catch (error) {
+        console.error('Error al actualizar el INE:', error.message);
+        // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
+    }
+  };
+
+
+
+
 
   const handleCambiarContraseña = () => {
     console.log('Cambiar contraseña');
@@ -137,10 +173,13 @@ const PerfilArrendador = () => {
           </div>
 
           <div className="profile-section" style={{ marginBottom: '20px' }}>
-            <button className="btn btn-info" onClick={handleActualizarINE}>
-              Subir / Actualizar INE
-            </button>
+          <label>INE: </label>
+              <input type="file" onChange={handleFileChange} />
+              <button className="btn btn-info" onClick={handleActualizarINE}>
+                  Subir / Actualizar
+              </button>
           </div>
+
 
           <div className="profile-section" style={{ marginBottom: '20px' }}>
             <button className="btn btn-warning" onClick={handleCambiarContraseña}>
