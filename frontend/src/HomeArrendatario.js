@@ -6,8 +6,8 @@ import { useState } from 'react';
 import axios from 'axios';
 
 
-function Navbar() {
-
+function Navbar({ handleSearchTerm }) {
+  const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
 
   const handleBellClick = () => {
@@ -22,7 +22,6 @@ function Navbar() {
 
   const handlePerfilClick = () => {
     navigate('/perfilarrendatario');
-    console.log('Clic en el sobre');
   };
   
   const handleLogoutClick = () => {
@@ -36,11 +35,19 @@ function Navbar() {
     }).catch(err => console.log(err))
   };
 
+  const handleSearchClick = () => {
+    handleSearchTerm(searchInput);
+  };
+
+
   return (
     <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
       <div style={{ marginLeft: '50px' }}>
-        <input type="text" placeholder="Buscar" style={{ width: '175%' }} />
+        <input type="text" placeholder="Buscar" style={{ width: '179%' }} value={searchInput} onChange={(e) => setSearchInput(e.target.value)}/>
       </div>
+      <button onClick={handleSearchClick} style={{marginRight: '348px' ,background: 'white', cursor: 'pointer', border: '1px solid #ccc', width: '2.4%' }}>
+        <i className="fa fa-search"></i>
+      </button>
       <div>
       <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handleLogoutClick}>Cerrar sesión</button>
         <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handlePerfilClick}>Perfil</button>
@@ -58,6 +65,19 @@ function HomeArrendatario() {
     const [registeredSchools, setRegisteredSchools] = useState([]);
     const [showSchools, setShowSchools] = useState(false);
     const [showInmuebles, setShowInmuebles] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredProperties, setFilteredProperties] = useState([]);
+    const [filteredSchools, setFilteredSchools] = useState([]);
+
+    //Mostrar solo 10 resultados a la vez
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const paginate = (pageNumber) => {
+      setCurrentPage(pageNumber);
+    };
+
 
     const handleInfoEscuelaClick = (idInmueble) => {
       navigate(`/infoinmueble?id_inmueble=${idInmueble}`);
@@ -115,50 +135,122 @@ function HomeArrendatario() {
     })
   })
 
+  //Busqueda filtrada por la barra
+  const handleSearchTerm = (term) => {
+    setSearchTerm(term);
+
+    // Filtrar los inmuebles por término de búsqueda
+    const filteredProps = registeredProperties.filter(property =>
+      property.titulo.toLowerCase().includes(term.toLowerCase()) || property.nombre_escuela.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredProperties(filteredProps);
+
+    // Filtrar las escuelas por término de búsqueda
+    const filteredSchls = registeredSchools.filter(school =>
+      school.nombre.toLowerCase().includes(term.toLowerCase()) || school.direccion.toLowerCase().includes(term.toLowerCase())
+    );
+    setFilteredSchools(filteredSchls);
+  };
+
   return (
     <div style={{ height: '100vh' }}>
-      <Navbar />
+      <Navbar handleSearchTerm={handleSearchTerm} />
       <div style={{ backgroundColor: '#808080', display: 'flex', justifyContent: 'space-between', height: '8%' }}>
         <button className="white-text-button" style={{ marginLeft: '350px' }} onClick={handleescuelaClick}>Escuelas</button>
         <button className="white-text-button" style={{ marginRight: '350px' }} onClick={handleinmueClick}>Inmuebles</button>
       </div>
+
+      {/* Botones de paginación con iconos */}
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            <i className="fa fa-arrow-left"></i> {/* Icono de flecha a la izquierda */}
+          </button>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={
+              showSchools
+                ? indexOfLastItem >= registeredSchools.length
+                : indexOfLastItem >= registeredProperties.length
+            }
+          >
+            <i className="fa fa-arrow-right"></i> {/* Icono de flecha a la derecha */}
+          </button>
+        </div>
+      
       {showSchools && (
-      <div className="general-container">
-        {registeredSchools.map((property, index) => (
-          <div key={index} className="rectangle" style={{height: '165%'}}>
-            <div className="image-container">
-             {/* <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />*/}
-            </div>
-            <div className="propertyDetails">
-              <p className="homearrendatariotitle">{property.nombre}</p>
-              <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-              {/* Agrega otros detalles de propiedad según sea necesario */}
-            </div>
-          </div>
-        ))}
-      </div>
+        <div className="general-container">
+          {searchTerm ? (
+            filteredSchools.slice(indexOfFirstItem, indexOfLastItem)
+            .map((property, index) => (
+              <div key={index} className="rectangle" style={{height: '165%'}}>
+                <div className="image-container">
+                  {/* <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />*/}
+                </div>
+                <div className="propertyDetails">
+                  <p className="homearrendatariotitle">{property.nombre}</p>
+                  <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
+                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                </div>
+              </div>
+            ))
+          ) : (
+            registeredSchools.slice(indexOfFirstItem, indexOfLastItem)
+            .map((property, index) => (
+              <div key={index} className="rectangle" style={{height: '165%'}}>
+                <div className="image-container">
+                  {/* <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />*/}
+                </div>
+                <div className="propertyDetails">
+                  <p className="homearrendatariotitle">{property.nombre}</p>
+                  <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
+                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       )}
-
+  
       {showInmuebles && (
-      <div className="general-container">
-      {registeredProperties.map((property, index) => (
-        <div key={index} className="rectangle">
-          <div className="image-container">
-            <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-          </div>
-          <div className="propertyDetails">
-            <p className="homearrendatariotitle">{property.titulo}</p>
-            <p className="homearrendatario">Dirección: {property.direccion}</p>
-            <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
-            <p className="homearrendatario">Precio: {property.precio}</p>
-            <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
-          {/* Agrega otros detalles de propiedad según sea necesario */}
+        <div className="general-container">
+          {searchTerm ? (
+            filteredProperties.slice(indexOfFirstItem, indexOfLastItem)
+            .map((property, index) => (
+              <div key={index} className="rectangle">
+                <div className="image-container">
+                  <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+                </div>
+                <div className="propertyDetails">
+                  <p className="homearrendatariotitle">{property.titulo}</p>
+                  <p className="homearrendatario">Dirección: {property.direccion}</p>
+                  <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
+                  <p className="homearrendatario">Precio: {property.precio}</p>
+                  <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
+                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                </div>
+              </div>
+            ))
+          ) : (
+            registeredProperties.slice(indexOfFirstItem, indexOfLastItem)
+            .map((property, index) => (
+              <div key={index} className="rectangle">
+                <div className="image-container">
+                  <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+                </div>
+                <div className="propertyDetails">
+                  <p className="homearrendatariotitle">{property.titulo}</p>
+                  <p className="homearrendatario">Dirección: {property.direccion}</p>
+                  <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
+                  <p className="homearrendatario">Precio: {property.precio}</p>
+                  <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
+                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                </div>
+              </div>
+            ))
+          )}
         </div>
-        </div>
-        ))}
-      </div>
       )}
-
+      
     </div>
   );
 }

@@ -470,7 +470,13 @@ app.get('/inmueblearrendatario', (req, res) => {
     });
   });
 
-  // Ruta para obtener datos de la tabla reporte
+
+
+
+
+//Sección reportes y admon
+
+  // Ruta para llenar los datos de la tabla reporte
   app.post('/generarReporte', (req, res) => {
     const sql = "INSERT INTO reporte (asunto, descripción, fecha, estado, id_usuario , id_inmueble) VALUES (?, ?, ?, ?, ?, ?)";
     const values = [
@@ -491,6 +497,68 @@ app.get('/inmueblearrendatario', (req, res) => {
         return res.json({ message: 'Datos insertados correctamente' });
     });
 });
+
+// Realizar la consulta SQL para obtener los datos de la tabla "reporte"
+app.get('/obtenerReportes', (req, res) => {
+  
+  const sql = 'SELECT * FROM reporte';
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de reporte:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
+  const { parametroBusqueda } = req.params;
+  const sql = `
+    SELECT r.*, u.nombre AS nombre_usuario 
+    FROM reporte r 
+    INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
+    WHERE r.id_usuario = ? OR u.nombre LIKE ?
+  `;
+
+  const searchParam = `%${parametroBusqueda}%`; // Para buscar coincidencias parciales del nombre
+
+  db.query(sql, [parametroBusqueda, searchParam], (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de reporte por usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
+  const { parametroBusqueda } = req.params;
+  const sql = `
+    SELECT r.*, u.titulo AS nombre_inmueble 
+    FROM reporte r 
+    INNER JOIN inmueble u ON r.id_inmueble = u.id_inmueble
+    WHERE r.id_inmueble = ? OR u.titulo LIKE ?
+  `;
+
+  const searchParam = `%${parametroBusqueda}%`; // Para buscar coincidencias parciales del nombre
+
+  db.query(sql, [parametroBusqueda, searchParam], (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de reporte por usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
+  });
+});
+
+
+
+
+
 
 // Ruta para obtener datos de la tabla "inmueble"
 app.get('/obtenerInmuebleInfo/:id_inmueble', (req, res) => {
