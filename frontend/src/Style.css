@@ -93,7 +93,7 @@
 .rectangle{
   background-color: #C7B3FF;
   width: 95%;
-  margin: 10px;
+  margin: 8px;
   border: 2px solid #422985;
   padding: 10px;
   display: flex;
@@ -116,4 +116,10 @@
   align-items: flex-start;
   height: 20vh;
   margin-top: 20px;
+}
+
+/*Subtitulos*/
+.subtitles-general {
+  font-size: 16px;
+  font-weight: bold;
 }

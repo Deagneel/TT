@@ -50,7 +50,7 @@ function App() {
         <Route path="/calificaarrendatario" element={<CalificaArrendatario />} />
         <Route path="/incidencia" element={<Incidencia />} />
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
-        <Route path="/administrarincidencia" element={<AdministrarIncidencia />} />
+        <Route path="/administrarincidencia/:id_reporte" element={<AdministrarIncidencia />} />
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
       </Routes>
     </BrowserRouter>
