@@ -951,7 +951,3 @@ app.post('/evaluarinmueble', async (req, res) => {
     return res.status(500).json({ error: 'Error en el servidor' });
   }
 });
-
-
-
-  
