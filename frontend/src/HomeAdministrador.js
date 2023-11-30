@@ -15,10 +15,6 @@ function Navbar() {
     navigate('/tipousuario');
   };
 
-
-
-
-
   return (
     <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '11%' }}>
       <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
@@ -30,7 +26,7 @@ function Navbar() {
 }
 
 function ReportesSection() {
-
+  const navigate = useNavigate();
   const [reportes, setReportes] = useState([]);
 
   useEffect(() => {
@@ -46,8 +42,7 @@ function ReportesSection() {
   }, []);
 
   const handleGestionarIncidencia = (reporteId) => {
-    // Implementar la funcionalidad para manejar cada reporte individualmente
-    console.log('Gestionar incidencia del reporte ID:', reporteId);
+    navigate(`/administrarincidencia/${reporteId}`);
   };
 
 
@@ -72,6 +67,7 @@ function ReportesSection() {
 }
 
 function UsuariosSection() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState('');
   const [userReports, setUserReports] = useState([]);
   
@@ -88,7 +84,7 @@ function UsuariosSection() {
 
   const handleGestionarIncidencia = (reporteId) => {
     // Implementar la funcionalidad para manejar cada reporte individualmente
-    console.log('Gestionar incidencia del reporte ID:', reporteId);
+    navigate(`/administrarincidencia/${reporteId}`);
   };
 
   return (
@@ -125,6 +121,7 @@ function UsuariosSection() {
 
 
 function InmueblesSection() {
+  const navigate = useNavigate();
   const [searchParam, setSearchParam] = useState('');
   const [userReports, setUserReports] = useState([]);
   
@@ -140,8 +137,7 @@ function InmueblesSection() {
   };
 
   const handleGestionarIncidencia = (reporteId) => {
-    // Implementar la funcionalidad para manejar cada reporte individualmente
-    console.log('Gestionar incidencia del reporte ID:', reporteId);
+    navigate(`/administrarincidencia/${reporteId}`);
   };
 
   return (

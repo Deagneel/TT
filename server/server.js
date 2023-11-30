@@ -550,7 +550,26 @@ app.get('/inmueblearrendatario', (req, res) => {
       }
     });
   });
-
+  
+  app.get('/obtenerReporteesp/:id_reporte', (req, res) => {
+    const { id_reporte } = req.params;
+  
+    const sql = 'SELECT * FROM reporte WHERE id_reporte = ?';
+  
+    db.query(sql, [id_reporte], (err, result) => {
+      if (err) {
+        console.error('Error al obtener el reporte:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        if (result.length === 0) {
+          res.status(404).json({ error: 'Reporte no encontrado' });
+        } else {
+          res.json(result[0]);
+        }
+      }
+    });
+  });
+  
 
 
 
@@ -594,6 +613,7 @@ app.get('/obtenerReportes', (req, res) => {
   });
 });
 
+
 app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
   const sql = `
@@ -632,6 +652,34 @@ app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     } else {
       res.json(result);
+    }
+  });
+});
+
+app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
+  const { idUsuario } = req.params;
+  const sql = 'SELECT nombre FROM usuario WHERE id_usuario = ?';
+
+  db.query(sql, [idUsuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el nombre del usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result[0]?.nombre || 'Usuario no encontrado');
+    }
+  });
+});
+
+app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
+  const { idInmueble } = req.params;
+  const sql = 'SELECT titulo FROM inmueble WHERE id_inmueble = ?';
+
+  db.query(sql, [idInmueble], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el título del inmueble:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result[0]?.titulo || 'Inmueble no encontrado');
     }
   });
 });

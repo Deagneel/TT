@@ -1,11 +1,12 @@
-import React from 'react';
-import 'font-awesome/css/font-awesome.min.css';
+import React, { useEffect, useState } from 'react';
 import './Style.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 function Navbar() {
+  const navigate = useNavigate();
   const handleBackClick = () => {
-    // Manejar la acción cuando se hace clic en el botón de "Regresar"
-    console.log('Clic en Regresar');
+    navigate('/homeadministrador');
   };
 
   return (
@@ -18,28 +19,82 @@ function Navbar() {
 }
 
 function PageContent() {
-  const incidencia = {
-    numero: '12345',
-    contenido: 'Descripción detallada de la incidencia...',
-    usuario: 'Usuario Asociado',
-    inmueble: 'Inmueble Asociado',
+  const [reporte, setReporte] = useState(null);
+  const { id_reporte } = useParams();
+
+  useEffect(() => {
+    axios.get(`http://localhost:3031/obtenerReporteesp/${id_reporte}`)
+      .then(response => {
+        setReporte(response.data);
+      })
+      .catch(error => {
+        console.error('Error al obtener el reporte:', error);
+      });
+  }, [id_reporte]);
+
+  useEffect(() => {
+    const obtenerInformacionAdicional = async () => {
+      if (reporte) {
+        try {
+          const [usuario, inmueble] = await Promise.all([
+            obtenerNombreUsuario(reporte.id_usuario),
+            obtenerTituloInmueble(reporte.id_inmueble)
+          ]);
+          const reporteConInfoAdicional = { ...reporte, usuario, inmueble };
+          setReporte(reporteConInfoAdicional);
+        } catch (error) {
+          console.error('Error al obtener información adicional:', error);
+        }
+      }
+    };
+
+    obtenerInformacionAdicional();
+  }, [reporte]);
+
+  const obtenerNombreUsuario = async (idUsuario) => {
+    try {
+      const response = await axios.get(`http://localhost:3031/obtenerNombreUsuario/${idUsuario}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener el nombre del usuario:', error);
+      return 'Usuario no encontrado';
+    }
   };
 
+  const obtenerTituloInmueble = async (idInmueble) => {
+    try {
+      const response = await axios.get(`http://localhost:3031/obtenerTituloInmueble/${idInmueble}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener el título del inmueble:', error);
+      return 'Inmueble no encontrado';
+    }
+  };
+
+  if (!reporte) {
+    return <p>El reporte no se ha encontrado.</p>;
+  }
+
   return (
-    <div style={{ backgroundColor: '#E6E6FA', padding: '20px', marginTop: '20px', borderRadius: '8px' }}>
-      <h2>Número de Incidencia: {incidencia.numero}</h2>
-      <div style={{ backgroundColor: '#C7B3FF', padding: '10px', borderRadius: '8px', marginTop: '10px' }}>
-        <p>{incidencia.contenido}</p>
+    <div style={{ marginLeft: '30px', backgroundColor: '#E6E6FA', padding: '20px', marginTop: '50px', borderRadius: '8px', width: '95%' }}>
+      <h2># {reporte.id_reporte}</h2>
+      <p>Asunto: {reporte.asunto}</p>
+      <div style={{ backgroundColor: '#C7B3FF', padding: '10px', borderRadius: '8px', marginTop: '10px', marginBottom: '10px' }}>
+        <p>{reporte.descripción}</p>
+        <p>Fecha del reporte: {reporte.fecha}</p>
       </div>
-      <p>Usuario Asociado: {incidencia.usuario}</p>
-      <p>Inmueble Asociado: {incidencia.inmueble}</p>
-      <div style={{ marginTop: '15px' }}>
-        <button style={{ marginRight: '10px' }}>Contactar con el Usuario Reportado</button>
-        <button>Incidencia Resuelta</button>
+      <p>Usuario asociado: {reporte.usuario}</p>
+      {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
+        <p>Inmueble asociado: {reporte.inmueble}</p>
+      )}
+      <div style={{ marginTop: '35px', display: 'flex' }}>
+        <button style={{ marginRight: 'auto', border: '2px solid #422985' }}>Contactar al usuario</button>
+        <button style={{ marginLeft: 'auto', border: '2px solid #422985' }}>Incidencia resuelta</button>
       </div>
     </div>
   );
 }
+
 
 function AdministrarIncidencia() {
   return (
