@@ -11,6 +11,7 @@ import nodemailer from 'nodemailer';
 import axios from 'axios';
 
 
+
 const salt = 10;
 const app = express();
 
@@ -32,7 +33,7 @@ const upload = multer ({
 app.use(express.json());
 app.use(cors({
     origin: ["http://localhost:3000"],
-    methods: ["POST", "GET", "PUT"],
+    methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true
 }))
 app.use(cookieParser());
@@ -194,7 +195,7 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
@@ -206,7 +207,8 @@ app.post('/registroinmueble', (req, res) => {
         req.body.images,
         req.session.user.id,
         req.body.idEscuela,
-        req.body.Tvivienda
+        req.body.Tvivienda,
+        req.body.activo
     ];
     console.log(req.session.user.id);
     db.query(sql, values, (err, data) => {
@@ -514,6 +516,22 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     });
 });
 
+
+// Ruta para eliminar usuario
+app.delete('/eliminarUsuario/:idUsuario', (req, res) => {
+  const { idUsuario } = req.params;
+
+  const sql = 'DELETE FROM usuario WHERE id_usuario = ?';
+
+  db.query(sql, [idUsuario], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json({ message: 'Usuario y registros relacionados eliminados correctamente' });
+    }
+  });
+});
   
 
 const PORT = process.env.PORT || 3031;
@@ -550,7 +568,7 @@ app.get('/inmueblearrendatario', (req, res) => {
       }
     });
   });
-  
+
   app.get('/obtenerReporteesp/:id_reporte', (req, res) => {
     const { id_reporte } = req.params;
   
@@ -575,6 +593,21 @@ app.get('/inmueblearrendatario', (req, res) => {
 
 
 //Sección reportes y admon
+app.put('/actualizarEstado/:id_reporte', (req, res) => {
+  const { id_reporte } = req.params;
+  const { estado } = req.body;
+
+  const sql = 'UPDATE reporte SET estado = ? WHERE id_reporte = ?';
+
+  db.query(sql, [estado, id_reporte], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el estado del reporte:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json({ message: 'Estado del reporte actualizado correctamente' });
+    }
+  });
+});
 
   // Ruta para llenar los datos de la tabla reporte
   app.post('/generarReporte', (req, res) => {
@@ -871,3 +904,11 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         });
     });
   });
+
+
+
+
+
+
+  
+  

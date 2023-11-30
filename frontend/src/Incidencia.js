@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState} from 'react';
+import { Link, useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 
 function Incidencia() {
-
+  
   axios.defaults.withCredentials = true;
   const navigate = useNavigate();
+  const { id_usuario, id_inmueble } = useParams();
 
+  
   const [formData, setFormData] = useState({
     aff: '',
     description: '',
     date: '',
     state: '',
-    id_usuario: '',
-    id_inmueble: '',
+    id_usuario: id_usuario,
+    id_inmueble: id_inmueble,
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +33,8 @@ function Incidencia() {
         description: formData.description,
         date: currentDate,
         state: 0,
+        id_usuario: formData.id_usuario,
+        id_inmueble: formData.id_inmueble,
       };
   
       // Agregar id_usuario si está definido

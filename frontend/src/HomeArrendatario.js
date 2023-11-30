@@ -211,45 +211,52 @@ function HomeArrendatario() {
         </div>
       )}
   
-      {showInmuebles && (
-        <div className="general-container">
-          {searchTerm ? (
-            filteredProperties.slice(indexOfFirstItem, indexOfLastItem)
-            .map((property, index) => (
-              <div key={index} className="rectangle">
-                <div className="image-container">
-                  <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-                </div>
-                <div className="propertyDetails">
-                  <p className="homearrendatariotitle">{property.titulo}</p>
-                  <p className="homearrendatario">Dirección: {property.direccion}</p>
-                  <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
-                  <p className="homearrendatario">Precio: {property.precio}</p>
-                  <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
-                  {/* Agrega otros detalles de propiedad según sea necesario */}
-                </div>
+  {showInmuebles && (
+  <div className="general-container">
+    {searchTerm ? (
+      filteredProperties
+        .slice(indexOfFirstItem, indexOfLastItem)
+        .map((property, index) =>
+          property.activo !== 0 && (
+            <div key={index} className="rectangle">
+              <div className="image-container">
+                <img src={'http://localhost:3031/images/' + property.foto} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
               </div>
-            ))
-          ) : (
-            registeredProperties.slice(indexOfFirstItem, indexOfLastItem)
-            .map((property, index) => (
-              <div key={index} className="rectangle">
-                <div className="image-container">
-                  <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-                </div>
-                <div className="propertyDetails">
-                  <p className="homearrendatariotitle">{property.titulo}</p>
-                  <p className="homearrendatario">Dirección: {property.direccion}</p>
-                  <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
-                  <p className="homearrendatario">Precio: {property.precio}</p>
-                  <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
-                  {/* Agrega otros detalles de propiedad según sea necesario */}
-                </div>
+              <div className="propertyDetails">
+                <p className="homearrendatariotitle">{property.titulo}</p>
+                <p className="homearrendatario">Dirección: {property.direccion}</p>
+                <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
+                <p className="homearrendatario">Precio: {property.precio}</p>
+                <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
+                {/* Agrega otros detalles de propiedad según sea necesario */}
               </div>
-            ))
+            </div>
+          )
+        )
+    ) : (
+      registeredProperties
+        .slice(indexOfFirstItem, indexOfLastItem)
+        .map((property, index) =>
+          property.activo !== 0 && (
+            <div key={index} className="rectangle">
+              <div className="image-container">
+                <img src={'http://localhost:3031/images/' + property.foto} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
+              </div>
+              <div className="propertyDetails">
+                <p className="homearrendatariotitle">{property.titulo}</p>
+                <p className="homearrendatario">Dirección: {property.direccion}</p>
+                <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
+                <p className="homearrendatario">Precio: {property.precio}</p>
+                <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
+                {/* Agrega otros detalles de propiedad según sea necesario */}
+              </div>
+            </div>
+          )
+              )
           )}
         </div>
       )}
+
       
     </div>
   );

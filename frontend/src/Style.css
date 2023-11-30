@@ -123,3 +123,13 @@
   font-size: 16px;
   font-weight: bold;
 }
+
+.rectangle.inactive {
+  opacity: 0.6; /* Opacidad para el rectángulo inactivo */
+}
+
+.inactiveText {
+  /* Estilos para el texto "Inactivo" */
+  color: red; /* Puedes ajustar el color según lo necesites */
+  font-weight: bold;
+}

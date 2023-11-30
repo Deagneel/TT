@@ -29,6 +29,7 @@ function RegistroInmueble() {
     idEscuela: '',
     privacyAccepted: false,
     Tvivienda: '',
+    activo: '',
   });
 
   const [file, setFile] = useState();
@@ -73,6 +74,7 @@ function RegistroInmueble() {
         images: imageResponse.data.url,
         idEscuela: formData.idEscuela,
         Tvivienda: formData.Tvivienda,
+        activo: 1,
       });
 
       console.log(response.data);

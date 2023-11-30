@@ -87,6 +87,17 @@ function UsuariosSection() {
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
+  const handleEliminarIncidencia = async (repoId) => {
+    try {
+      // Realizar la solicitud al servidor para eliminar el usuario
+      await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
+      window.location.reload(); // Recargar la página
+    } catch (error) {
+      console.error('Error al eliminar el usuario:', error);
+    }
+  };
+  
+
   return (
     <div style={{ flex: 1, backgroundColor: '#F9F9F9', padding: '20px', textAlign: 'center' }}>
       <h2>Usuarios</h2>
@@ -110,7 +121,7 @@ function UsuariosSection() {
           </button>
           {/* Botones debajo del último botón "Gestionar Incidencia" */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <button className="button" style={{ marginRight: '10px' }}>Bloquear Usuario</button>
+            <button onClick={() => handleEliminarIncidencia(reporte.id_usuario)} className="button" style={{ marginRight: '10px' }}>Eliminar Usuario</button>
             <button className="button">Mensaje</button>
           </div>
         </div>
@@ -139,6 +150,17 @@ function InmueblesSection() {
   const handleGestionarIncidencia = (reporteId) => {
     navigate(`/administrarincidencia/${reporteId}`);
   };
+
+  const handleresultoClick = async (reporteId) => {
+    try {
+      // Realizar una solicitud para actualizar el estado del reporte a 1
+      await axios.put(`http://localhost:3031/actualizarEstado/${reporteId}`, { estado: 1 });
+      window.location.reload(); // Recargar la página
+    } catch (error) {
+      console.error('Error al actualizar el estado del reporte:', error);
+    }
+  };
+
 
   return (
     <div style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
@@ -169,7 +191,7 @@ function InmueblesSection() {
           </button>
           {/* Botones debajo del último botón "Gestionar Incidencia" */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <button className="button" style={{ marginRight: '10px' }}>Pausar publicación</button>
+            <button className="button" style={{ marginRight: '10px' }} onClick={() => handleresultoClick(reporte.id_reporte)}>Pausar publicación</button>
             <button className="button">Mensaje</button>
           </div>
         </div>

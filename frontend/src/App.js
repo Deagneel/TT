@@ -40,7 +40,7 @@ function App() {
         <Route path="/infoinmueble" element={<InfoInmueble />} />
         <Route path="/registroinmueble" element={<RegistroInmueble />} />
         <Route path="/EditarInmueble/:id_inmueble" element={<EditarInmueble />} />
-        <Route path="/incidencia" element={<Incidencia />} />
+        <Route path="/incidencia/:id_usuario/:id_inmueble" element={<Incidencia />} />
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
         <Route path="/administrarincidencia/:id_reporte" element={<AdministrarIncidencia />} />
         <Route path="/homeadministrador" element={<HomeAdministrador />} />

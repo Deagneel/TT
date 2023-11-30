@@ -19,6 +19,7 @@ function Navbar() {
 }
 
 function PageContent() {
+  const navigate = useNavigate();
   const [reporte, setReporte] = useState(null);
   const { id_reporte } = useParams();
 
@@ -75,6 +76,16 @@ function PageContent() {
     return <p>El reporte no se ha encontrado.</p>;
   }
 
+  const handleresultoClick = async () => {
+    try {
+      // Realizar una solicitud para actualizar el estado del reporte a 1
+      await axios.put(`http://localhost:3031/actualizarEstado/${id_reporte}`, { estado: 1 });
+      navigate('/homeadministrador');
+    } catch (error) {
+      console.error('Error al actualizar el estado del reporte:', error);
+    }
+  };
+
   return (
     <div style={{ marginLeft: '30px', backgroundColor: '#E6E6FA', padding: '20px', marginTop: '50px', borderRadius: '8px', width: '95%' }}>
       <h2># {reporte.id_reporte}</h2>
@@ -89,7 +100,7 @@ function PageContent() {
       )}
       <div style={{ marginTop: '35px', display: 'flex' }}>
         <button style={{ marginRight: 'auto', border: '2px solid #422985' }}>Contactar al usuario</button>
-        <button style={{ marginLeft: 'auto', border: '2px solid #422985' }}>Incidencia resuelta</button>
+        <button style={{ marginLeft: 'auto', border: '2px solid #422985' }} onClick={handleresultoClick}>Incidencia resuelta</button>
       </div>
     </div>
   );

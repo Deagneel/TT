@@ -31,11 +31,11 @@ function InfoInmueble() {
 };
 
 
-  const handleReportClick = () => {
-    //Se activa al presionar el boton Reportar
-    navigate('/incidencia');
-    console.log('Clic en el sobre');
-  };
+const handleReportClick = (idUsuario, idInmueble) => {
+  // Se activa al presionar el botón Reportar
+  navigate(`/incidencia/${idUsuario}/${idInmueble}`);
+};
+
 
   const handleRegresarClick = () => {
     //Se activa al presionar el boton regresar
@@ -76,7 +76,7 @@ function InfoInmueble() {
         <div style={{ marginRight: '45px' }}>
           <p style={{ marginBottom: '0' , fontWeight: 'bold'}}>Reportar</p>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-            <button onClick={handleReportClick} className="color-icon" style={{ marginLeft:'14px' }}>
+          <button onClick={() => handleReportClick(property.id_usuario, property.id_inmueble)} className="color-icon" style={{ marginLeft:'14px' }}>
               <FontAwesomeIcon icon={faExclamationTriangle} style={{ fontSize: '30px',marginRight: '10px', cursor: 'pointer' }} />
             </button>
           </div>

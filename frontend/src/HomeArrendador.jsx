@@ -100,18 +100,18 @@ function ArrendadorPageContent() {
       <h2 style={{ width: '100%', textAlign: 'center' }}>Inmuebles Registrados</h2>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
         {registeredProperties.map((property, index) => (
-          <div key={index} className="rectangle">
+          <div key={index} className={`rectangle ${property.activo === 0 ? 'inactive' : ''}`}>
             <div className="image-container">
               <img src={`http://localhost:3031/images/${property.foto}`} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
             </div>
             <div className="propertyDetails">
               <p className="homearrendatariotitle">{property.titulo}</p>
               <p className="homearrendatario">Dirección: {property.direccion}</p>
-
               <p className="homearrendatario">Precio: {property.precio}</p>
               <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleEditClick(property.id_inmueble)}>Editar</button>
               {/* Agrega otros detalles de propiedad según sea necesario */}
             </div>
+            {property.activo === 0 && <p className="inactiveText">Inactivo</p>}
           </div>
         ))}
       </div>
