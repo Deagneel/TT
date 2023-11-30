@@ -17,6 +17,8 @@ import EditarInmueble from './EditarInmueble/EditarInmueble';
 import Incidencia from './Incidencia';
 import PerfilArrendatario from './PerfilArrendatario';
 import HomeAdministrador from './HomeAdministrador';
+import CalificaInmuebleArrendador from './CalificaInmuebleArrendador';
+import CalificaArrendatario from './CalificaArrendatario';
 
 
 
@@ -42,6 +44,8 @@ function App() {
         <Route path="/incidencia" element={<Incidencia />} />
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
+        <Route path="/calificainmueblearrendador" element={<CalificaInmuebleArrendador />} />
+        <Route path="/calificaarrendatario" element={<CalificaArrendatario />} />
       </Routes>
     </BrowserRouter>
   );
