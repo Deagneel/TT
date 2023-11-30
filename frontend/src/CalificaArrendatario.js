@@ -1,67 +1,146 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CalificaArrendatario = () => {
-  const [comportamiento, setComportamiento] = useState(0);
+const CalificaInmuebleArrendador = () => {
+  const [fachada, setFachada] = useState(0);
+  const [servicios, setServicios] = useState(0);
+  const [seguridad, setSeguridad] = useState(0);
+  const [trato, setTrato] = useState(0);
+  const [inmuebleInfo, setInmuebleInfo] = useState({});
+  const [idUsuario, setIdUsuario] = useState(null); // Initialize idUsuario state
 
-  const handleRating = (stars) => {
-    setComportamiento(stars);
-  };
+  const location = window.location;
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get('id_inmueble');
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const data = {
-      comportamiento,
+      id,
+      fachada,
+      servicios,
+      seguridad,
+      trato,
+      idUsuario,
     };
 
-    axios.post('URL_API', data)
-      .then(response => {
-        console.log('Reseña enviada:', response.data);
-        // Puedes realizar acciones adicionales aquí si es necesario
-      })
-      .catch(error => {
-        console.error('Error al enviar la reseña:', error);
-      });
+    try {
+      const response = await axios.post('http://localhost:3031/evaluarinmueble', data);
+      console.log('Reseñas enviadas:', response.data);
+    } catch (error) {
+      console.error('Error al enviar las reseñas:', error.message);
+      // Puedes agregar una lógica para mostrar un mensaje de error al usuario.
+    }
   };
 
+  useEffect(() => {
+    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${id}`)
+      .then(response => {
+        console.log('Inmueble info response:', response.data);
+        setInmuebleInfo(response.data[0]);
+        setIdUsuario(response.data[0].id_usuario); // Access the object at index 0
+      })
+      .catch(error => {
+        console.error('Error al obtener la información del inmueble:', error.message);
+      });
+  }, [id]);
+
+  if (!inmuebleInfo) {
+    return <div>Loading...</div>; // or render a loading spinner
+  }
+
+
   return (
-    <div style={{ display: 'flex', height: '100vh', margin: 0 }}>
-      <div style={{ backgroundColor: '#fff', padding: '20px', flex: 1 }}>
-        <h2>Reseña</h2>
-        <div>
-          <p>Por favor, califique el comportamiento del arrendatario:</p>
-          <StarsRating onChange={handleRating} />
+    <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#8e44ad' }}>
+      <form className="card p-5" onSubmit={handleSubmit}>
+        <h2 className="mb-4">Califica tu Experiencia</h2>
+        <div className="mb-3">
+          <label htmlFor="fachada" className="form-label">Condiciones de la fachada:</label>
+          <select
+            id="fachada"
+            className="form-select"
+            value={fachada}
+            onChange={(e) => setFachada(parseInt(e.target.value, 10))}
+          >
+            <option value={0}>Selecciona...</option>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <option key={star} value={star}>
+                {star}
+              </option>
+            ))}
+          </select>
         </div>
-        <button style={{ backgroundColor: '#dcd9e7', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }} onClick={handleSubmit}>
-          Enviar Reseña
-        </button>
-      </div>
-      <div style={{ backgroundColor: '#dcd9e7', padding: '20px', flex: 2 }}>
-        <div>
-          <h2>Nombre del Arrendatario</h2>
-          <img src="ruta-de-la-imagen-arrendatario" alt="Arrendatario" />
+        <div className="mb-3">
+          <label htmlFor="servicios" className="form-label">Eficiencia de los servicios básicos:</label>
+          <select
+            id="servicios"
+            className="form-select"
+            value={servicios}
+            onChange={(e) => setServicios(parseInt(e.target.value, 10))}
+          >
+            <option value={0}>Selecciona...</option>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <option key={star} value={star}>
+                {star}
+              </option>
+            ))}
+          </select>
         </div>
+        <div className="mb-3">
+          <label htmlFor="seguridad" className="form-label">Seguridad de la zona del inmueble:</label>
+          <select
+            id="seguridad"
+            className="form-select"
+            value={seguridad}
+            onChange={(e) => setSeguridad(parseInt(e.target.value, 10))}
+          >
+            <option value={0}>Selecciona...</option>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <option key={star} value={star}>
+                {star}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="trato" className="form-label">Trato brindado por el arrendador:</label>
+          <select
+            id="trato"
+            className="form-select"
+            value={trato}
+            onChange={(e) => setTrato(parseInt(e.target.value, 10))}
+          >
+            <option value={0}>Selecciona...</option>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <option key={star} value={star}>
+                {star}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button type="submit" className="btn btn-primary">Enviar</button>
+      </form>
+
+      <div className="card p-5 ms-3">
+        <h2>Detalles del Inmueble</h2>
+        {inmuebleInfo && (
+          <div>
+            <img src={'http://localhost:3031/images/'+inmuebleInfo.foto}  alt="Imagen" style={{ width: '550px', height: '270px'}} />
+          </div>
+        )}
+        {inmuebleInfo && (
+          <div className="mt-3">
+            <h3>Dirección del Inmueble</h3>
+            <p>{inmuebleInfo.direccion}</p>
+          </div>
+        )}
       </div>
+
+
     </div>
   );
 };
 
-const StarsRating = ({ onChange }) => {
-  const [stars, setStars] = useState(0);
-
-  return (
-    <div className="stars-rating" style={{ cursor: 'pointer' }}>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`fa fa-star${star <= stars ? ' checked' : ''}`}
-          onClick={() => {
-            setStars(star);
-            onChange(star);
-          }}
-        ></span>
-      ))}
-    </div>
-  );
-};
-
-export default CalificaArrendatario;
+export default CalificaInmuebleArrendador;

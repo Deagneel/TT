@@ -905,10 +905,53 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     });
   });
 
+  // Función para realizar consultas de actualización
+async function updateInmueble(id_inmueble, condiciones, servicios, seguridad) {
+  const updateInmuebleQuery = "UPDATE inmueble SET condiciones = condiciones + ?, servicios = servicios + ?, seguridad = seguridad + ?, contador_evaluaciones = contador_evaluaciones + 1 WHERE id_inmueble = ?";
+  const inmuebleValues = [condiciones, servicios, seguridad, id_inmueble];
+  console.log("Updating inmueble with values:", inmuebleValues);
+  await db.query(updateInmuebleQuery, inmuebleValues);
+}
+
+// Función para actualizar la tabla de usuarios
+async function updateUsuario(id_usuario, comportamiento) {
+  const updateUsuarioQuery = "UPDATE usuario SET comportamiento = comportamiento + ?, contador_evaluaciones = contador_evaluaciones + 1 WHERE id_usuario = ?";
+  const usuarioValues = [comportamiento, id_usuario];
+  console.log("Updating usuario with values:", usuarioValues);
+  await db.query(updateUsuarioQuery, usuarioValues);
+}
+ 
+app.post('/evaluarinmueble', async (req, res) => {
+  try {
+    const id_inmueble = req.body.id;
+    const condiciones = req.body.fachada;
+    const servicios = req.body.servicios;
+    const seguridad = req.body.seguridad;
+    const comportamiento = req.body.trato;
+    const id_usuario = req.body.idUsuario;
+
+    console.log("Received POST request with data:");
+    console.log("id_inmueble:", id_inmueble);
+    console.log("condiciones:", condiciones);
+    console.log("servicios:", servicios);
+    console.log("seguridad:", seguridad);
+    console.log("comportamiento:", comportamiento);
+
+    // Realizar la actualización del inmueble
+    await updateInmueble(id_inmueble, condiciones, servicios, seguridad);
+
+    console.log("ID received:", id_usuario);
+
+    // Actualizar la tabla de usuarios
+    await updateUsuario(id_usuario, comportamiento);
+
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Error en el endpoint evaluarinmueble:', error);
+    return res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
 
 
 
-
-
-  
   

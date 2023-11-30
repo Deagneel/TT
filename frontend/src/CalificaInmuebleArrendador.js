@@ -49,19 +49,19 @@ const CalificaInmuebleArrendador = () => {
       <div style={{ backgroundColor: '#fff', padding: '20px', flex: 1 }}>
         <h2>Reseñas</h2>
         <div>
-          <p>Condiciones de la fachada:</p>
+          <label htmlFor="fachada">Condiciones de la fachada:</label>
           <StarsRating aspect="fachada" onChange={handleRating} />
         </div>
         <div>
-          <p>Eficiencia de los servicios básicos:</p>
+          <label htmlFor="servicios">Eficiencia de los servicios básicos:</label>
           <StarsRating aspect="servicios" onChange={handleRating} />
         </div>
         <div>
-          <p>Seguridad de la zona del inmueble:</p>
+          <label htmlFor="seguridad">Seguridad de la zona del inmueble:</label>
           <StarsRating aspect="seguridad" onChange={handleRating} />
         </div>
         <div>
-          <p>Trato brindado por el arrendador:</p>
+          <label htmlFor="trato">Trato brindado por el arrendador:</label>
           <StarsRating aspect="trato" onChange={handleRating} />
         </div>
         <button style={{ backgroundColor: '#dcd9e7', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }} onClick={handleSubmit}>
@@ -86,17 +86,24 @@ const StarsRating = ({ aspect, onChange }) => {
   const [stars, setStars] = useState(0);
 
   return (
-    <div className="stars-rating" style={{ cursor: 'pointer' }}>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`fa fa-star${star <= stars ? ' checked' : ''}`}
-          onClick={() => {
-            setStars(star);
-            onChange(aspect, star);
-          }}
-        ></span>
-      ))}
+    <div>
+      <label htmlFor={aspect}>Calificación ({aspect}):</label>
+      <select
+        id={aspect}
+        value={stars}
+        onChange={(e) => {
+          const selectedStars = parseInt(e.target.value, 10);
+          setStars(selectedStars);
+          onChange(aspect, selectedStars);
+        }}
+      >
+        <option value={0}>Selecciona...</option>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <option key={star} value={star}>
+            {star}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
