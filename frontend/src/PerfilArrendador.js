@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const PerfilArrendador = () => {
 
@@ -40,6 +41,7 @@ const PerfilArrendador = () => {
       });
   
       console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+      swal("Nombre Actualizado Correctamente", " ", "success");
   
     } catch (error) {
       console.error('Error al actualizar el nombre:', error.message);
@@ -57,6 +59,7 @@ const PerfilArrendador = () => {
       });
   
       console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+      swal("Correo Actualizado Correctamente", " ", "success");
       
     } catch (error) {
       console.error('Error al actualizar el nombre:', error.message);
@@ -91,7 +94,10 @@ const PerfilArrendador = () => {
             correo: imageResponse.data.url,
         });
 
+        swal("INE Actualizada Correctamente", " ", "success");
+
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+        
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
         // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
@@ -104,6 +110,7 @@ const PerfilArrendador = () => {
 
   const handleCambiarContraseña = () => {
     console.log('Cambiar contraseña');
+    swal("Cambiar Contraseña", "Le envíamos un correo con las instrucciones.", "info");
   };
 
   const handleNombreChange = (e) => {

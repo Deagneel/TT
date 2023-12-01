@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 const CalificaInmuebleArrendador = () => {
   const [fachada, setFachada] = useState(0);

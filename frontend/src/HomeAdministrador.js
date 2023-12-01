@@ -3,6 +3,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import './Style.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -89,13 +90,34 @@ function UsuariosSection() {
 
   const handleEliminarIncidencia = async (repoId) => {
     try {
-      // Realizar la solicitud al servidor para eliminar el usuario
-      await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
-      window.location.reload(); // Recargar la página
+      // Mostrar SweetAlert2 de confirmación
+      const willDelete = await swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no se podrá recuperar el usuario.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+  
+      // Si el usuario confirma la eliminación
+      if (willDelete) {
+        // Realizar la solicitud al servidor para eliminar el usuario
+        await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
+        // Mostrar SweetAlert2 de éxito
+        swal("Usuario Borrado del Sistema", {
+          icon: "success",
+        });
+        // Recargar la página
+        window.location.reload();
+      } else {
+        // Mostrar SweetAlert2 de cancelación
+        swal("Operación Cancelada");
+      }
     } catch (error) {
       console.error('Error al eliminar el usuario:', error);
     }
   };
+  
   
 
   return (

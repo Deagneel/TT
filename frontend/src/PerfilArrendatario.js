@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const PerfilArrendatario = () => {
 
@@ -40,7 +41,7 @@ const PerfilArrendatario = () => {
       });
   
       console.log(response.data); // Puedes manejar la respuesta exitosa aquí
-  
+      swal("Nombre Actualizado Correctamente", " ", "success");  
     } catch (error) {
       console.error('Error al actualizar el nombre:', error.message);
       // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
@@ -55,6 +56,8 @@ const PerfilArrendatario = () => {
       const response = await axios.put(`http://localhost:3031/newMail/${formData.id}`, {
         correo: formData.correo,
       });
+
+      swal("Correo Actualizado Correctamente", " ", "success");
   
       console.log(response.data); // Puedes manejar la respuesta exitosa aquí
   
@@ -90,6 +93,7 @@ const PerfilArrendatario = () => {
             correo: imageResponse.data.url,
         });
 
+        swal("INE Actualizada Correctamente", " ", "success");
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
@@ -99,6 +103,7 @@ const PerfilArrendatario = () => {
 
   const handleCambiarContraseña = () => {
     console.log('Cambiar contraseña');
+    swal("Cambiar Contraseña", "Le envíamos un correo con las instrucciones.", "info");
   };
 
   const handleCredencialEstudiante = async () => {
@@ -122,6 +127,8 @@ const PerfilArrendatario = () => {
         const response = await axios.put(`http://localhost:3031/newCredencial/${formData.id}`, {
             correo: imageResponse.data.url,
         });
+
+        swal("Credencial de Estudiante Actualizada Correctamente", " ", "success");
 
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
     } catch (error) {
@@ -152,6 +159,7 @@ const PerfilArrendatario = () => {
         });
 
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+        swal("Comprobante de Inscripción Actualizado Correctamente", " ", "success");
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
         // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario

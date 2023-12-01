@@ -4,6 +4,7 @@ import './Style.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import swal from 'sweetalert';
 
 // Definición del componente Navbar para la página de arrendador
 function ArrendadorNavbar() {
@@ -39,6 +40,7 @@ function ArrendadorNavbar() {
     axios.get('http://localhost:3031/logout')
     .then(res => {
       if (res.data.Status === "Success") {
+        swal("Sesión Cerrada Correctamente", " ", "success");
         navigate('/login');
       } else {
         alert("error");
