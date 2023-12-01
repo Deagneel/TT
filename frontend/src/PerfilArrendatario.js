@@ -195,7 +195,7 @@ const PerfilArrendatario = () => {
           }}
         >
           <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '20px' }}>
-            Perfil de Arrendador
+            Perfil de Arrendatario
           </h1>
 
           <div className="profile-section" style={{ marginBottom: '20px' }}>
