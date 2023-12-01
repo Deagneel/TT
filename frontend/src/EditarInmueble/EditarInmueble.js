@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import swal from 'sweetalert';
 
 function EditarInmueble() {
   const { id_inmueble } = useParams();
@@ -80,6 +81,7 @@ function EditarInmueble() {
       formDataToSend.append('idEscuela', formData.idEscuela);
       await axios.put(`http://localhost:3031/editarinmueble/${id_inmueble}`, formDataToSend);
 
+      swal("Datos Actualizados Correctamente", " ", "success");
       navigate('/homearrendador');
     } catch (error) {
       console.error('Error al editar el inmueble:', error);

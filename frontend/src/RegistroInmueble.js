@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-
+import swal from 'sweetalert';
 
 function RegistroInmueble() {
 
@@ -83,6 +83,8 @@ function RegistroInmueble() {
           console.log('Error al registrar inmueble:', response.data.error);
           return;
         }
+
+        swal("Inmueble Registrado Correctamente", " ", "success");
   
         navigate('/homearrendador');
 

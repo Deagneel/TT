@@ -4,7 +4,7 @@ import './Style.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
-
+import swal from 'sweetalert';
 
 function Navbar({ handleSearchTerm }) {
   const [searchInput, setSearchInput] = useState('');
@@ -28,6 +28,7 @@ function Navbar({ handleSearchTerm }) {
     axios.get('http://localhost:3031/logout')
     .then(res => {
       if (res.data.Status === "Success") {
+        swal("Sesión Cerrada Correctamente", " ", "success");
         navigate('/login');
       } else {
         alert("error");

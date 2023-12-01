@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 function Navbar() {
   const navigate = useNavigate();
@@ -80,10 +81,15 @@ function PageContent() {
     try {
       // Realizar una solicitud para actualizar el estado del reporte a 1
       await axios.put(`http://localhost:3031/actualizarEstado/${id_reporte}`, { estado: 1 });
+      swal("Gracias por resolver la incidencia.", " ", "success");
       navigate('/homeadministrador');
     } catch (error) {
       console.error('Error al actualizar el estado del reporte:', error);
     }
+  };
+
+  const handlePausa = async () => {
+    swal("Publicación Pausada Correctamente", " ", "success");
   };
 
   return (
@@ -100,6 +106,7 @@ function PageContent() {
       )}
       <div style={{ marginTop: '35px', display: 'flex' }}>
         <button style={{ marginRight: 'auto', border: '2px solid #422985' }}>Contactar al usuario</button>
+        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handlePausa}>Pausar Publicación de Inmueble</button>
         <button style={{ marginLeft: 'auto', border: '2px solid #422985' }} onClick={handleresultoClick}>Incidencia resuelta</button>
       </div>
     </div>

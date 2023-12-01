@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import swal from 'sweetalert';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+
 
 const CalificaInmuebleArrendador = () => {
+  const navigate = useNavigate();
   const [fachada, setFachada] = useState(0);
   const [servicios, setServicios] = useState(0);
   const [seguridad, setSeguridad] = useState(0);
@@ -29,6 +33,8 @@ const CalificaInmuebleArrendador = () => {
     try {
       const response = await axios.post('http://localhost:3031/evaluarinmueble', data);
       console.log('Reseñas enviadas:', response.data);
+      swal("Reseña Enviada", "Gracias, tu opinión es muy importante.", "success");
+      navigate('/home');
     } catch (error) {
       console.error('Error al enviar las reseñas:', error.message);
       // Puedes agregar una lógica para mostrar un mensaje de error al usuario.

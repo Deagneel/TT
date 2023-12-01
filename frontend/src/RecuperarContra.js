@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import swal from 'sweetalert';
 
 function RecuperarContrasena() {
   const [correo, setCorreo] = useState('');
@@ -13,6 +14,7 @@ function RecuperarContrasena() {
     axios.post('http://localhost:3031/recuperar-contrasena', { correo })
       .then((response) => {
         console.log(response.data);
+        swal("Contraseña Reestablecida.", " ", "success");
         // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito o error al usuario
       })
       .catch((error) => {
