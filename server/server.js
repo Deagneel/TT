@@ -195,11 +195,14 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
-        req.body.coordinates,
+        req.body.cp,
+        req.body.alcaldia,
+        req.body.latitud,
+        req.body.longitud,
         req.body.price,
         req.body.period,
         req.body.numRooms,
@@ -489,7 +492,10 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     const updatedData = {
         titulo: req.body.title,
         direccion: req.body.address,
-        coordenadas: req.body.coordinates,
+        cp: req.body.cp,
+        alcaldia: req.body.alcaldia,
+        latitud: req.body.latitud,
+        longitud: req.body.longitud,
         precio: req.body.price,
         periodo_de_renta: req.body.period,
         no_habitaciones: req.body.numRooms,

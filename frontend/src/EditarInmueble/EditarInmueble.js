@@ -12,7 +12,10 @@ function EditarInmueble() {
     id: id_inmueble,
     title: '',
     address: '',
-    coordinates: '',
+    cp: '',
+    alcaldia: '',
+    latitud: '',
+    longitud: '',
     price: '',
     period: 'mensual',
     numRooms: '',
@@ -33,7 +36,10 @@ function EditarInmueble() {
           ...prevData,
           title: responseInmueble.data.titulo,
           address: responseInmueble.data.direccion,
-          coordinates: responseInmueble.data.coordenadas,
+          cp: responseInmueble.data.cp,
+          alcaldia: responseInmueble.data.alcaldia,
+          latitud: responseInmueble.data.latitud,
+          longitud: responseInmueble.data.longitud,
           price: responseInmueble.data.precio,
           period: responseInmueble.data.periodo_de_renta,
           numRooms: responseInmueble.data.no_habitaciones,
@@ -73,7 +79,10 @@ function EditarInmueble() {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
       formDataToSend.append('address', formData.address);
-      formDataToSend.append('coordinates', formData.coordinates);
+      formDataToSend.append('cp', formData.cp);
+      formDataToSend.append('alcaldia', formData.alcaldia);
+      formDataToSend.append('latitud', formData.latitud);
+      formDataToSend.append('longitud', formData.longitud);
       formDataToSend.append('price', formData.price);
       formDataToSend.append('period', formData.period);
       formDataToSend.append('numRooms', formData.numRooms);
@@ -118,16 +127,45 @@ function EditarInmueble() {
           className="input-box"
           placeholder="Ingrese la dirección"
         />
-
-        <h2 style={{ fontSize: '20px' }}>Coordenadas de Google Maps</h2>
+        <h2 style={{ fontSize: '20px' }}>Código Postal</h2>
         <input
           type="text"
-          name="coordinates"
-          value={formData.coordinates}
+          name="cp"
+          value={formData.cp}
           onChange={handleChange}
           style={{ width: '338px', marginBottom: '10px' }}
           className="input-box"
-          placeholder="Ingrese las coordenadas"
+          placeholder="Ingrese el código postal"
+        />
+        <h2 style={{ fontSize: '20px' }}>Alcaldía</h2>
+        <input
+          type="text"
+          name="alcaldia"
+          value={formData.alcaldia}
+          onChange={handleChange}
+          style={{ width: '338px', marginBottom: '10px' }}
+          className="input-box"
+          placeholder="Ingrese la Alcaldía"
+        />
+        <h2 style={{ fontSize: '20px' }}>Latitud</h2>
+        <input
+          type="text"
+          name="latitud"
+          value={formData.latitud}
+          onChange={handleChange}
+          style={{ width: '338px', marginBottom: '10px' }}
+          className="input-box"
+          placeholder="Ingrese la Latitud"
+        />
+        <h2 style={{ fontSize: '20px' }}>Longitud</h2>
+        <input
+          type="text"
+          name="longitud"
+          value={formData.longitud}
+          onChange={handleChange}
+          style={{ width: '338px', marginBottom: '10px' }}
+          className="input-box"
+          placeholder="Ingrese la longitud"
         />
         <div>
           <h2 style={{ fontSize: '20px', marginLeft: '100px' }}>Escuela cercana</h2>
