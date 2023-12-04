@@ -195,11 +195,14 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, coordenadas, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
-        req.body.coordinates,
+        req.body.cp,
+        req.body.alcaldia,
+        req.body.latitud,
+        req.body.longitud,
         req.body.price,
         req.body.period,
         req.body.numRooms,
@@ -240,6 +243,19 @@ app.get('/obtenerEscuelas', (req, res) => {
         }
         return res.json(result);
     });
+});
+
+// Ruta para obtener datos de una escuela específica según su ID
+app.get('/escuela/:id_escuela', (req, res) => {
+  const id_escuela = req.params.id_escuela;
+  const sql = "SELECT * FROM escuela WHERE id_escuela = ?"; // Filtra por el ID de la escuela
+  db.query(sql, [id_escuela], (err, result) => {
+      if (err) {
+          console.error('Error al obtener datos de escuela:', err);
+          return res.json({ message: "Error al obtener datos de escuela" });
+      }
+      return res.json(result);
+  });
 });
 
 // Ruta para obtener datos de la tabla "inmueble"
@@ -489,7 +505,10 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     const updatedData = {
         titulo: req.body.title,
         direccion: req.body.address,
-        coordenadas: req.body.coordinates,
+        cp: req.body.cp,
+        alcaldia: req.body.alcaldia,
+        latitud: req.body.latitud,
+        longitud: req.body.longitud,
         precio: req.body.price,
         periodo_de_renta: req.body.period,
         no_habitaciones: req.body.numRooms,
@@ -950,4 +969,18 @@ app.post('/evaluarinmueble', async (req, res) => {
     console.error('Error en el endpoint evaluarinmueble:', error);
     return res.status(500).json({ error: 'Error en el servidor' });
   }
+});
+
+app.get('/infoinmueblesmap', (req, res) => {
+  // Consulta SQL para obtener la información de todos los inmuebles
+  const sql = 'SELECT * FROM inmueble';
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener los inmuebles:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(result);
+    }
+  });
 });

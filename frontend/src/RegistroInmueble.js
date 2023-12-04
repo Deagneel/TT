@@ -20,7 +20,10 @@ function RegistroInmueble() {
   const [formData, setFormData] = useState({
     title: '',
     address: '',
-    coordinates: '',
+    cp: '',
+    alcaldia: '',
+    latitud: '',
+    longitud: '',
     price: '',
     period: 'mensual',
     numRooms: '',
@@ -66,6 +69,10 @@ function RegistroInmueble() {
       const response = await axios.post('http://localhost:3031/registroinmueble', {
         title: formData.title,
         address: formData.address,
+        cp: formData.cp,
+        alcaldia: formData.alcaldia,
+        latitud: formData.latitud,
+        longitud: formData.longitud,
         coordinates: formData.coordinates,
         price: formData.price,
         period: formData.period,
@@ -138,11 +145,43 @@ function RegistroInmueble() {
         placeholder="Ingrese la dirección"
       />
 
-      <h2 style={{ fontSize: '20px' }}>Coordenadas de Google Maps</h2>
+      <h2 style={{ fontSize: '20px' }}>Código Postal</h2>
       <input
         type="text"
-        name="coordinates"
-        value={formData.coordinates}
+        name="cp"
+        value={formData.cp}
+        onChange={handleChange}
+        style={{ width: '338px', marginBottom: '10px' }}
+        className="input-box"
+        placeholder="Ingrese el Código Postal"
+      />
+
+      <h2 style={{ fontSize: '20px' }}>Alcaldía</h2>
+      <input
+        type="text"
+        name="alcaldia"
+        value={formData.alcaldia}
+        onChange={handleChange}
+        style={{ width: '338px', marginBottom: '10px' }}
+        className="input-box"
+        placeholder="Ingrese la Alcaldía"
+      />
+
+      <h2 style={{ fontSize: '20px' }}>Latitud - Google Maps</h2>
+      <input
+        type="text"
+        name="latitud"
+        value={formData.latitud}
+        onChange={handleChange}
+        style={{ width: '338px', marginBottom: '10px' }}
+        className="input-box"
+        placeholder="Ingrese las coordenadas"
+      />
+      <h2 style={{ fontSize: '20px' }}>Longitud - Google Maps</h2>
+      <input
+        type="text"
+        name="longitud"
+        value={formData.longitud}
         onChange={handleChange}
         style={{ width: '338px', marginBottom: '10px' }}
         className="input-box"
