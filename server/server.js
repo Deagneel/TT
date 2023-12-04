@@ -245,6 +245,19 @@ app.get('/obtenerEscuelas', (req, res) => {
     });
 });
 
+// Ruta para obtener datos de una escuela específica según su ID
+app.get('/escuela/:id_escuela', (req, res) => {
+  const id_escuela = req.params.id_escuela;
+  const sql = "SELECT * FROM escuela WHERE id_escuela = ?"; // Filtra por el ID de la escuela
+  db.query(sql, [id_escuela], (err, result) => {
+      if (err) {
+          console.error('Error al obtener datos de escuela:', err);
+          return res.json({ message: "Error al obtener datos de escuela" });
+      }
+      return res.json(result);
+  });
+});
+
 // Ruta para obtener datos de la tabla "inmueble"
 app.get('/inmuebles', (req, res) => {
     // Obtiene el valor del parámetro id_usuario de la solicitud
@@ -956,4 +969,18 @@ app.post('/evaluarinmueble', async (req, res) => {
     console.error('Error en el endpoint evaluarinmueble:', error);
     return res.status(500).json({ error: 'Error en el servidor' });
   }
+});
+
+app.get('/infoinmueblesmap', (req, res) => {
+  // Consulta SQL para obtener la información de todos los inmuebles
+  const sql = 'SELECT * FROM inmueble';
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener los inmuebles:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      res.json(result);
+    }
+  });
 });

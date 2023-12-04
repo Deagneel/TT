@@ -190,7 +190,14 @@ function HomeArrendatario() {
                 <div className="propertyDetails">
                   <p className="homearrendatariotitle">{property.nombre}</p>
                   <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                  <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
+                      }}
+                    >
+                      Inmuebles Cerca
+                  </button>
                 </div>
               </div>
             ))
@@ -204,7 +211,15 @@ function HomeArrendatario() {
                 <div className="propertyDetails">
                   <p className="homearrendatariotitle">{property.nombre}</p>
                   <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-                  {/* Agrega otros detalles de propiedad según sea necesario */}
+                  <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
+                      }}
+                    >
+                      Inmuebles Cerca
+                  </button>
+
                 </div>
               </div>
             ))
