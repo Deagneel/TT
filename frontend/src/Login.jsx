@@ -32,8 +32,10 @@ function Login() {
             if (data.Login) {
               if(response.data.tipo_de_usuario === 0) {
                 navigate('/homearrendador');
-              } else {
+              } else if (response.data.tipo_de_usuario === 1) {
                 navigate('/homearrendatario');
+              } else if (response.data.tipo_de_usuario === 2) {
+                navigate('/homeadministrador');
               }
           } else {
               alert(data.message || 'Error de inicio de sesión');
