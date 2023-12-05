@@ -119,8 +119,10 @@ function PageContent() {
         <p>Inmueble asociado: {reporte.inmueble}</p>
       )}
       <div style={{ marginTop: '35px', display: 'flex' }}>
-        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handleContactar} >Contactar al usuario</button>
+        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handleContactar}>Contactar al usuario</button>
+        {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
         <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handlePausa}>Pausar Publicación de Inmueble</button>
+      )}
         <button style={{ marginLeft: 'auto', border: '2px solid #422985' }} onClick={handleresultoClick}>Incidencia resuelta</button>
       </div>
     </div>

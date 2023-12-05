@@ -4,6 +4,11 @@ import axios from 'axios';
 import swal from 'sweetalert';
 
 function RegistroInmueble() {
+  const [aceptarTerminos, setAceptarTerminos] = useState(false);
+
+  const handleCheckbox = () => {
+    setAceptarTerminos(!aceptarTerminos);
+  };
 
   axios.defaults.withCredentials = true;
   const [escuelas, setEscuelas] = useState([]);
@@ -283,18 +288,19 @@ function RegistroInmueble() {
       <div className="privacy-policy">
         <input
           type="checkbox"
-          id="privacy-checkbox"
-          name="privacyAccepted"
-          checked={formData.privacyAccepted}
-          onChange={handleChange}
+          name="aceptar_terminos"
+          onChange={handleCheckbox}
+          checked={aceptarTerminos}
         />
-        <label htmlFor="privacy-checkbox" style={{ fontSize: '15px' }}>Acepto políticas de privacidad</label>
+        <label htmlFor="aceptar_terminos" style={{ fontSize: '15px' }}>Acepto políticas de privacidad</label>
       </div>
 
       <button
         className="register-button"
-        style={{ backgroundColor: '#422985', color: 'white', height: '43px', width: '108px', marginTop: '10px' }}
+        style={{ backgroundColor: '#422985', color: 'white', height: '43px', width: '108px', marginTop: '10px', opacity: aceptarTerminos ? '1' : '0.5',
+        pointerEvents: aceptarTerminos ? 'auto' : 'none' }}
         onClick={handleRegister}
+        disabled={!aceptarTerminos}
       >
         Registrar
       </button>
