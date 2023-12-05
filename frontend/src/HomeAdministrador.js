@@ -10,6 +10,7 @@ function Navbar() {
 
   const handleEnvelopeClick = () => {
     //boton mensajes
+    navigate('/Chat');
   };
 
   const handleSignuplick = () => {

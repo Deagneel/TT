@@ -91,6 +91,20 @@ function PageContent() {
   const handlePausa = async () => {
     swal("Publicación Pausada Correctamente", " ", "success");
   };
+  
+  const handleContactar = async () => {
+    axios.post(`http://localhost:3031/newchat/${reporte.id_inmueble}`)
+      .then(async (response) => {
+        // Puedes hacer algo con la respuesta si es necesario
+        console.log('Petición completada con éxito:', response);
+
+        // Navega a '/chat' solo si la petición se completa correctamente
+        await navigate('/chat');
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos del inmueble', error);
+      });
+  };
 
   return (
     <div style={{ marginLeft: '30px', backgroundColor: '#E6E6FA', padding: '20px', marginTop: '50px', borderRadius: '8px', width: '95%' }}>
@@ -105,7 +119,7 @@ function PageContent() {
         <p>Inmueble asociado: {reporte.inmueble}</p>
       )}
       <div style={{ marginTop: '35px', display: 'flex' }}>
-        <button style={{ marginRight: 'auto', border: '2px solid #422985' }}>Contactar al usuario</button>
+        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handleContactar} >Contactar al usuario</button>
         <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handlePausa}>Pausar Publicación de Inmueble</button>
         <button style={{ marginLeft: 'auto', border: '2px solid #422985' }} onClick={handleresultoClick}>Incidencia resuelta</button>
       </div>
