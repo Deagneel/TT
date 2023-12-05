@@ -34,7 +34,7 @@ function RecuperarContrasena() {
   return (
     <div className="d-flex justify-content-center align-items-center bg-white vh-100">
       <Link
-        to="/"
+        to="/login"
         style={{
           position: 'absolute',
           top: '20px',

@@ -130,7 +130,7 @@ function Login() {
                   <Link
                     to="/recuperarcontra"
                     style={{ marginBottom: '10px' }}
-                  ></Link>
+                  >¿No recuerdas tu contraseña?</Link>
                 </div>
                 <div className="d-flex flex-column align-items-center">
                   <button

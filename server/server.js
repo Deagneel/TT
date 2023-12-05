@@ -471,6 +471,8 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
       numRooms: req.body.numRooms,
       regulations: req.body.regulations,
       idEscuela: req.body.idEscuela,
+      Tvivienda: req.body.Tvivienda,
+      activo: req.body.activo,
     }; // Datos actualizados del inmueble
   
     // Consulta SQL para actualizar la información del inmueble
@@ -513,6 +515,8 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
         periodo_de_renta: req.body.period,
         no_habitaciones: req.body.numRooms,
         reglamento: req.body.regulations,
+        tipo_de_habitacion : req.body.Tvivienda,
+        activo_usuario: req.body.activo,
     };
 
     // Consulta SQL para actualizar la información del inmueble

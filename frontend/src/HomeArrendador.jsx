@@ -30,8 +30,6 @@ function ArrendadorNavbar() {
 
   };
 
- 
-
   const [auth, setAuth] = useState(false)
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
@@ -102,7 +100,7 @@ function ArrendadorPageContent() {
       <h2 style={{ width: '100%', textAlign: 'center' }}>Inmuebles Registrados</h2>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
         {registeredProperties.map((property, index) => (
-          <div key={index} className={`rectangle ${property.activo === 0 ? 'inactive' : ''}`}>
+          <div key={index} className={`rectangle ${property.activo === 0 || property.activo_usuario === 1 ? 'inactive' : ''}`}>
             <div className="image-container">
               <img src={`http://localhost:3031/images/${property.foto}`} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
             </div>
@@ -113,7 +111,8 @@ function ArrendadorPageContent() {
               <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleEditClick(property.id_inmueble)}>Editar</button>
               {/* Agrega otros detalles de propiedad según sea necesario */}
             </div>
-            {property.activo === 0 && <p className="inactiveText">Inactivo</p>}
+            {property.activo === 0 && <p className="inactiveText">Inactivo por administrador</p>}
+            {property.activo_usuario === 1 && <p className="inactiveText">Pausado</p>}
           </div>
         ))}
       </div>
@@ -186,7 +185,6 @@ function HomeArrendador() {
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <ArrendadorNavbar />
-      <div><h1>Bienvenido, {correo}</h1></div>
       <ArrendadorPageContent />
     </div>
   );
