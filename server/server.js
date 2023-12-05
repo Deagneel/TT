@@ -539,6 +539,28 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     });
 });
 
+app.delete('/eliminarinmueble/:id_inmueble', (req, res) => {
+  const id_inmueble = req.params.id_inmueble;
+
+  const deleteSql = `DELETE FROM inmueble WHERE id_inmueble = ?`;
+
+  db.query(deleteSql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el inmueble:', err);
+      return res.status(500).json('Error interno del servidor');
+    } else {
+      if (result.affectedRows > 0) {
+        // Si se elimina el inmueble correctamente, devuelve un mensaje de éxito
+        return res.status(200).json('Inmueble eliminado correctamente');
+      } else {
+        // Si no se encuentra el inmueble, devuelve un mensaje de error
+        return res.status(404).json('Inmueble no encontrado');
+      }
+    }
+  });
+});
+
+
 
 // Ruta para eliminar usuario
 app.delete('/eliminarUsuario/:idUsuario', (req, res) => {

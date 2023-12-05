@@ -134,9 +134,29 @@ function EditarInmueble() {
   };
   
   
-  const handleDelete = () => {
-    // Lógica para eliminar el inmueble
-    // ...
+  const handleDelete = async () => {
+    try {
+      const willDelete = await swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no se podrá recuperar el inmueble.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+      if (willDelete) {
+        await axios.delete(`http://localhost:3031/eliminarinmueble/${id_inmueble}`);
+        swal("Inmueble eliminado con éxito", {
+          icon: "success",
+        });
+        navigate('/homearrendador');
+    } else {
+      // Mostrar SweetAlert2 de cancelación
+      swal("Operación Cancelada");
+    }
+    } catch (error) {
+      console.error('Error al eliminar el inmueble:', error);
+      // Manejar el error aquí, mostrar un mensaje al usuario, etc.
+    }
   };
 
 
