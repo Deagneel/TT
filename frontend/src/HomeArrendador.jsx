@@ -7,65 +7,79 @@ import { useState } from 'react';
 import swal from 'sweetalert';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Asegúrate de importar la hoja de estilos de Bootstrap
 
-
-// Definición del componente Navbar para la página de arrendador
 function ArrendadorNavbar() {
-
   const navigate = useNavigate();
-  
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleRegisterClick = () => {
-    // Manejar la acción cuando se hace clic en el botón de registrar inmueble
-    console.log('Clic en Registrar Inmueble');
-    navigate('/registroinmueble');
+  const handleNavigation = (path) => {
+    console.log(`Navegando a ${path}`);
+    navigate(path);
   };
 
-  const handleBellClick = () => {
-    // Manejar la acción cuando se hace clic en el ícono de la campana (bell)
-    console.log('Clic en la campana');
+  const handleIconClick = (icon) => {
+    console.log(`Clic en el icono ${icon}`);
   };
-
-  const handleEnvelopeClick = () => {
-    // Manejar la acción cuando se hace clic en el ícono del sobre (envelope)
-    console.log('Clic en el sobre');
-    navigate('/Chat');
-
-  };
-
-  const [auth, setAuth] = useState(false)
-  const [name, setName] = useState('')
-  const [message, setMessage] = useState('')
 
   const handleLogoutClick = () => {
-    axios.get('http://localhost:3031/logout')
-    .then(res => {
-      if (res.data.Status === "Success") {
-        swal("Sesión Cerrada Correctamente", " ", "success");
-        navigate('/login');
-      } else {
-        alert("error");
-      }
-    }).catch(err => console.log(err))
+    axios
+      .get('http://localhost:3031/logout')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          swal('Sesión Cerrada Correctamente', ' ', 'success');
+          navigate('/login');
+        } else {
+          alert('error');
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
-  const handlePerfilClick = () => {
-    navigate('/perfilarrendador');
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
-    <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
-      <div style={{ marginLeft: '50px' }}>
-        {/* Agregar el botón para registrar inmueble */}
-        <button className="white-text-button" onClick={handleRegisterClick}>Registrar Inmueble</button>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        onClick={toggleMenu}
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
+        <ul className="navbar-nav w-100 nav-fill">
+          <li className="nav-item active">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/registroinmueble')}>
+              Registrar Inmueble
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/perfilarrendador')}>
+              Perfil
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/chat')}>
+              Chats
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={handleLogoutClick}>
+              Cerrar Sesión
+            </a>
+          </li>
+        </ul>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
-      <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handleLogoutClick}>Cerrar Sesión</button>
-        <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handlePerfilClick} >Perfil</button>
-        <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
-        <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
-      </div>
-    </div>
+    </nav>
   );
+  
+  
 }
   
 // Definición del componente PageContent para la página de arrendador
