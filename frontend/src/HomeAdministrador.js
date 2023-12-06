@@ -7,24 +7,72 @@ import swal from 'sweetalert';
 
 function Navbar() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleEnvelopeClick = () => {
-    //boton mensajes
-    navigate('/Chat');
+  const handleNavigation = (path) => {
+    console.log(`Navegando a ${path}`);
+    navigate(path);
   };
 
-  const handleSignuplick = () => {
-    navigate('/tipousuario');
+  const handleIconClick = (icon) => {
+    console.log(`Clic en el icono ${icon}`);
+  };
+
+  const handleLogoutClick = () => {
+    axios
+      .get('http://localhost:3031/logout')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          swal('Sesión Cerrada Correctamente', ' ', 'success');
+          navigate('/login');
+        } else {
+          alert('error');
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   return (
-    <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '11%' }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginRight: '50px' }}>
-        <button onClick={handleSignuplick} className="button white-text-button" style={{ marginRight: '75px' }}>Registrar Usuario</button>
-        <i className="fa fa-envelope icon-button" style={{ fontSize: '20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        onClick={toggleMenu}
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
+        <ul className="navbar-nav w-100 nav-fill">
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/signup')}>
+              Registrar Usuario
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/chat')}>
+              Chats
+            </a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link btn btn-link w-100" href="#" onClick={handleLogoutClick}>
+              Cerrar Sesión
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
+    </nav>
   );
+  
+  
 }
 
 function ReportesSection() {
@@ -47,32 +95,36 @@ function ReportesSection() {
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
-
   return (
-    <div style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
+    <div className="container-fluid" style={{ backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
       <h2>Reportes</h2>
-      {reportes
-        .filter(reporte => reporte.estado === 0) // Filtrar por reportes no completados (estado = 0)
-        .map(reporte => (
-          <div key={reporte.id_reporte} style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px' }}>
-            <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
-            <span className='subtitles-general'>{reporte.asunto}</span>
-            <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-            <button className="button" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-              Gestionar Incidencia
-            </button>
-          </div>
-        ))}
+      <div className="row">
+        {reportes
+          .filter(reporte => reporte.estado === 0)
+          .map(reporte => (
+            <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
+              <div className="card h-100" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px' }}>
+                {/* Contenido del reporte */}
+                <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+                <span className='subtitles-general'>{reporte.asunto}</span>
+                <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
+                <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                  Gestionar Incidencia
+                </button>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
-  
 }
 
+// UsuariosSection
 function UsuariosSection() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState('');
   const [userReports, setUserReports] = useState([]);
-  
+
   const handleSearch = () => {
     // Realizar la petición al servidor con el ID del reporte
     axios.get(`http://localhost:3031/obtenerReportesPorUsuario/${userId}`)
@@ -85,7 +137,6 @@ function UsuariosSection() {
   };
 
   const handleGestionarIncidencia = (reporteId) => {
-    // Implementar la funcionalidad para manejar cada reporte individualmente
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
@@ -99,7 +150,7 @@ function UsuariosSection() {
         buttons: true,
         dangerMode: true,
       });
-  
+
       // Si el usuario confirma la eliminación
       if (willDelete) {
         // Realizar la solicitud al servidor para eliminar el usuario
@@ -118,47 +169,57 @@ function UsuariosSection() {
       console.error('Error al eliminar el usuario:', error);
     }
   };
-  
-  
 
   return (
-    <div style={{ flex: 1, backgroundColor: '#F9F9F9', padding: '20px', textAlign: 'center' }}>
+    <div className="container-fluid" style={{ flex: 1, backgroundColor: '#F9F9F9', padding: '20px', textAlign: 'center' }}>
       <h2>Usuarios</h2>
       {/* Barra de búsqueda */}
-      <input type="text" placeholder="Buscar por ID de reporte..." style={{ marginBottom: '10px', width: '89%' }} value={userId} onChange={(e) => setUserId(e.target.value)}
-      />
-      {/* Este es el botón de búsqueda */}
-      <button style={{ background: 'none', cursor: 'pointer', border: '2px solid #ccc', width: '7%' }} onClick={handleSearch}>
-        <i className="fa fa-search"></i>
-      </button>
-      {/* Listado de reportes asociados al usuario */}
-      {userReports.filter(reporte => reporte.estado === 0) // Filtrar por reportes no completados (estado = 0)
-        .map(reporte => (
-        <div key={reporte.id_reporte} style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
-          <h3>{reporte.nombre_usuario}</h3>
-          <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
-          <span className='subtitles-general'>{reporte.asunto}</span>
-          <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-          <button className="button" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-            Gestionar Incidencia
-          </button>
-          {/* Botones debajo del último botón "Gestionar Incidencia" */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <button onClick={() => handleEliminarIncidencia(reporte.id_usuario)} className="button" style={{ marginRight: '10px' }}>Eliminar Usuario</button>
-            <button className="button">Mensaje</button>
-          </div>
+      <div className="row mb-3">
+        <div className="col-9">
+          <input type="text" className="form-control" placeholder="Buscar por ID de reporte..." value={userId} onChange={(e) => setUserId(e.target.value)} />
         </div>
-      ))}
+        <div className="col-3">
+          <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
+            <i className="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+      {/* Listado de reportes asociados al usuario */}
+      <div className="row">
+        {userReports
+          .filter(reporte => reporte.estado === 0)
+          .map(reporte => (
+            <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
+              <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
+                {/* Contenido del usuario */}
+                <h3>{reporte.nombre_usuario}</h3>
+                <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+                <span className='subtitles-general'>{reporte.asunto}</span>
+                <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
+                <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                  Gestionar Incidencia
+                </button>
+                {/* Botones debajo del último botón "Gestionar Incidencia" */}
+                <div className="mt-3">
+                  <button onClick={() => handleEliminarIncidencia(reporte.id_usuario)} className="btn btn-danger" style={{ marginRight: '10px' }}>
+                    Eliminar Usuario
+                  </button>
+                  <button className="btn btn-success">Mensaje</button>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
 
-
+// InmueblesSection
 function InmueblesSection() {
   const navigate = useNavigate();
   const [searchParam, setSearchParam] = useState('');
   const [userReports, setUserReports] = useState([]);
-  
+
   const handleSearch = () => {
     // Realizar la petición al servidor con el parámetro de búsqueda
     axios.get(`http://localhost:3031/obtenerReportesPorInmueble/${searchParam}`)
@@ -184,51 +245,69 @@ function InmueblesSection() {
     }
   };
 
-
   return (
-    <div style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
+    <div className="container-fluid" style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
       <h2>Inmuebles</h2>
       {/* Barra de búsqueda */}
-      <input 
-        type="text" 
-        placeholder="Buscar..." 
-        style={{ marginBottom: '10px', width: '89%' }} 
-        value={searchParam}
-        onChange={(e) => setSearchParam(e.target.value)}
-      />
-      <button 
-        onClick={handleSearch} 
-        style={{ background: 'none', cursor: 'pointer', border: '2px solid #ccc', width: '7%' }}
-      >
-        <i className="fa fa-search"></i>
-      </button>
-      {userReports.filter(reporte => reporte.estado === 0) // Filtrar por reportes no completados (estado = 0)
-        .map(reporte => (
-        <div key={reporte.id_reporte} style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
-          <h3>{reporte.nombre_inmueble}</h3>
-          <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
-          <span className='subtitles-general'>{reporte.asunto}</span>
-          <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-          <button className="button" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-            Gestionar Incidencia
-          </button>
-          {/* Botones debajo del último botón "Gestionar Incidencia" */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-            <button className="button" style={{ marginRight: '10px' }} onClick={() => handleresultoClick(reporte.id_reporte)}>Pausar publicación</button>
-            <button className="button">Mensaje</button>
-          </div>
+      <div className="row mb-3">
+        <div className="col-9">
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Buscar..." 
+            value={searchParam}
+            onChange={(e) => setSearchParam(e.target.value)}
+          />
         </div>
-      ))}
+        <div className="col-3">
+          <button 
+            className="btn btn-outline-secondary" 
+            type="button" 
+            onClick={handleSearch} 
+            style={{ cursor: 'pointer', width: '100%' }}
+          >
+            <i className="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+      {userReports
+        .filter(reporte => reporte.estado === 0)
+        .map(reporte => (
+          <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
+            <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
+              {/* Contenido del inmueble */}
+              <h3>{reporte.nombre_inmueble}</h3>
+              <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+              <span className='subtitles-general'>{reporte.asunto}</span>
+              <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
+              <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                Gestionar Incidencia
+              </button>
+              {/* Botones debajo del último botón "Gestionar Incidencia" */}
+              <div className="mt-3">
+                <button 
+                  className="btn btn-warning" 
+                  style={{ marginRight: '10px' }} 
+                  onClick={() => handleresultoClick(reporte.id_reporte)}
+                >
+                  Pausar publicación
+                </button>
+                <button className="btn btn-success">Mensaje</button>
+              </div>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
 
 
+
 function HomeAdministrador() {
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-      <div style={{ display: 'flex', height: '89%' }}>
+      <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
         <ReportesSection />
         <UsuariosSection />
         <InmueblesSection />

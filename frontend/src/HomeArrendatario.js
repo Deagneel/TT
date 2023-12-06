@@ -5,58 +5,84 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Asegúrate de importar la hoja de estilos de Bootstrap
 
 function Navbar({ handleSearchTerm }) {
   const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleBellClick = () => {
-    // Manejar la acción cuando se hace clic en el ícono de la campana (bell)
-    console.log('Clic en la campana');
+  const handleClick = (path, message) => {
+    navigate(path);
+    if (message) console.log(message);
   };
 
-  const handleEnvelopeClick = () => {
-    navigate('/chat');
-    console.log('Clic en el sobre');
-  };
-
-  const handlePerfilClick = () => {
-    navigate('/perfilarrendatario');
-  };
-  
-  const handleLogoutClick = () => {
-    axios.get('http://localhost:3031/logout')
-    .then(res => {
-      if (res.data.Status === "Success") {
-        swal("Sesión Cerrada Correctamente", " ", "success");
+  const handleLogoutClick = async () => {
+    try {
+      const res = await axios.get('http://localhost:3031/logout');
+      if (res.data.Status === 'Success') {
+        swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
       } else {
-        alert("error");
+        alert('error');
       }
-    }).catch(err => console.log(err))
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick = (e) => {
+    e.preventDefault();
     handleSearchTerm(searchInput);
   };
 
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
-      <div style={{ marginLeft: '50px' }}>
-        <input type="text" placeholder="Buscar" style={{ width: '179%' }} value={searchInput} onChange={(e) => setSearchInput(e.target.value)}/>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
+        <button
+          className={`navbar-toggler ${menuOpen ? '' : 'collapsed'}`}
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation"
+          onClick={toggleMenu}
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} d-lg-flex justify-content-between w-100`} id="navbarNav">
+          <form className="form-inline mx-2 d-flex" onSubmit={handleSearchClick}>
+            <input
+              type="text"
+              className="form-control mr-sm-2"
+              placeholder="Buscar"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              style={{ fontSize: '1rem', width: '500px' }}
+            />
+            <button className="btn btn-outline-light" type="submit">
+              <i className="fa fa-search"></i>
+            </button>
+          </form>
+          <div className="navbar-nav w-100 nav-fill">
+            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/perfilarrendatario')}>
+              Perfil
+            </button>
+            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/chat', 'Clic en el sobre')}>
+              Chats
+            </button>
+            <button type="button" className="nav-link btn btn-link w-200" onClick={handleLogoutClick}>
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
       </div>
-      <button onClick={handleSearchClick} style={{marginRight: '348px' ,background: 'white', cursor: 'pointer', border: '1px solid #ccc', width: '2.4%' }}>
-        <i className="fa fa-search"></i>
-      </button>
-      <div>
-      <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handleLogoutClick}>Cerrar sesión</button>
-        <button className="white-text-button" style={{ marginRight: '75px' }} onClick={handlePerfilClick}>Perfil</button>
-        <i className="fa fa-bell icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleBellClick}></i>
-        <i className="fa fa-envelope icon-button" style={{ fontSize:'20px', color: 'white', marginRight: '50px', cursor: 'pointer' }} onClick={handleEnvelopeClick}></i>
-      </div>
-    </div>
+    </nav>
   );
+  
 }
 
 function HomeArrendatario() {
@@ -156,12 +182,14 @@ function HomeArrendatario() {
   return (
     <div style={{ height: '100vh' }}>
       <Navbar handleSearchTerm={handleSearchTerm} />
-      <div style={{ backgroundColor: '#808080', display: 'flex', justifyContent: 'space-between', height: '8%' }}>
-        <button className="white-text-button" style={{ marginLeft: '350px' }} onClick={handleescuelaClick}>Escuelas</button>
-        <button className="white-text-button" style={{ marginRight: '350px' }} onClick={handleinmueClick}>Inmuebles</button>
-      </div>
-
-      {/* Botones de paginación con iconos */}
+        <div className="bg-secondary p-2 d-flex justify-content-center">
+          <button className="btn btn-secondary btn-sm mx-5" onClick={handleescuelaClick}>
+            Escuelas
+          </button>
+          <button className="btn btn-secondary btn-sm mx-5" onClick={handleinmueClick}>
+            Inmuebles
+          </button>
+        </div>
         <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
             <i className="fa fa-arrow-left"></i> {/* Icono de flecha a la izquierda */}
@@ -178,102 +206,154 @@ function HomeArrendatario() {
           </button>
         </div>
       
-      {showSchools && (
-        <div className="general-container">
-          {searchTerm ? (
-            filteredSchools.slice(indexOfFirstItem, indexOfLastItem)
-            .map((property, index) => (
-              <div key={index} className="rectangle" style={{height: '165%'}}>
-                <div className="image-container">
-                  {/* <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />*/}
-                </div>
-                <div className="propertyDetails">
-                  <p className="homearrendatariotitle">{property.nombre}</p>
-                  <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-                  <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
-                      }}
-                    >
-                      Inmuebles Cerca
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            registeredSchools.slice(indexOfFirstItem, indexOfLastItem)
-            .map((property, index) => (
-              <div key={index} className="rectangle" style={{height: '165%'}}>
-                <div className="image-container">
-                  {/* <img src={'http://localhost:3031/images/'+ property.foto } alt="Imagen" style={{ width: '100%', height: 'auto' }} />*/}
-                </div>
-                <div className="propertyDetails">
-                  <p className="homearrendatariotitle">{property.nombre}</p>
-                  <p className="homearrendatario" style={{marginTop: '20px'}}>Dirección: {property.direccion}</p>
-                  <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
-                      }}
-                    >
-                      Inmuebles Cerca
-                  </button>
+        {showSchools && (
+          <div className="container">
+            {searchTerm ? (
+              filteredSchools
+                .slice(indexOfFirstItem, indexOfLastItem)
+                .map((property, index) => (
+                  <div key={index} className="card mb-3" style={{ height: '165%' }}>
+                    {/* Agregar estilos adicionales según sea necesario */}
+                    <div className="row g-0">
+                      <div className="col-md-4">
+                        <img
+                          src={`http://localhost:3031/images/${property.foto}`}
+                          alt="Imagen"
+                          className="img-fluid rounded-start"
+                        />
+                      </div>
+                      <div className="col-md-8">
+                        <div className="card-body">
+                          <h5 className="card-title">{property.nombre}</h5>
+                          <p className="card-text" style={{ marginTop: '20px' }}>
+                            Dirección: {property.direccion}
+                          </p>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
+                            }}
+                            className="btn btn-primary"
+                          >
+                            Inmuebles Cerca
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+            ) : (
+              registeredSchools
+                .slice(indexOfFirstItem, indexOfLastItem)
+                .map((property, index) => (
+                  <div key={index} className="card mb-3" style={{ height: '165%' }}>
+                    {/* Agregar estilos adicionales según sea necesario */}
+                    <div className="row g-0">
+                      <div className="col-md-4">
+                        <img
+                          src={`http://localhost:3031/images/${property.foto}`}
+                          alt="Imagen"
+                          className="img-fluid rounded-start"
+                        />
+                      </div>
+                      <div className="col-md-8">
+                        <div className="card-body">
+                          <h5 className="card-title">{property.nombre}</h5>
+                          <p className="card-text" style={{ marginTop: '20px' }}>
+                            Dirección: {property.direccion}
+                          </p>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
+                            }}
+                            className="btn btn-primary"
+                          >
+                            Inmuebles Cerca
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+            )}
+          </div>
+        )}
 
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
   
-  {showInmuebles && (
-  <div className="general-container">
-    {searchTerm ? (
-      filteredProperties
-        .slice(indexOfFirstItem, indexOfLastItem)
-        .map((property, index) =>
-          property.activo !== 0 && (
-            <div key={index} className="rectangle">
-              <div className="image-container">
-                <img src={'http://localhost:3031/images/' + property.foto} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-              </div>
-              <div className="propertyDetails">
-                <p className="homearrendatariotitle">{property.titulo}</p>
-                <p className="homearrendatario">Dirección: {property.direccion}</p>
-                <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
-                <p className="homearrendatario">Precio: {property.precio}</p>
-                <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
-                {/* Agrega otros detalles de propiedad según sea necesario */}
-              </div>
-            </div>
-          )
-        )
-    ) : (
-      registeredProperties
-        .slice(indexOfFirstItem, indexOfLastItem)
-        .map((property, index) =>
-          property.activo !== 0 && (
-            <div key={index} className="rectangle">
-              <div className="image-container">
-                <img src={'http://localhost:3031/images/' + property.foto} alt="Imagen" style={{ width: '100%', height: 'auto' }} />
-              </div>
-              <div className="propertyDetails">
-                <p className="homearrendatariotitle">{property.titulo}</p>
-                <p className="homearrendatario">Dirección: {property.direccion}</p>
-                <p className="homearrendatario">Escuela cercana: {property.nombre_escuela}</p>
-                <p className="homearrendatario">Precio: {property.precio}</p>
-                <button className="button" style={{ marginRight: '75px', border: '2px solid #422985' }} onClick={() => handleInfoEscuelaClick(property.id_inmueble)}>Mostrar información</button>
-                {/* Agrega otros detalles de propiedad según sea necesario */}
-              </div>
-            </div>
-          )
-              )
-          )}
-        </div>
-      )}
-
-      
+        {showInmuebles && (
+          <div className="container">
+            {searchTerm ? (
+              filteredProperties
+                .slice(indexOfFirstItem, indexOfLastItem)
+                .map((property, index) =>
+                  property.activo !== 0 && (
+                    <div key={index} className="card mb-3">
+                      <div className="row g-0">
+                        <div className="col-md-4">
+                          <img
+                            src={`http://localhost:3031/images/${property.foto}`}
+                            alt="Imagen"
+                            className="img-fluid rounded-start"
+                            style={{ width: '100%', height: 'auto' }}
+                          />
+                        </div>
+                        <div className="col-md-8">
+                          <div className="card-body">
+                            <h5 className="card-title">{property.titulo}</h5>
+                            <p className="card-text">Dirección: {property.direccion}</p>
+                            <p className="card-text">Escuela cercana: {property.nombre_escuela}</p>
+                            <p className="card-text">Precio: {property.precio}</p>
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => handleInfoEscuelaClick(property.id_inmueble)}
+                            >
+                              Mostrar información
+                            </button>
+                            {/* Agrega otros detalles de propiedad según sea necesario */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )
+            ) : (
+              registeredProperties
+                .slice(indexOfFirstItem, indexOfLastItem)
+                .map((property, index) =>
+                  property.activo !== 0 && (
+                    <div key={index} className="card mb-3">
+                      <div className="row g-0">
+                        <div className="col-md-4">
+                          <img
+                            src={`http://localhost:3031/images/${property.foto}`}
+                            alt="Imagen"
+                            className="img-fluid rounded-start"
+                            style={{ width: '100%', height: 'auto' }}
+                          />
+                        </div>
+                        <div className="col-md-8">
+                          <div className="card-body">
+                            <h5 className="card-title">{property.titulo}</h5>
+                            <p className="card-text">Dirección: {property.direccion}</p>
+                            <p className="card-text">Escuela cercana: {property.nombre_escuela}</p>
+                            <p className="card-text">Precio: {property.precio}</p>
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => handleInfoEscuelaClick(property.id_inmueble)}
+                            >
+                              Mostrar información
+                            </button>
+                            {/* Agrega otros detalles de propiedad según sea necesario */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )
+            )}
+          </div>
+        )}
     </div>
   );
 }
