@@ -55,6 +55,13 @@ const db = mysql.createConnection({
   password: "jS9hYCGfJdgbZ4wHnbyg",
   database: 'bccdb0knkukccxehxrur'
 });
+/*
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "sistemarentas"
+});*/
 
 db.connect((err) => {
     if (err) {
