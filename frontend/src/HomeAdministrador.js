@@ -99,16 +99,14 @@ function ReportesSection() {
     <div className="container-fluid" style={{ backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
       <h2>Reportes</h2>
       <div className="row">
-        {reportes
-          .filter(reporte => reporte.estado === 0)
-          .map(reporte => (
+        {reportes.map(reporte => (
             <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
               <div className="card h-100" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px' }}>
                 {/* Contenido del reporte */}
-                <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+                <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
                 <span className='subtitles-general'>{reporte.asunto}</span>
                 <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-                <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
                   Gestionar Incidencia
                 </button>
               </div>
@@ -186,17 +184,16 @@ function UsuariosSection() {
       </div>
       {/* Listado de reportes asociados al usuario */}
       <div className="row">
-        {userReports
-          .filter(reporte => reporte.estado === 0)
-          .map(reporte => (
+        {userReports.map(reporte => (
             <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
               <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
                 {/* Contenido del usuario */}
-                <h3>{reporte.nombre_usuario}</h3>
-                <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+                <h4>{reporte.nombre_usuario} ID: {reporte.id_usuario}</h4>
+                <span className= 'subtitles-general'>Reportes asociados: {reporte.asociados}</span>
+                <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
                 <span className='subtitles-general'>{reporte.asunto}</span>
                 <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-                <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
                   Gestionar Incidencia
                 </button>
                 {/* Botones debajo del último botón "Gestionar Incidencia" */}
@@ -235,13 +232,21 @@ function InmueblesSection() {
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
-  const handleresultoClick = async (reporteId) => {
+  const handlePausa = async (IdInmueble, activo) => {
     try {
-      // Realizar una solicitud para actualizar el estado del reporte a 1
-      await axios.put(`http://localhost:3031/actualizarEstado/${reporteId}`, { estado: 1 });
-      window.location.reload(); // Recargar la página
+      const estadoActivo = activo;
+      if (estadoActivo === 1) {
+        // Si activo es 1, cambiar a 0
+        await axios.put(`http://localhost:3031/pausarInmueble/${IdInmueble}`, { activo: 0 });
+        swal("Publicación Pausada Correctamente", "", "success");
+      } else if (estadoActivo === 0) {
+        // Si activo es 0, cambiar a 1
+        await axios.put(`http://localhost:3031/pausarInmueble/${IdInmueble}`, { activo: 1 });
+        swal("Publicación Activada Correctamente", "", "success");
+      }
+      window.location.reload();
     } catch (error) {
-      console.error('Error al actualizar el estado del reporte:', error);
+      console.error('Error al cambiar el estado de la publicación del inmueble:', error);
     }
   };
 
@@ -264,23 +269,21 @@ function InmueblesSection() {
             className="btn btn-outline-secondary" 
             type="button" 
             onClick={handleSearch} 
-            style={{ cursor: 'pointer', width: '100%' }}
           >
             <i className="fa fa-search"></i>
           </button>
         </div>
       </div>
-      {userReports
-        .filter(reporte => reporte.estado === 0)
-        .map(reporte => (
+      <div className="row">
+      {userReports.map(reporte => (
           <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
             <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
               {/* Contenido del inmueble */}
-              <h3>{reporte.nombre_inmueble}</h3>
-              <span className='subtitles-general'>#{reporte.id_reporte}&nbsp;&nbsp;</span>
+              <h4>{reporte.nombre_inmueble}  ID: {reporte.id_inmueble}</h4>
+              <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
               <span className='subtitles-general'>{reporte.asunto}</span>
               <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-              <button className="btn btn-primary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+              <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
                 Gestionar Incidencia
               </button>
               {/* Botones debajo del último botón "Gestionar Incidencia" */}
@@ -288,15 +291,16 @@ function InmueblesSection() {
                 <button 
                   className="btn btn-warning" 
                   style={{ marginRight: '10px' }} 
-                  onClick={() => handleresultoClick(reporte.id_reporte)}
+                  onClick={() => handlePausa(reporte.id_inmueble, reporte.inmueble_activo)}
                 >
-                  Pausar publicación
+                  {reporte.inmueble_activo == 1 ? "Pausar Publicación" : "Activar Publicación"}
                 </button>
                 <button className="btn btn-success">Mensaje</button>
               </div>
             </div>
           </div>
         ))}
+        </div>
     </div>
   );
 }

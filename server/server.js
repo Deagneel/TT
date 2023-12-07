@@ -644,27 +644,56 @@ app.get('/inmueblearrendatario', (req, res) => {
 
 
 
-//Sección reportes y admon
-app.put('/actualizarEstado/:id_reporte', (req, res) => {
-  const { id_reporte } = req.params;
-  const { estado } = req.body;
+  app.put('/resolverReporte/:id_reporte/:id_usuario', (req, res) => {
+    const { id_reporte, id_usuario } = req.params;
+  
+    // Decrementar en 1 la columna no_reportes en la tabla usuario
+    const sqlDecrement = 'UPDATE usuario SET no_reportes = no_reportes - 1 WHERE id_usuario = ?';
+  
+    // Eliminar la fila asociada al reporte en la tabla reporte
+    const sqlDelete = 'DELETE FROM reporte WHERE id_reporte = ?';
+  
+    db.query(sqlDecrement, [id_usuario], (err, resultDecrement) => {
+      if (err) {
+        console.error('Error al decrementar el contador de reportes del usuario:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        db.query(sqlDelete, [id_reporte], (err, resultDelete) => {
+          if (err) {
+            console.error('Error al eliminar el reporte:', err);
+            res.status(500).json({ error: 'Error interno del servidor' });
+          } else {
+            res.json({ message: 'Reporte resuelto y eliminado correctamente' });
+          }
+        });
+      }
+    });
+  });
+  
 
-  const sql = 'UPDATE reporte SET estado = ? WHERE id_reporte = ?';
+app.put('/pausarInmueble/:id_inmueble', (req, res) => {
+  const { id_inmueble } = req.params;
+  const { activo } = req.body;
 
-  db.query(sql, [estado, id_reporte], (err, result) => {
+  const sql = 'UPDATE inmueble SET activo = ? WHERE id_inmueble = ?';
+
+  db.query(sql, [activo, id_inmueble], (err, result) => {
     if (err) {
-      console.error('Error al actualizar el estado del reporte:', err);
+      console.error('Error al cambiar el estado de la publicación del inmueble:', err);
       res.status(500).json({ error: 'Error interno del servidor' });
     } else {
-      res.json({ message: 'Estado del reporte actualizado correctamente' });
+      let message = activo === '1' ? 'Publicación del inmueble activada correctamente' : 'Publicación del inmueble pausada correctamente';
+      res.json({ message });
     }
   });
 });
 
+
+
   // Ruta para llenar los datos de la tabla reporte
   app.post('/generarReporte', (req, res) => {
-    const sql = "INSERT INTO reporte (asunto, descripción, fecha, estado, id_usuario , id_inmueble) VALUES (?, ?, ?, ?, ?, ?)";
-    const values = [
+    const sqlInsert = "INSERT INTO reporte (asunto, descripción, fecha, estado, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?, ?)";
+    const valuesInsert = [
         req.body.aff,
         req.body.description,
         req.body.date,
@@ -672,16 +701,41 @@ app.put('/actualizarEstado/:id_reporte', (req, res) => {
         req.body.id_usuario,
         req.body.id_inmueble
     ];
-    console.log(req.session.user.id);
-    db.query(sql, values, (err, result) => {
+
+    const sqlSelect = "SELECT no_reportes FROM usuario WHERE id_usuario = ?";
+    const sqlUpdate = "UPDATE usuario SET no_reportes = ? WHERE id_usuario = ?";
+
+    db.query(sqlInsert, valuesInsert, (err, result) => {
         if (err) {
             console.error('Error al insertar en la base de datos:', err);
             return res.status(500).json({ error: 'Error interno del servidor' });
         }
-        
-        return res.json({ message: 'Datos insertados correctamente' });
+
+        // Obtener el número actual de reportes del usuario
+        db.query(sqlSelect, [req.body.id_usuario], (err, rows) => {
+            if (err) {
+                console.error('Error al obtener el número de reportes del usuario:', err);
+                return res.status(500).json({ error: 'Error interno del servidor' });
+            }
+
+            // Incrementar el contador de reportes
+            const currentNoReportes = rows[0].no_reportes;
+            const newNoReportes = currentNoReportes + 1;
+
+            // Actualizar el número de reportes para el usuario correspondiente
+            db.query(sqlUpdate, [newNoReportes, req.body.id_usuario], (err, result) => {
+                if (err) {
+                    console.error('Error al actualizar el número de reportes del usuario:', err);
+                    return res.status(500).json({ error: 'Error interno del servidor' });
+                }
+
+                return res.json({ message: 'Datos insertados correctamente' });
+            });
+        });
     });
 });
+
+
 
 // Realizar la consulta SQL para obtener los datos de la tabla "reporte"
 app.get('/obtenerReportes', (req, res) => {
@@ -702,7 +756,7 @@ app.get('/obtenerReportes', (req, res) => {
 app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
   const sql = `
-    SELECT r.*, u.nombre AS nombre_usuario 
+    SELECT r.*, u.nombre AS nombre_usuario, u.no_reportes AS asociados
     FROM reporte r 
     INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
     WHERE r.id_usuario = ? OR u.nombre LIKE ?
@@ -720,10 +774,11 @@ app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
   });
 });
 
+
 app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
   const sql = `
-    SELECT r.*, u.titulo AS nombre_inmueble 
+    SELECT r.*, u.titulo AS nombre_inmueble, u.activo AS inmueble_activo
     FROM reporte r 
     INNER JOIN inmueble u ON r.id_inmueble = u.id_inmueble
     WHERE r.id_inmueble = ? OR u.titulo LIKE ?
@@ -741,6 +796,21 @@ app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
   });
 });
 
+app.get('/obtenerNoReportesUsuario/:idUsuario', (req, res) => {
+  const { idUsuario } = req.params;
+  const sql = 'SELECT no_reportes FROM usuario WHERE id_usuario = ?';
+
+  db.query(sql, [idUsuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el número de reportes del usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result[0]?.no_reportes || 0);
+    }
+  });
+});
+
+
 app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
   const { idUsuario } = req.params;
   const sql = 'SELECT nombre FROM usuario WHERE id_usuario = ?';
@@ -757,14 +827,14 @@ app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
 
 app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
   const { idInmueble } = req.params;
-  const sql = 'SELECT titulo FROM inmueble WHERE id_inmueble = ?';
+  const sql = 'SELECT titulo, activo FROM inmueble WHERE id_inmueble = ?';
 
   db.query(sql, [idInmueble], (err, result) => {
     if (err) {
-      console.error('Error al obtener el título del inmueble:', err);
+      console.error('Error al obtener el título y estado del inmueble:', err);
       res.status(500).json({ error: 'Error interno del servidor' });
     } else {
-      res.json(result[0]?.titulo || 'Inmueble no encontrado');
+      res.json(result[0] || { titulo: 'Inmueble no encontrado', activo: 0 });
     }
   });
 });

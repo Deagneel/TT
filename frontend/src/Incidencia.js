@@ -1,13 +1,14 @@
 import React, { useState} from 'react';
-import { Link, useNavigate, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
-function Incidencia() {
-  
+function Incidencia({ }) {
   axios.defaults.withCredentials = true;
-  const navigate = useNavigate();
   const { id_usuario, id_inmueble } = useParams();
 
+  const handleGoBack = () => {
+    window.history.back(); // Esta línea te lleva a la página anterior
+  };
   
   const [formData, setFormData] = useState({
     aff: '',
@@ -48,7 +49,7 @@ function Incidencia() {
       }
   
       const response = await axios.post('http://localhost:3031/generarReporte', requestData);
-      
+      window.history.back(); 
       if (response.data.error) {
         console.log('Error al subir reporte:', response.data.error);
         return;
@@ -61,7 +62,7 @@ function Incidencia() {
   return (
     <div
       style={{
-        background: '#D6D6D6', // Color gris de fondo
+        background: '#999999', // Color gris de fondo
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -80,6 +81,7 @@ function Incidencia() {
       >
         {/* Icono para cerrar ventana */}
         <button
+        onClick={handleGoBack}
           style={{
             backgroundColor: 'transparent',
             border: 'none',
@@ -105,15 +107,7 @@ function Incidencia() {
           ></textarea>
 
           <button
-            style={{
-              backgroundColor: '#422985',
-              color: 'white',
-              height: '43px',
-              width: '100%',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
+            class="btn btn-danger"
             onClick={handleRegister}
           >
             Reportar

@@ -1,28 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import './Style.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import swal from 'sweetalert';
 
 function Navbar() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   const handleBackClick = () => {
     navigate('/homeadministrador');
   };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
-    <div style={{ backgroundColor: '#422985', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '11%' }}>
-      <div style={{ marginLeft: '50px' }}>
-        <button className="white-text-button" onClick={handleBackClick}>Regresar</button>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
+        <button
+          className={`navbar-toggler ${menuOpen ? '' : 'collapsed'}`}
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation"
+          onClick={toggleMenu}
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} d-lg-flex justify-content-between w-100`} id="navbarNav">
+        <button className="btn btn-outline-light me-3" onClick={handleBackClick}>
+          Regresar
+        </button>
+        </div>
       </div>
-    </div>
+    </nav>
   );
+  
 }
 
 function PageContent() {
   const navigate = useNavigate();
+  const [userNoReports, setUserNoReports] = useState(0);
   const [reporte, setReporte] = useState(null);
   const { id_reporte } = useParams();
+  
 
   useEffect(() => {
     axios.get(`http://localhost:3031/obtenerReporteesp/${id_reporte}`)
@@ -53,6 +73,21 @@ function PageContent() {
     obtenerInformacionAdicional();
   }, [reporte]);
 
+  useEffect(() => {
+    const obtenerNoReportesUsuario = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3031/obtenerNoReportesUsuario/${reporte?.id_usuario}`);
+        setUserNoReports(response.data);
+      } catch (error) {
+        console.error('Error al obtener el número de reportes del usuario:', error);
+      }
+    };
+  
+    obtenerNoReportesUsuario();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reporte?.id_usuario]); // Suprimir la advertencia con eslint-disable-next-line
+  
+
   const obtenerNombreUsuario = async (idUsuario) => {
     try {
       const response = await axios.get(`http://localhost:3031/obtenerNombreUsuario/${idUsuario}`);
@@ -77,20 +112,51 @@ function PageContent() {
     return <p>El reporte no se ha encontrado.</p>;
   }
 
-  const handleresultoClick = async () => {
+  const handleresultoClick = async (idUsuario) => {
     try {
-      // Realizar una solicitud para actualizar el estado del reporte a 1
-      await axios.put(`http://localhost:3031/actualizarEstado/${id_reporte}`, { estado: 1 });
-      swal("Gracias por resolver la incidencia.", " ", "success");
-      navigate('/homeadministrador');
+      const willResolve = await swal({
+        title: "¿Estás seguro?",
+        text: "Una vez resuelto, este reporte se eliminará.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+  
+      if (willResolve) {
+        await axios.put(`http://localhost:3031/resolverReporte/${id_reporte}/${idUsuario}`);
+        swal("Gracias por resolver la incidencia.", " ", "success");
+        navigate('/homeadministrador');
+      } else {
+        swal("Operación Cancelada");
+      }
     } catch (error) {
-      console.error('Error al actualizar el estado del reporte:', error);
+      console.error('Error al resolver el reporte:', error);
     }
   };
+  
+
+
 
   const handlePausa = async () => {
-    swal("Publicación Pausada Correctamente", " ", "success");
+    try {
+      const estadoActivo = reporte.inmueble.activo; // Almacena el valor en una variable auxiliar
+  
+      if (estadoActivo === 1) {
+        // Si activo es 1, cambiar a 0
+        await axios.put(`http://localhost:3031/pausarInmueble/${reporte.id_inmueble}`, { activo: 0 });
+        swal("Publicación Pausada Correctamente", "", "success");
+      } else if (estadoActivo === 0) {
+        // Si activo es 0, cambiar a 1
+        await axios.put(`http://localhost:3031/pausarInmueble/${reporte.id_inmueble}`, { activo: 1 });
+        swal("Publicación Activada Correctamente", "", "success");
+      }
+    } catch (error) {
+      console.error('Error al cambiar el estado de la publicación del inmueble:', error);
+    }
   };
+  
+  
+  
   
   const handleContactar = async () => {
     axios.post(`http://localhost:3031/newchat/${reporte.id_inmueble}`)
@@ -107,25 +173,47 @@ function PageContent() {
   };
 
   return (
-    <div style={{ marginLeft: '30px', backgroundColor: '#E6E6FA', padding: '20px', marginTop: '50px', borderRadius: '8px', width: '95%' }}>
-      <h2># {reporte.id_reporte}</h2>
-      <p>Asunto: {reporte.asunto}</p>
-      <div style={{ backgroundColor: '#C7B3FF', padding: '10px', borderRadius: '8px', marginTop: '10px', marginBottom: '10px' }}>
-        <p>{reporte.descripción}</p>
-        <p>Fecha del reporte: {reporte.fecha}</p>
-      </div>
-      <p>Usuario asociado: {reporte.usuario}</p>
-      {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
-        <p>Inmueble asociado: {reporte.inmueble}</p>
-      )}
-      <div style={{ marginTop: '35px', display: 'flex' }}>
-        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handleContactar}>Contactar al usuario</button>
-        {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
-        <button style={{ marginRight: 'auto', border: '2px solid #422985' }} onClick={handlePausa}>Pausar Publicación de Inmueble</button>
-      )}
-        <button style={{ marginLeft: 'auto', border: '2px solid #422985' }} onClick={handleresultoClick}>Incidencia resuelta</button>
+    <div className="container-fluid">
+    <div className="row justify-content-center">
+      <div className="col-lg-8 col-md-10 col-sm-12">
+        <div className="bg-light p-4 rounded mt-5">
+          <h3>Folio del reporte: {reporte.id_reporte}</h3>
+          <p>Asunto: {reporte.asunto}</p>
+          <div className="bg-secondary text-light p-3 rounded mb-3">
+            <p>{reporte.descripción}</p>
+            <p>Fecha del reporte: {reporte.fecha}</p>
+          </div>
+          <div>
+            <p>Usuario asociado: {reporte.usuario}</p>
+            <p>ID del usuario: {reporte.id_usuario} Reportes asociados: {userNoReports}</p>
+          </div>
+          {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
+            <div>
+              <p>Inmueble asociado: {reporte.inmueble.titulo}</p>
+              <p>ID del inmueble: {reporte.id_inmueble}</p>
+            </div>
+          )}
+          <div className="d-flex mt-4">
+            <button className="btn btn-secondary me-auto" onClick={handleContactar}>
+              Contactar al usuario
+            </button>
+            {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
+              <button
+                className="btn btn-secondary me-3"
+                onClick={handlePausa}
+              >
+                {reporte.inmueble.activo === 1 ? "Pausar Publicación de Inmueble" : "Activar Publicación de Inmueble"}
+              </button>
+            )}
+            <button className="btn btn-secondary" onClick={() => handleresultoClick(reporte.id_usuario)}>
+              Incidencia resuelta
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+  
   );
 }
 
