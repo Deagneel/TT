@@ -1017,3 +1017,79 @@ app.get('/infoinmueblesmap', (req, res) => {
     }
   });
 });
+
+
+app.post('/rentar/:id', async (req, res) => {
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
+    const id_inmueble = req.params.id;
+    
+    // Simula la lógica de obtención de información del inmueble
+    const sql = `SELECT * FROM inmueble WHERE id_inmueble = ?`;
+
+    db.query(sql, [id_inmueble], (err, result) => {
+      if (err) {
+        console.error('Error al obtener el inmueble:', err);
+        return res.status(500).json({ error: 'Error interno del servidor al obtener el inmueble' });
+      }
+
+      if (result.length > 0) {
+        // Información del inmueble encontrada, continúa con la lógica
+        const infoInmuebleResponse = result[0];
+
+        if (!infoInmuebleResponse.periodo_de_renta) {
+          console.error('Error: no se encontró la propiedad data en el resultado de la consulta');
+          return res.status(500).json({ error: 'Error interno del servidor: no se encontró la propiedad data en el resultado de la consulta' });
+        }
+        
+        const fecha_inicio = new Date().toISOString().slice(0, 10);
+        const fecha_fin = calcularFechaFin(fecha_inicio, infoInmuebleResponse.periodo_de_renta);
+
+        console.log("Fecha de inicio:", fecha_inicio);
+        console.log("Fecha de fin:", fecha_fin);
+
+        const insertSql = "INSERT INTO rentados (fecha_inicio, fecha_fin, estado, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?)";
+        const insertValues = [
+          fecha_inicio,
+          fecha_fin,
+          0,
+          req.session.user.id,
+          id_inmueble
+        ];
+
+        // Continúa con la consulta a la base de datos para insertar en rentados
+        db.query(insertSql, insertValues, (insertErr, insertData) => {
+          if (insertErr) {
+            console.error('Error al insertar en la base de datos:', insertErr);
+            return res.status(500).json({ error: 'Error interno del servidor al insertar en la base de datos' });
+          }
+          return res.json(insertData);
+        });
+      } else {
+        // Inmueble no encontrado
+        return res.status(404).json({ error: 'Inmueble no encontrado' });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+function calcularFechaFin(fecha_inicio, periodo_de_renta) {
+  const startDate = new Date(fecha_inicio);
+  if (periodo_de_renta === 'Mensual') {
+    startDate.setDate(startDate.getDate() + 30);
+  } else if (periodo_de_renta === 'Cuatrimestral') {
+    startDate.setMonth(startDate.getMonth() + 4);
+  } else if (periodo_de_renta === 'Semestral') {
+    startDate.setMonth(startDate.getMonth() + 6);
+  } else if (periodo_de_renta === 'Anual') {
+    startDate.setFullYear(startDate.getFullYear() + 1);
+  }
+  return startDate.toISOString().slice(0, 10);
+}
+

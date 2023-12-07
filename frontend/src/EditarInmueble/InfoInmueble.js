@@ -5,6 +5,7 @@ import './EditInmue.css';
 import { faEnvelope, faExclamationTriangle, faHouse } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 function InfoInmueble() {
   let tipoVivienda; //Auxiliar tipo de vivienda
@@ -35,6 +36,34 @@ const handleReportClick = (idUsuario, idInmueble) => {
   // Se activa al presionar el botón Reportar
   navigate(`/incidencia/${idUsuario}/${idInmueble}`);
 };
+
+const handleTrato = async (idUsuario, idInmueble) => {
+  try {
+    // Mostrar SweetAlert2 de confirmación
+    const willDoTrato = await swal({
+      title: "¿Quieres mandar una solicitud para concretar un trato?",
+      text: "Enviaremos tu solicitud al arrendador.",
+      icon: "info",
+      buttons: true,
+      dangerMode: false,
+    });
+
+    // Si el usuario confirma
+    if (willDoTrato) {
+      // Mostrar SweetAlert2 de éxito
+      await axios.post(`http://localhost:3031/rentar/${idInmueble}`);
+      swal("Tu solicitud se ha enviado.", {
+        icon: "success",
+      });
+    } else {
+      // Mostrar SweetAlert2 de cancelación
+      swal("Operación Cancelada");
+    }
+  } catch (error) {
+    console.error('Error al realizar el trato:', error);
+  }
+};
+
 
 
   const handleRegresarClick = () => {
@@ -135,7 +164,7 @@ const handleReportClick = (idUsuario, idInmueble) => {
             {/* Botón "Trato" */}
             <div className="me-3">
               <p className="mb-0 font-weight-bold">Hacer Trato</p>
-              <button onClick={() => handleReportClick(property.id_usuario, property.id_inmueble)} className="btn btn-primary">
+              <button onClick={() => handleTrato(property.id_usuario, property.id_inmueble)} className="btn btn-primary">
                 <FontAwesomeIcon icon={faHouse} className="me-2" />
               </button>
             </div>
