@@ -251,7 +251,9 @@ return (
                 className="img-fluid"
                 style={{ width: '100%' }}
               />
-              <h5>Precio: {selectedInmueble.precio}</h5>
+              <h5>Dirección: {selectedInmueble.direccion}</h5>
+              <h5>Precio: ${selectedInmueble.precio}</h5>
+              <h5>Cuartos Disponibles: {selectedInmueble.no_habitaciones}</h5>
               <h5>Distancia a la escuela: {getDistanceFromLatLonInKm(selectedInmueble.latitud, selectedInmueble.longitud, position.lat, position.lng)} km</h5>
 
               {/* Use a button or a more descriptive element for the clickable area */}
