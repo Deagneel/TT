@@ -176,7 +176,7 @@ function PageContent() {
     <div className="container-fluid">
     <div className="row justify-content-center">
       <div className="col-lg-8 col-md-10 col-sm-12">
-        <div className="bg-light p-4 rounded mt-5">
+        <div className="bg-light p-4 rounded mt-5 shadow">
           <h3>Folio del reporte: {reporte.id_reporte}</h3>
           <p>Asunto: {reporte.asunto}</p>
           <div className="bg-secondary text-light p-3 rounded mb-3">
