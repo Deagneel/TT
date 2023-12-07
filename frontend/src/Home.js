@@ -151,7 +151,7 @@ function Home() {
   return (
     <div style={{ height: '100vh' }}>
       <Navbar handleSearchTerm={handleSearchTerm} />
-        <div className="bg-secondary p-2 d-flex justify-content-center">
+        <div className="bg-secondary p-2 d-flex justify-content-center" style={{marginBottom: '20px'}}>
           <button className={`btn ${showSchools ? 'btn-dark active' : 'btn-secondary'} btn-sm mx-5`} onClick={handleescuelaClick}>
             Escuelas
           </button>
@@ -159,21 +159,7 @@ function Home() {
             Inmuebles
           </button>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
-          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-            <i className="fa fa-arrow-left"></i> {/* Icono de flecha a la izquierda */}
-          </button>
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              showSchools
-                ? indexOfLastItem >= registeredSchools.length
-                : indexOfLastItem >= registeredProperties.length
-            }
-          >
-            <i className="fa fa-arrow-right"></i> {/* Icono de flecha a la derecha */}
-          </button>
-        </div>
+        
       
         {showSchools && (
           <div className="container">
@@ -181,7 +167,7 @@ function Home() {
               filteredSchools
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) => (
-                  <div key={index} className="card mb-3" style={{ height: '165%' }}>
+                  <div key={index} className="card mb-3 shadow" style={{ height: '165%' }}>
                     {/* Agregar estilos adicionales según sea necesario */}
                     <div className="row g-0">
                       <div className="col-md-4">
@@ -202,7 +188,10 @@ function Home() {
                               e.preventDefault();
                               navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
                             }}
-                            className="btn btn-primary"
+                              className="btn btn-secondary"
+                              style={{ backgroundColor: '#beaf87', color: 'black' }}
+                              onMouseOver={(e) => (e.target.style.backgroundColor = '#9b8c5a')}
+                              onMouseOut={(e) => (e.target.style.backgroundColor = '#beaf87')}
                           >
                             Inmuebles Cerca
                           </button>
@@ -215,7 +204,7 @@ function Home() {
               registeredSchools
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) => (
-                  <div key={index} className="card mb-3" style={{ height: '165%' }}>
+                  <div key={index} className="card mb-3 shadow" style={{ height: '165%' }}>
                     {/* Agregar estilos adicionales según sea necesario */}
                     <div className="row g-0">
                       <div className="col-md-4">
@@ -236,7 +225,10 @@ function Home() {
                               e.preventDefault();
                               navigate(`/listainmuebles?id_escuela=${property.id_escuela}`);
                             }}
-                            className="btn btn-primary"
+                            className="btn btn-secondary"
+                              style={{ backgroundColor: '#beaf87', color: 'black' }}
+                              onMouseOver={(e) => (e.target.style.backgroundColor = '#9b8c5a')}
+                              onMouseOut={(e) => (e.target.style.backgroundColor = '#beaf87')}
                           >
                             Inmuebles Cerca
                           </button>
@@ -257,7 +249,7 @@ function Home() {
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
                   property.activo !== 0 && (
-                    <div key={index} className="card mb-3">
+                    <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
@@ -274,7 +266,10 @@ function Home() {
                             <p className="card-text">Escuela cercana: {property.nombre_escuela}</p>
                             <p className="card-text">Precio: {property.precio}</p>
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-secondary"
+                              style={{ backgroundColor: '#beaf87', color: 'black' }}
+                              onMouseOver={(e) => (e.target.style.backgroundColor = '#9b8c5a')}
+                              onMouseOut={(e) => (e.target.style.backgroundColor = '#beaf87')}
                               onClick={() => handleInfoEscuelaClick(property.id_inmueble)}
                             >
                               Mostrar información
@@ -291,7 +286,7 @@ function Home() {
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
                   property.activo !== 0 && (
-                    <div key={index} className="card mb-3">
+                    <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
@@ -308,7 +303,10 @@ function Home() {
                             <p className="card-text">Escuela cercana: {property.nombre_escuela}</p>
                             <p className="card-text">Precio: {property.precio}</p>
                             <button
-                              className="btn btn-primary"
+                              className="btn btn-secondary"
+                              style={{ backgroundColor: '#beaf87', color: 'black' }}
+                              onMouseOver={(e) => (e.target.style.backgroundColor = '#9b8c5a')}
+                              onMouseOut={(e) => (e.target.style.backgroundColor = '#beaf87')}
                               onClick={() => handleInfoEscuelaClick(property.id_inmueble)}
                             >
                               Mostrar información
@@ -323,6 +321,23 @@ function Home() {
             )}
           </div>
         )}
+
+        <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
+          <button class="btn btn-light" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            <i className="fa fa-arrow-left"></i> {/* Icono de flecha a la izquierda */}
+          </button>
+          <button
+            class="btn btn-light"
+            onClick={() => paginate(currentPage + 1)}
+            disabled={
+              showSchools
+                ? indexOfLastItem >= registeredSchools.length
+                : indexOfLastItem >= registeredProperties.length
+            }
+          >
+            <i className="fa fa-arrow-right"></i> {/* Icono de flecha a la derecha */}
+          </button>
+        </div>
     </div>
   );
 }

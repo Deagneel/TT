@@ -38,35 +38,12 @@ function NuevaContra() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-white vh-100">
-      <Link
-        to="/recuperarcontra"
-        style={{
-          position: 'absolute',
-          top: '20px',
-          left: '30px',
-          color: '#422985',
-          textDecoration: 'none',
-          fontFamily: 'Aharoni',
-          fontSize: '1.2rem',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          style={{ marginRight: '5px' }}
-        />
-        Regresar
-      </Link>
-      <div className="container">
+    <div className="container-fluid bg-white min-vh-100 d-flex flex-column justify-content-center align-items-center">
+      <div className="container mt-5">
         <div className="row">
-          <div className="col-md-6">
-            <div className="bg-white p-3 rounded">
-              <br />
-              <h2 className="text-center">Nueva contraseña</h2>
-              <br />
-              <br />
+          <div className="col-md-6 d-flex justify-content-center align-items-center">
+            <div className="bg-white p-4 rounded">
+              <h2 className="text-center mb-4">Nueva contraseña</h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="contrasena">
@@ -78,8 +55,7 @@ function NuevaContra() {
                     name="contrasena"
                     value={contrasena}
                     onChange={handleContrasenaInput}
-                    className="form-control rounded-0"
-                    style={{ width: '100%' }}
+                    className="form-control"
                   />
                 </div>
                 <div className="mb-3">
@@ -92,22 +68,13 @@ function NuevaContra() {
                     name="confirmarContrasena"
                     value={confirmarContrasena}
                     onChange={handleConfirmarContrasenaInput}
-                    className="form-control rounded-0"
-                    style={{ width: '100%' }}
+                    className="form-control"
                   />
                 </div>
-                <br />
-                <br />
-                <div className="d-flex justify-content-center">
+                <div className="d-grid">
                   <button
                     type="submit"
-                    className="btn btn-success rounded-0"
-                    style={{
-                      width: 'auto',
-                      padding: '5px 10px',
-                      backgroundColor: '#422985',
-                      color: 'white',
-                    }}
+                    className="btn btn-secondary"
                   >
                     Continuar
                   </button>
@@ -115,7 +82,7 @@ function NuevaContra() {
               </form>
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 d-flex justify-content-center align-items-center mt-4 mt-md-0">
             <div className="rounded-circle overflow-hidden">
               <img
                 src={process.env.PUBLIC_URL + '/Imagen1.png'}

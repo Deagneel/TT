@@ -109,8 +109,16 @@ const PerfilArrendador = () => {
 
 
   const handleCambiarContraseña = () => {
-    console.log('Cambiar contraseña');
-    swal("Cambiar Contraseña", "Le envíamos un correo con las instrucciones.", "info");
+    axios.post('http://localhost:3031/recuperar-contrasena', { correo: formData.correo })
+      .then((response) => {
+        console.log(response.data);
+        swal("Correo enviado con éxito.", " ", "success");
+        // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito o error al usuario
+      })
+      .catch((error) => {
+        console.error('Error al recuperar la contraseña:', error);
+        // Manejar el error, mostrar un mensaje al usuario, etc.
+      });
   };
 
   const handleNombreChange = (e) => {
@@ -128,86 +136,50 @@ const PerfilArrendador = () => {
   };
 
   return (
-    <div style={{ margin: 0, fontFamily: 'Roboto, sans-serif' }}>
-      <div
-        className="main-container"
-        style={{
-          backgroundColor: 'mediumpurple',
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <div
-          className="inner-container"
-          style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            textAlign: 'center',
-            width: '40%',
-          }}
-        >
-          <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '20px' }}>
-            Perfil de Arrendador
-          </h1>
+    <div className="container-fluid" style={{ margin: 0, fontFamily: 'Roboto, sans-serif', backgroundColor: '#999999' }}>
+      <div className="row justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+        <div className="col-md-6">
+          <div className="bg-white p-4 rounded text-center">
+            <h1 className="mb-4">Perfil</h1>
+            
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="nombre" className="col-sm-3 col-form-label">Nombre:</label>
+              <div className="col-sm-6">
+                <input type="text" className="form-control" value={formData.nombre} onChange={handleNombreChange} />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarNombre}>Actualizar</button>
+              </div>
+            </div>
 
-          <div className="profile-section" style={{ marginBottom: '20px' }}>
-            <label>Nombre:</label>
-            <input
-              type="text"
-              style={{ width: '50%', marginRight: '10px' }}
-              value={formData.nombre}
-              onChange={handleNombreChange}
-            />
-            <button className="btn btn-primary" onClick={handleActualizarNombre}>
-              Actualizar
-            </button>
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="correo" className="col-sm-3 col-form-label">Correo:</label>
+              <div className="col-sm-6">
+                <input type="email" className="form-control" value={formData.correo} onChange={handleCorreoChange} />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarCorreo}>Actualizar</button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
+              <label className="col-sm-3 col-form-label">INE:</label>
+              <div className="col-sm-6">
+                <input type="file" className="form-control-file" onChange={handleFileChange} />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarINE}>Subir</button>
+              </div>
+            </div>
+
+            <div className="mb-3 row">
+              <div className="col-sm-12">
+                <button className="btn btn-dark btn-block" onClick={handleCambiarContraseña}>Cambiar Contraseña</button>
+              </div>
+            </div>
+
+            <Link to="/homearrendador" className="return-link" style={{ color: 'black', textDecoration: 'none', position: 'absolute', top: '10px', left: '10px' }}>Volver</Link>
           </div>
-
-          <div className="profile-section" style={{ marginBottom: '20px' }}>
-            <label>Correo:</label>
-            <input
-              type="email"
-              style={{ width: '50%', marginRight: '10px' }}
-              value={formData.correo}
-              onChange={handleCorreoChange}
-            />
-            <button className="btn btn-primary" onClick={handleActualizarCorreo}>
-              Actualizar
-            </button>
-          </div>
-
-          <div className="profile-section" style={{ marginBottom: '20px' }}>
-          <label>INE: </label>
-              <input type="file" onChange={handleFileChange} />
-              <button className="btn btn-info" onClick={handleActualizarINE}>
-                  Subir / Actualizar
-              </button>
-          </div>
-
-
-          <div className="profile-section" style={{ marginBottom: '20px' }}>
-            <button className="btn btn-warning" onClick={handleCambiarContraseña}>
-              Cambiar Contraseña
-            </button>
-          </div>
-
-          <Link
-            to="/homearrendador" // Reemplaza con la ruta a la que deseas volver
-            className="return-link"
-            style={{
-              position: 'absolute',
-              top: '10px',
-              left: '10px',
-              padding: '10px',
-              color: 'white',
-              textDecoration: 'none',
-            }}
-          >
-            Volver
-          </Link>
         </div>
       </div>
     </div>
