@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Validation from './SignupValidation.js';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Signup() {
   const [values, setValues] = useState({
@@ -87,43 +88,34 @@ function Signup() {
   }, [tipoDeUsuario]);
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-white vh-100">
+    <div className="container-fluid bg-white min-vh-100 d-flex justify-content-center align-items-center">
+      <Link to="/tipousuario" className="position-absolute top-0 start-0 text-decoration-none text-dark ms-3 mt-3">
+        <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+        Regresar
+      </Link>
       <div className="container">
-        <div className="row">
-          <div className="col-md-6">
+        <div className="row justify-content-center mt-5">
+          <div className="col-md-6 order-md-2">
+            <div style={{ borderRadius: '50%', overflow: 'hidden' }}>
+              <img
+                src={process.env.PUBLIC_URL + '/Imagen1.png'}
+                alt="Signup"
+                className="img-fluid rounded-circle"
+              />
+            </div>
+          </div>
+          <div className="col-md-6 mt-4 mt-md-0 order-md-1">
             <div className="bg-white p-3 rounded">
-              <Link
-                to="/tipousuario"
-                style={{
-                  position: 'absolute',
-                  top: '20px',
-                  left: '30px',
-                  color: '#422985',
-                  textDecoration: 'none',
-                  fontFamily: 'Aharoni',
-                  fontSize: '1.2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faArrowLeft}
-                  style={{ marginRight: '5px' }}
-                />
-                Regresar
-              </Link>
-              <center>
-                <h2>
-                  {values.tipo_de_usuario === 0 ? (
-                    <span>Crear Cuenta - Arrendador</span>
-                  ) : (
-                    <span>Crear Cuenta - Arrendatario</span>
-                  )}
-                </h2>
-              </center>
+              <h2 className="text-center">
+                {values.tipo_de_usuario === 0 ? (
+                  <span>Crear Cuenta - Arrendador</span>
+                ) : (
+                  <span>Crear Cuenta - Arrendatario</span>
+                )}
+              </h2>
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="nombre">
+                  <label htmlFor="nombre" className="form-label">
                     <strong>Nombre</strong>
                   </label>
                   <input
@@ -132,7 +124,7 @@ function Signup() {
                     name="nombre"
                     autoComplete="off"
                     onChange={handleInput}
-                    className="form-control rounded-0"
+                    className="form-control"
                   />
                   {errors.nombre && (
                     <span className="text-danger">{errors.nombre}</span>
@@ -140,7 +132,7 @@ function Signup() {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="correo">
+                  <label htmlFor="correo" className="form-label">
                     <strong>Correo</strong>
                   </label>
                   <input
@@ -149,7 +141,7 @@ function Signup() {
                     name="correo"
                     autoComplete="off"
                     onChange={handleInput}
-                    className="form-control rounded-0"
+                    className="form-control"
                   />
                   {errors.correo && (
                     <span className="text-danger">{errors.correo}</span>
@@ -157,7 +149,7 @@ function Signup() {
                 </div>
 
                 <div className="mb-3">
-                  <label htmlFor="contrasena">
+                  <label htmlFor="contrasena" className="form-label">
                     <strong>Contraseña</strong>
                   </label>
                   <input
@@ -165,16 +157,15 @@ function Signup() {
                     placeholder="Ingresar contraseña"
                     name="contrasena"
                     onChange={handleInput}
-                    className="form-control rounded-0"
+                    className="form-control"
                   />
                   {errors.contrasena && (
                     <span className="text-danger">{errors.contrasena}</span>
                   )}
                 </div>
 
-
                 <div className="mb-3">
-                  <label htmlFor="confirmar_contrasena">
+                  <label htmlFor="confirmar_contrasena" className="form-label">
                     <strong>Confirmar Contraseña</strong>
                   </label>
                   <input
@@ -182,60 +173,39 @@ function Signup() {
                     placeholder="Confirmar contraseña"
                     name="confirmar_contrasena"
                     onChange={handleInput}
-                    className="form-control rounded-0"
+                    className="form-control"
                   />
                 </div>
 
-
-                <div className="mb-3">
-                  <label htmlFor="aceptar_terminos">
-                    <input
-                      type="checkbox"
-                      name="aceptar_terminos"
-                      onChange={handleCheckbox}
-                    />
+                <div className="mb-3 form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    name="aceptar_terminos"
+                    onChange={handleCheckbox}
+                    id="aceptar_terminos"
+                  />
+                  <label className="form-check-label" htmlFor="aceptar_terminos">
                     Acepto términos y condiciones.
                   </label>
                 </div>
 
-                <div className="d-flex flex-column align-items-center">
+                <div className="d-grid gap-2">
                   <button
                     type="submit"
-                    className="btn btn-success rounded-0"
-                    style={{
-                      width: 'auto',
-                      padding: '5px 10px',
-                      marginBottom: '10px',
-                      backgroundColor: '#422985',
-                    }}
+                    className="btn btn-secondary"
                     disabled={!values.aceptar_terminos || values.boton_deshabilitado}
                   >
                     Registrarse
                   </button>
-
                   <Link
-                    to="/"
-                    className="btn btn-success rounded-0"
-                    style={{
-                      width: 'auto',
-                      padding: '5px 10px',
-                      backgroundColor: '#422985',
-                      color: 'white',
-                    }}
+                    to="/login"
+                    className="btn btn-secondary"
                   >
                     Inicio de sesión
                   </Link>
                 </div>
               </form>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div style={{ borderRadius: '50%', overflow: 'hidden' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/Imagen1.png'}
-                alt="Signup"
-                className="img-fluid"
-              />
             </div>
           </div>
         </div>

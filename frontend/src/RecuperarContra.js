@@ -14,7 +14,7 @@ function RecuperarContrasena() {
     axios.post('http://localhost:3031/recuperar-contrasena', { correo })
       .then((response) => {
         console.log(response.data);
-        swal("Contraseña Reestablecida.", " ", "success");
+        swal("Correo enviado con éxito.", " ", "success");
         // Manejar la respuesta, por ejemplo, mostrar un mensaje de éxito o error al usuario
       })
       .catch((error) => {

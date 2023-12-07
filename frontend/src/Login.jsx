@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Validation from './LoginValidation';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Login() {
   const [values, setValues] = useState({

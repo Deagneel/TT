@@ -117,7 +117,7 @@ function ArrendadorPageContent() {
       <div className="row justify-content-center">
         {registeredProperties.map((property, index) => (
           <div key={index} className={`col-md-4 mb-4 ${property.activo === 0 || property.activo_usuario === 1 ? 'inactive' : ''}`}>
-            <div className="card">
+            <div className="card shadow">
               <img
                 src={`http://localhost:3031/images/${property.foto}`}
                 alt="Imagen"
@@ -137,8 +137,8 @@ function ArrendadorPageContent() {
                 </button>
                 {/* Agrega otros detalles de propiedad según sea necesario */}
               </div>
-              {property.activo === 0 && <p className="card-text text-danger">Inactivo por administrador</p>}
-              {property.activo_usuario === 1 && <p className="card-text text-warning">Pausado</p>}
+              {property.activo === 0 && <p className="inactiveText">Inactivo por administrador</p>}
+              {property.activo_usuario === 1 && <p className="inactiveText">Pausado</p>}
             </div>
           </div>
         ))}

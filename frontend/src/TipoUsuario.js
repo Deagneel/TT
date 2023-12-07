@@ -2,40 +2,28 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function TipoUsuario() {
   return (
-    <div className="d-flex justify-content-center align-items-center bg-white vh-100">
+    <div className="container-fluid bg-white min-vh-100 d-flex justify-content-center align-items-center">
+      <Link to="/home" className="position-absolute top-0 start-0 text-decoration-none text-dark ms-3 mt-3">
+        <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+        Regresar
+      </Link>
       <div className="container">
-        <div className="row">
+        <div className="row justify-content-center">
           <div className="col-md-12">
             <div className="bg-white p-3 rounded text-center">
-              <Link
-                to="/home"
-                style={{
-                  position: 'absolute',
-                  top: '20px',
-                  left: '30px',
-                  color: '#422985',
-                  textDecoration: 'none',
-                  fontFamily: 'Aharoni',
-                  fontSize: '1.2rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '5px' }} />
-                Regresar
-              </Link>
               <h2>Crear Cuenta</h2>
               <br />
-              <div className="d-flex justify-content-center align-items-end">
-                <div className="d-flex flex-column align-items-center mr-5" style={{ marginRight: '70px' }}>
+              <div className="row justify-content-center">
+                <div className="col-md-5 col-lg-4 d-flex flex-column align-items-center mb-4 mb-md-0">
                   <img
                     src={process.env.PUBLIC_URL + '/Arrendador.png'}
                     alt="Arrendador"
-                    className="img-fluid"
-                    style={{ marginBottom: '10px' }}
+                    className="img-fluid mb-3"
+                    style={{ maxWidth: '200px' }}
                   />
                   <Link
                     to={{
@@ -43,29 +31,26 @@ function TipoUsuario() {
                       search: '?tipo_de_usuario=0',
                       state: { tipo_de_usuario: 0 },
                     }}
-                    className="btn btn-success rounded"
+                    class="btn btn-secondary btn-lg"
                     style={{
                       width: 'auto',
-                      padding: '5px 10px',
-                      marginBottom: '10px',
-                      backgroundColor: '#422985',
+                      padding: '5px 20px',
                       textDecoration: 'none',
-                      fontSize: '25px',
+                      fontSize: '1.5rem',
                     }}
                   >
                     Arrendador
                   </Link>
-                  <p style={{ marginBottom: '0', fontFamily: 'Aharoni', fontSize: '20px' }}>
+                  <p className="mt-2" style={{ fontFamily: 'Aharoni', fontSize: '1.2rem', fontWeight: 'bold' }}>
                     Soy propietario del inmueble
                   </p>
                 </div>
-                <div className="d-flex flex-column align-items-center" style={{ marginLeft: '70px' }}>
+                <div className="col-md-5 col-lg-4 d-flex flex-column align-items-center">
                   <img
                     src={process.env.PUBLIC_URL + '/Arrendatario.png'}
                     alt="Arrendatario"
-                    className="img-fluid"
-                    width="88%"
-                    style={{ marginBottom: '10px' }}
+                    className="img-fluid mb-3"
+                    style={{ maxWidth: '200px' }}
                   />
                   <Link
                     to={{
@@ -73,19 +58,18 @@ function TipoUsuario() {
                       search: '?tipo_de_usuario=1',
                       state: { tipo_de_usuario: 1 },
                     }}
-                    className="btn btn-success rounded"
+                    class="btn btn-secondary btn-lg"
                     style={{
                       width: 'auto',
-                      padding: '5px 10px',
-                      marginBottom: '10px',
-                      backgroundColor: '#422985',
+                      padding: '5px 20px',
                       textDecoration: 'none',
-                      fontSize: '25px',
+                      fontSize: '1.5rem',
+                      marginTop: 'auto', // Mover el botón al fondo
                     }}
                   >
                     Arrendatario
                   </Link>
-                  <p style={{ marginBottom: '0', fontFamily: 'Aharoni', fontSize: '20px' }}>
+                  <p className="mt-2" style={{ fontFamily: 'Aharoni', fontSize: '1.2rem', fontWeight: 'bold' }}>
                     Quiero rentar
                   </p>
                 </div>
