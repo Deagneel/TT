@@ -17,6 +17,10 @@ function Login() {
     setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
+  const HandleCrearCuenta = () => {
+    navigate('/tipousuario');
+  }
+
   axios.defaults.withCredentials = true;
 
   const handleSubmit = async (event) => {
@@ -59,112 +63,82 @@ function Login() {
 };
 
 
-  return (
-    <div className="d-flex justify-content-center align-items-center bg-white vh-100">
-      <Link
-        to="/home"
-        style={{
-          position: 'absolute',
-          top: '20px',
-          left: '30px',
-          color: '#422985',
-          textDecoration: 'none',
-          fontFamily: 'Aharoni',
-          fontSize: '1.2rem',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: '5px' }} />
-        Regresar
-      </Link>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6">
-            <img
-              src={process.env.PUBLIC_URL + '/imagen2.png'}
-              alt="Imagen"
-              className="img-fluid rounded-circle"
-              style={{ width: '100%', height: 'auto' }}
-            />
-          </div>
-          <div className="col-md-6" style={{ marginTop: '90px' }}>
-            <div className="bg-white p-3 rounded">
-              <center>
-                <h2>Inicio de Sesión</h2>
-              </center>
-              <form action="" onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="correo">
-                    <strong>Correo</strong>
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Ingresar correo"
-                    name="correo"
-                    onChange={handleInput}
-                    autoComplete="off"
-                    className="form-control rounded-0"
-                    style={{ width: '100%' }}
-                  />
-                  {errors.correo && (
-                    <span className="text-danger">{errors.correo}</span>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="contrasena">
-                    <strong>Contraseña</strong>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Ingresar contraseña"
-                    name="contrasena"
-                    onChange={handleInput}
-                    className="form-control rounded-0"
-                    style={{ width: '100%' }}
-                  />
-                  {errors.contrasena && (
-                    <span className="text-danger">{errors.contrasena}</span>
-                  )}
-                  <br />
-                  <Link
-                    to="/recuperarcontra"
-                    style={{ marginBottom: '10px' }}
-                  >¿No recuerdas tu contraseña?</Link>
-                </div>
-                <div className="d-flex flex-column align-items-center">
-                  <button
-                    type="submit"
-                    className="btn btn-success rounded-0"
-                    style={{
-                      width: 'auto',
-                      padding: '5px 10px',
-                      marginBottom: '10px',
-                      backgroundColor: '#422985',
-                    }}
-                  >
-                    Iniciar sesión
-                  </button>
-                  <Link
-                    to="/tipousuario"
-                    className="btn btn-success rounded-0"
-                    style={{
-                      width: 'auto',
-                      padding: '5px 10px',
-                      backgroundColor: '#422985',
-                      color: 'white',
-                    }}
-                  >
-                    Crear una cuenta
-                  </Link>
-                </div>
-              </form>
-            </div>
+return (
+  <div className="container-fluid bg-white min-vh-100 d-flex justify-content-center align-items-center">
+    <Link to="/home" className="position-absolute top-0 start-0 text-decoration-none text-dark ms-3 mt-3">
+      <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+      Regresar
+    </Link>
+    <div className="container">
+      <div className="row justify-content-center mt-5">
+        <div className="col-md-6">
+          <img
+            src={process.env.PUBLIC_URL + '/imagen2.png'}
+            alt="Imagen"
+            className="img-fluid rounded-circle"
+          />
+        </div>
+        <div className="col-md-6 mt-4 mt-md-0">
+          <div className="bg-white p-3 rounded">
+            <h2 className="text-center">Inicio de Sesión</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label htmlFor="correo" className="form-label">
+                  <strong>Correo</strong>
+                </label>
+                <input
+                  type="email"
+                  placeholder="Ingresar correo"
+                  name="correo"
+                  onChange={handleInput}
+                  autoComplete="off"
+                  className="form-control"
+                />
+                {errors.correo && (
+                  <span className="text-danger">{errors.correo}</span>
+                )}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="contrasena" className="form-label">
+                  <strong>Contraseña</strong>
+                </label>
+                <input
+                  type="password"
+                  placeholder="Ingresar contraseña"
+                  name="contrasena"
+                  onChange={handleInput}
+                  className="form-control"
+                />
+                {errors.contrasena && (
+                  <span className="text-danger">{errors.contrasena}</span>
+                )}
+                <br />
+                <Link to="/recuperarcontra" className="d-block mb-3">¿No recuerdas tu contraseña?</Link>
+              </div>
+              <div className="d-grid gap-2">
+                <button
+                  type="submit"
+                  className="btn btn-secondary"
+                >
+                  Iniciar sesión
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-secondary"
+                  onClick={HandleCrearCuenta}
+                >
+                  Crear una cuenta
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default Login;

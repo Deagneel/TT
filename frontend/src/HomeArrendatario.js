@@ -183,10 +183,10 @@ function HomeArrendatario() {
     <div style={{ height: '100vh' }}>
       <Navbar handleSearchTerm={handleSearchTerm} />
         <div className="bg-secondary p-2 d-flex justify-content-center">
-          <button className="btn btn-secondary btn-sm mx-5" onClick={handleescuelaClick}>
+          <button className={`btn ${showSchools ? 'btn-dark active' : 'btn-secondary'} btn-sm mx-5`} onClick={handleescuelaClick}>
             Escuelas
           </button>
-          <button className="btn btn-secondary btn-sm mx-5" onClick={handleinmueClick}>
+          <button className={`btn ${showInmuebles ? 'btn-dark active' : 'btn-secondary'} btn-sm mx-5`} onClick={handleinmueClick}>
             Inmuebles
           </button>
         </div>
