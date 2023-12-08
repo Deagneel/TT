@@ -14,6 +14,7 @@ function InfoInmueble() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const idInmueble = searchParams.get('id_inmueble');
+  const [correoUsuario, setCorreoUsuario] = useState('');
   
   const handleInteresClick = () => {
     // Se activa al presionar el botón Me interesa
@@ -37,9 +38,14 @@ const handleReportClick = (idUsuario, idInmueble) => {
   navigate(`/incidencia/${idUsuario}/${idInmueble}`);
 };
 
-const handleTrato = async (idUsuario, idInmueble) => {
+
+
+
+
+const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   try {
     // Mostrar SweetAlert2 de confirmación
+    console.log(correoUsuario);
     const willDoTrato = await swal({
       title: "¿Quieres mandar una solicitud para concretar un trato?",
       text: "Enviaremos tu solicitud al arrendador.",
@@ -55,6 +61,14 @@ const handleTrato = async (idUsuario, idInmueble) => {
       swal("Tu solicitud se ha enviado.", {
         icon: "success",
       });
+
+      await axios.post(`http://localhost:3031/enviarCorreoArrendador`, {
+        idUsuario,
+        idInmueble,
+        correoUsuario,
+        tituloinmu,
+      });
+      
     } else {
       // Mostrar SweetAlert2 de cancelación
       swal("Operación Cancelada");
@@ -63,6 +77,8 @@ const handleTrato = async (idUsuario, idInmueble) => {
     console.error('Error al realizar el trato:', error);
   }
 };
+
+
 
 
 
@@ -86,6 +102,28 @@ const handleTrato = async (idUsuario, idInmueble) => {
   }else{
     tipoVivienda = 'Compartida';
   }
+
+  useEffect(() => {
+    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${idInmueble}`)
+      .then((response) => {
+        setRegisteredProperties(response.data);
+  
+        // Obtener el correo del usuario y almacenarlo en un estado
+        const idUsuario = response.data[0].id_usuario;
+        axios.get(`http://localhost:3031/obtenerCorreoUsuario/${idUsuario}`)
+          .then((correoResponse) => {
+            const correoUsuario = correoResponse.data[0].correo;
+            setCorreoUsuario(correoUsuario); // Guardar el correo del usuario en un estado
+          })
+          .catch((error) => {
+            console.error('Error al obtener el correo del usuario:', error);
+          });
+  
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos del inmueble', error);
+      });
+  }, [idInmueble]);
 
   return (
     <div className="app-container text-center">
@@ -164,7 +202,7 @@ const handleTrato = async (idUsuario, idInmueble) => {
             {/* Botón "Trato" */}
             <div className="me-3">
               <p className="mb-0 font-weight-bold">Hacer Trato</p>
-              <button onClick={() => handleTrato(property.id_usuario, property.id_inmueble)} className="btn btn-primary">
+              <button onClick={() => handleTrato(property.id_usuario, property.id_inmueble, property.titulo)} className="btn btn-primary">
                 <FontAwesomeIcon icon={faHouse} className="me-2" />
               </button>
             </div>

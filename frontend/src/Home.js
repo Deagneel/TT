@@ -323,11 +323,11 @@ function Home() {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'center', margin: '10px 0' }}>
-          <button class="btn btn-light" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          <button className="btn btn-light" onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
             <i className="fa fa-arrow-left"></i> {/* Icono de flecha a la izquierda */}
           </button>
           <button
-            class="btn btn-light"
+            className="btn btn-light"
             onClick={() => paginate(currentPage + 1)}
             disabled={
               showSchools

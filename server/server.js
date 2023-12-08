@@ -843,6 +843,17 @@ app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
 
 
 
+app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
+  const id_usuario = req.params.id_usuario;
+  const sql = "SELECT correo FROM usuario WHERE id_usuario = ?";
+  db.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos del usuario:', err);
+      return res.json({ message: "Error al obtener datos del usuario" });
+    }
+    return res.json(result);
+  });
+});
 
 // Ruta para obtener datos de la tabla "inmueble"
 app.get('/obtenerInmuebleInfo/:id_inmueble', (req, res) => {
@@ -913,6 +924,61 @@ app.post('/recuperar-contrasena', (req, res) => {
       throw error;
     }
   };
+
+
+
+  //Correo para los tratos
+  // Función para enviar correo con información al arrendador
+const enviarCorreoArrendador = async (correoArrendador, link, tituloinmu) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+    },
+  });
+
+  const mailOptions = {
+    from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+    to: correoArrendador, // Cambiar al correo del arrendador
+    subject: 'Solicitud de trato en inmueble',
+    html: `<p>Ha recibido una solicitud para concretar un trato en el inmueble "${tituloinmu}". <br/> Revisa los detalles <a href="${link}">aquí</a>.</p>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado al arrendador:', correoArrendador);
+  } catch (error) {
+    throw error;
+  }
+};
+
+app.post('/enviarCorreoArrendador', (req, res) => {
+  try {
+    
+    const { idUsuario, idInmueble, correoUsuario, tituloinmu } = req.body;
+    const idSesion = req.session.user.id; // Aquí obtén el ID de sesión desde la sesión del usuario
+
+    
+    const link = `http://localhost:3000/trato/${idUsuario}/${idInmueble}/${idSesion}`; // Reemplaza con tu URL real
+
+    // Llamar a la función para enviar el correo al arrendador con el correo y el enlace generado
+    enviarCorreoArrendador(correoUsuario, link, tituloinmu)
+      .then(() => {
+        res.json({ message: 'Correo enviado al arrendador' });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ error: 'Error al enviar el correo' });
+      });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
 
   //Actualizar contraseña encriptada
 // Ruta para actualizar la contraseña encriptada
@@ -1163,3 +1229,129 @@ function calcularFechaFin(fecha_inicio, periodo_de_renta) {
   return startDate.toISOString().slice(0, 10);
 }
 
+// Ruta para obtener información de un usuario por ID
+app.get('/obtenerUsuario/:id_usuario', (req, res) => {
+  const id_usuario = req.params.id_usuario;
+  const sql = 'SELECT nombre FROM usuario WHERE id_usuario = ?';
+
+  db.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el usuario:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      if (result.length > 0) {
+        // Si se encuentra el usuario, envía la información al cliente
+        res.json(result[0]);
+      } else {
+        // Si no se encuentra el usuario, devuelve un mensaje de error
+        res.status(404).send('Usuario no encontrado');
+      }
+    }
+  });
+});
+
+// Suponiendo que ya tienes Express y MySQL configurados en tu aplicación Node.js
+
+// Ruta para obtener información de un inmueble por ID
+app.get('/obtenerInmueble/:id_inmueble', (req, res) => {
+  const id_inmueble = req.params.id_inmueble;
+  const sql = 'SELECT * FROM inmueble WHERE id_inmueble = ?';
+
+  db.query(sql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el inmueble:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      if (result.length > 0) {
+        // Si se encuentra el inmueble, envía la información al cliente
+        res.json(result[0]);
+      } else {
+        // Si no se encuentra el inmueble, devuelve un mensaje de error
+        res.status(404).send('Inmueble no encontrado');
+      }
+    }
+  });
+});
+
+// Ruta para actualizar el estado a 1 en la tabla "rentados"
+app.put('/actualizarEstado/:id_renta', (req, res) => {
+  const id_renta = req.params.id_renta;
+
+  const updateRentadosSql = 'UPDATE rentados SET estado = 1 WHERE id_renta = ?';
+  db.query(updateRentadosSql, [id_renta], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el estado en rentados:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json({ message: 'Estado actualizado a 1 en rentados' });
+    }
+  });
+});
+
+// Ruta para restar 1 a "no_habitaciones" en la tabla "inmueble"
+app.put('/restarHabitacion/:id_inmueble', (req, res) => {
+  const id_inmueble = req.params.id_inmueble;
+
+  const updateInmuebleSql = 'UPDATE inmueble SET no_habitaciones = no_habitaciones - 1 WHERE id_inmueble = ?';
+  db.query(updateInmuebleSql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al restar una habitación en inmueble:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json({ message: 'Se restó una habitación en inmueble' });
+    }
+  });
+});
+
+// Ruta para eliminar una fila de la tabla "rentados" por id_inmueble
+app.delete('/eliminarRentado/:id_renta', (req, res) => {
+  const id_renta = req.params.id_renta;
+
+  const deleteRentadoSql = 'DELETE FROM rentados WHERE id_renta = ?';
+  db.query(deleteRentadoSql, [id_renta], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar rentado:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json({ message: 'Fila eliminada de rentados' });
+    }
+  });
+});
+
+// Ruta para obtener id_renta de rentados asociada a id_inmueble
+app.get('/obtenerIdRenta/:id_inmueble', (req, res) => {
+  const id_inmueble = req.params.id_inmueble;
+  const sql = 'SELECT id_renta FROM rentados WHERE id_inmueble = ?';
+
+  db.query(sql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al obtener id_renta:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      if (result.length > 0) {
+        res.json(result[0]); // Envía el id_renta al cliente
+      } else {
+        res.status(404).send('Id_renta no encontrada');
+      }
+    }
+  });
+});
+
+// Ruta para actualizar el estado del inmueble
+app.put('/actualizarEstadoInmueble/:id_inmueble', (req, res) => {
+  const id_inmueble = req.params.id_inmueble;
+
+  const updateEstadoSql = 'UPDATE inmueble SET activo_usuario = 1 WHERE id_inmueble = ? AND no_habitaciones = 0';
+  db.query(updateEstadoSql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar estado del inmueble:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      if (result.affectedRows > 0) {
+        res.json({ message: 'Estado del inmueble actualizado correctamente' });
+      } else {
+        res.status(400).send('No se cumple la condición para actualizar el estado del inmueble');
+      }
+    }
+  });
+});
