@@ -11,23 +11,29 @@ function ArrendadorNavbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleNavigation = async (path) => {
+  const handleRegistrarInmueble = async () => {
     try {
-      // Realizar la consulta para obtener el valor de perfil_completado del usuario
       const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
       const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
   
       if (perfilCompletado === 0) {
-        // Mostrar mensaje si perfil_completado es 0
         await swal('Primero debes completar la documentación de tu perfil');
       } else {
-        // Si el perfil está completo, navegar a la ruta indicada
-        console.log(`Navegando a ${path}`);
-        navigate(path);
+        navigate('/registroinmueble');
       }
     } catch (error) {
-      console.error('Error al realizar la navegación:', error);
+      console.error('Error al navegar a Registro de Inmueble:', error);
     }
+  };
+  
+  // Botón para ver perfil
+  const handleVerPerfil = async () => {
+        navigate('/perfilarrendador');
+  };
+  
+  // Botón para acceder a los chats
+  const handleChats = async () => {
+        navigate('/chat');
   };
   
 
@@ -70,17 +76,17 @@ function ArrendadorNavbar() {
       <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
         <ul className="navbar-nav w-100 nav-fill">
           <li className="nav-item active">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/registroinmueble')}>
+             <a className="nav-link btn btn-link w-100" href="#" onClick={handleRegistrarInmueble}>
               Registrar Inmueble
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/perfilarrendador')}>
+              <a className="nav-link btn btn-link w-100" href="#" onClick={handleVerPerfil}>
               Perfil
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/chat')}>
+              <a className="nav-link btn btn-link w-100" href="#" onClick={handleChats}>
               Chats
             </a>
           </li>
