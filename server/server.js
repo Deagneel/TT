@@ -88,7 +88,7 @@ app.get('/perfil', (req, res) => {
     const id_usuario = req.session.user ? req.session.user.id : null;
 
     if (id_usuario) {
-        db.query('SELECT id_usuario, nombre, correo FROM usuario WHERE id_usuario = ?', [id_usuario], (err, result) => {
+        db.query('SELECT id_usuario, nombre, primer_apellido, segundo_apellido, correo FROM usuario WHERE id_usuario = ?', [id_usuario], (err, result) => {
             if (err) {
                 console.error('Error al obtener datos de la tabla usuario:', err);
                 res.status(500).json({ error: 'Error interno del servidor' });
@@ -331,20 +331,47 @@ app.get('/infoinmuebles/:id_inmueble', (req, res) => {
     });
   });
 
-  app.put('/newName/:id', (req, res) => {
+  app.put('/newApe/:id', (req, res) => {
     const userId = req.params.id;
-    const nuevoNombre = req.body.nombre; // Obtén el nombre del cuerpo de la solicitud
+    const nuevoNombre = req.body.primer_apellido; // Obtén el nombre del cuerpo de la solicitud
   
     // Verificar si el nombre está presente en la solicitud
     if (!nuevoNombre) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+      return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
     }
   
     // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET nombre = ? WHERE id_usuario = ?';
+    const sql = 'UPDATE usuario SET primer_apellido = ? WHERE id_usuario = ?';
     db.query(sql, [nuevoNombre, userId], (err, result) => {
       if (err) {
-        console.error('Error al actualizar el nombre: ' + err.message);
+        console.error('Error al actualizar el primer apellido: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
+    });
+  });
+  
+  app.put('/newApe2/:id', (req, res) => {
+    const userId = req.params.id;
+    const nuevoNombre = req.body.segundo_apellido; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nuevoNombre) {
+      return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET segundo_apellido = ? WHERE id_usuario = ?';
+    db.query(sql, [nuevoNombre, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el primer apellido: ' + err.message);
         return res.status(500).json({ error: 'Error interno del servidor.' });
       }
   
@@ -463,6 +490,33 @@ app.get('/infoinmuebles/:id_inmueble', (req, res) => {
   
       // Enviar una respuesta de éxito
       res.json({ mensaje: 'Comprobante de innscipción actualizado exitosamente.' });
+    });
+  });
+
+  app.put('/newComprobanteD/:id', (req, res) => {
+    const userId = req.params.id;
+    const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nueva) {
+      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET comprobante_de_domicilio = ? WHERE id_usuario = ?';
+    db.query(sql, [nueva, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar comprobante de domicilio: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Comprobante de domiclio actualizado exitosamente.' });
     });
   });
   
@@ -1559,4 +1613,37 @@ app.get('/perfilCompletado', (req, res) => {
       }
     }
   });
+});
+
+app.get('/actualizarPerfilCompletado', async (req, res) => {
+  try {
+    // Obtener el ID de usuario de la sesión
+    const idUsuario = req.session.user.id;
+
+    // Realizar la consulta para comprobar si los campos están completos
+    const sql = `
+      UPDATE usuario
+      SET perfil_completado = 
+        CASE
+          WHEN comprobante_de_inscripcion IS NOT NULL 
+               AND credencial_de_estudiante IS NOT NULL 
+               AND comprobante_de_domicilio IS NOT NULL 
+               AND identificacion_oficial IS NOT NULL 
+            THEN 1
+          ELSE perfil_completado
+        END
+      WHERE id_usuario = ?`;
+
+    db.query(sql, [idUsuario], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar perfil completado:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ message: 'Perfil completado actualizado correctamente' });
+      }
+    });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 });

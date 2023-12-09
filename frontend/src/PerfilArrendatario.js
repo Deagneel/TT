@@ -8,6 +8,8 @@ const PerfilArrendatario = () => {
   const [formData, setFormData] = useState({
     id: '',
     nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
     correo: '',
   });
 
@@ -22,6 +24,8 @@ const PerfilArrendatario = () => {
         setFormData({
           id: responsePerfil.data.id_usuario,
           nombre: responsePerfil.data.nombre,
+          primer_apellido: responsePerfil.data.primer_apellido,
+          segundo_apellido: responsePerfil.data.segundo_apellido,
           correo: responsePerfil.data.correo,
         });
       } catch (error) {
@@ -48,6 +52,35 @@ const PerfilArrendatario = () => {
     }
   };
 
+  const handleActualizarApe = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.put(`http://localhost:3031/newApe/${formData.id}`, {
+        primer_apellido: formData.primer_apellido,
+      });
+      console.log(response.data);
+      swal("Apellido Actualizado Correctamente", " ", "success");  
+    } catch (error) {
+      console.error('Error al actualizar el apellido:', error.message);
+    }
+  };
+
+  const handleActualizarApe2= async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.put(`http://localhost:3031/newApe2/${formData.id}`, {
+        segundo_apellido: formData.segundo_apellido,
+      });
+      console.log(response.data);
+      swal("Apellido Actualizado Correctamente", " ", "success");  
+    } catch (error) {
+      console.error('Error al actualizar el apellido:', error.message);
+    }
+  };
+
+
+
+
   
   const handleActualizarCorreo = async () => {
     console.log('Actualizar correo');
@@ -70,7 +103,16 @@ const PerfilArrendatario = () => {
   const handleFileChange = (e) => {
     // Actualiza el estado del archivo cuando cambia el campo de entrada de archivo
     setFile(e.target.files[0]);
+  }; 
+
+  const actualizarPerfilCompletado = async () => {
+    try {
+      await axios.get(`http://localhost:3031/actualizarPerfilCompletado`);
+    } catch (error) {
+      console.error('Error al actualizar perfil completado:', error);
+    }
   };
+  
 
   const handleActualizarINE = async () => {
     console.log('Subir / Actualizar INE');
@@ -94,6 +136,8 @@ const PerfilArrendatario = () => {
         });
 
         swal("INE Actualizada Correctamente", " ", "success");
+
+        await actualizarPerfilCompletado();
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
@@ -138,6 +182,7 @@ const PerfilArrendatario = () => {
 
         swal("Credencial de Estudiante Actualizada Correctamente", " ", "success");
 
+        await actualizarPerfilCompletado();
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
@@ -168,6 +213,39 @@ const PerfilArrendatario = () => {
 
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
         swal("Comprobante de Inscripción Actualizado Correctamente", " ", "success");
+
+        await actualizarPerfilCompletado();
+    } catch (error) {
+        console.error('Error al actualizar el INE:', error.message);
+        // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
+    }
+  };
+
+  const handleComprobanteDomicilio = async () => {
+    console.log('Ver COMPROBANTE DE DOMICILIO');
+    try {
+        // Verifica si hay un archivo seleccionado
+        if (!file) {
+            console.error('No se seleccionaron archivos');
+            return;
+        }
+
+        const formImage = new FormData();
+        formImage.append('image', file);
+
+        // Sube la imagen y obtén la URL
+        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        console.log(imageResponse.data);
+
+        // Realiza la solicitud PUT para actualizar el INE
+        const response = await axios.put(`http://localhost:3031/newComprobanteD/${formData.id}`, {
+            correo: imageResponse.data.url,
+        });
+
+        console.log(response.data); // Puedes manejar la respuesta exitosa aquí
+        swal("Comprobante de Domicilio Actualizado Correctamente", " ", "success");
+
+        await actualizarPerfilCompletado();
     } catch (error) {
         console.error('Error al actualizar el INE:', error.message);
         // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
@@ -178,6 +256,20 @@ const PerfilArrendatario = () => {
     setFormData({
       ...formData,
       nombre: e.target.value,
+    });
+  };
+
+  const handleApeChange = (e) => {
+    setFormData({
+      ...formData,
+      primer_apellido: e.target.value,
+    });
+  };
+
+  const handleApe2Change = (e) => {
+    setFormData({
+      ...formData,
+      segundo_apellido: e.target.value,
     });
   };
 
@@ -244,6 +336,40 @@ const PerfilArrendatario = () => {
             </div>
 
             <div className="mb-3 row align-items-center">
+              <label htmlFor="nombre" className="col-sm-3 col-form-label">Primer apellido:</label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={formData.primer_apellido}
+                  onChange={handleApeChange}
+                />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarApe}>
+                  Actualizar
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="nombre" className="col-sm-3 col-form-label">Segundo apellido:</label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={formData.segundo_apellido}
+                  onChange={handleApe2Change}
+                />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarApe2}>
+                  Actualizar
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
               <label htmlFor="correo" className="col-sm-3 col-form-label">Correo:</label>
               <div className="col-sm-6">
                 <input
@@ -266,7 +392,7 @@ const PerfilArrendatario = () => {
                 <input type="file" onChange={handleFileChange} />
               </div>
               <div className="col-sm-3">
-                <button class="btn btn-secondary" onClick={handleActualizarINE}>
+                <button className="btn btn-secondary" onClick={handleActualizarINE}>
                   Subir
                 </button>
               </div>
@@ -278,7 +404,7 @@ const PerfilArrendatario = () => {
                 <input type="file" onChange={handleFileChange} />
               </div>
               <div className="col-sm-3">
-                <button class="btn btn-secondary" onClick={handleCredencialEstudiante}>
+                <button className="btn btn-secondary" onClick={handleCredencialEstudiante}>
                   Subir
                 </button>
               </div>
@@ -290,7 +416,19 @@ const PerfilArrendatario = () => {
                 <input type="file" onChange={handleFileChange} />
               </div>
               <div className="col-sm-3">
-                <button class="btn btn-secondary" onClick={handleComprobanteInscripcion}>
+                <button className="btn btn-secondary" onClick={handleComprobanteInscripcion}>
+                  Subir
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
+              <label className="col-sm-3 col-form-label">Comprobante de Domicilio: </label>
+              <div className="col-sm-6">
+                <input type="file" onChange={handleFileChange} />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleComprobanteDomicilio}>
                   Subir
                 </button>
               </div>
@@ -298,7 +436,7 @@ const PerfilArrendatario = () => {
 
             <div className="row">
               <div className="col-12">
-                <button class="btn btn-dark" onClick={handleCambiarContraseña}>
+                <button className="btn btn-dark" onClick={handleCambiarContraseña}>
                   Cambiar Contraseña
                 </button>
                 <button className="btn btn-dark btn-block" onClick={() => handleEliminarIncidencia(formData.id)}>Eliminar cuenta</button>

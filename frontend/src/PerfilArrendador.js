@@ -48,6 +48,33 @@ const PerfilArrendador = () => {
       // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     }
   };
+
+  const handleActualizarApe = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.put(`http://localhost:3031/newApe/${formData.id}`, {
+        primer_apellido: formData.primer_apellido,
+      });
+      console.log(response.data);
+      swal("Apellido Actualizado Correctamente", " ", "success");  
+    } catch (error) {
+      console.error('Error al actualizar el apellido:', error.message);
+    }
+  };
+
+  const handleActualizarApe2= async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.put(`http://localhost:3031/newApe2/${formData.id}`, {
+        segundo_apellido: formData.segundo_apellido,
+      });
+      console.log(response.data);
+      swal("Apellido Actualizado Correctamente", " ", "success");  
+    } catch (error) {
+      console.error('Error al actualizar el apellido:', error.message);
+    }
+  };
+
   
   
   const handleActualizarCorreo = async () => {
@@ -126,6 +153,20 @@ const PerfilArrendador = () => {
     });
   };
 
+  const handleApeChange = (e) => {
+    setFormData({
+      ...formData,
+      primer_apellido: e.target.value,
+    });
+  };
+
+  const handleApe2Change = (e) => {
+    setFormData({
+      ...formData,
+      segundo_apellido: e.target.value,
+    });
+  };
+
   const handleCorreoChange = (e) => {
     setFormData({
       ...formData,
@@ -178,6 +219,40 @@ const PerfilArrendador = () => {
               </div>
               <div className="col-sm-3">
                 <button className="btn btn-secondary" onClick={handleActualizarNombre}>Actualizar</button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="nombre" className="col-sm-3 col-form-label">Primer apellido:</label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={formData.primer_apellido}
+                  onChange={handleApeChange}
+                />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarApe}>
+                  Actualizar
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="nombre" className="col-sm-3 col-form-label">Segundo apellido:</label>
+              <div className="col-sm-6">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={formData.segundo_apellido}
+                  onChange={handleApe2Change}
+                />
+              </div>
+              <div className="col-sm-3">
+                <button className="btn btn-secondary" onClick={handleActualizarApe2}>
+                  Actualizar
+                </button>
               </div>
             </div>
 
