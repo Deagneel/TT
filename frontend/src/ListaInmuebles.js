@@ -49,34 +49,11 @@ function Navbar({ handleSearchTerm }) {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <button
-          className={`navbar-toggler ${menuOpen ? '' : 'collapsed'}`}
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded={menuOpen}
-          aria-label="Toggle navigation"
-          onClick={toggleMenu}
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
         <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} d-lg-flex justify-content-between w-100`} id="navbarNav">
-          <form className="form-inline mx-2 d-flex" onSubmit={handleSearchClick}>
-            <input
-              type="text"
-              className="form-control mr-sm-2"
-              placeholder="Buscar"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              style={{ fontSize: '1rem', width: '500px' }}
-            />
-            <button className="btn btn-outline-light" type="submit">
-              <i className="fa fa-search"></i>
-            </button>
-          </form>
           <div className="navbar-nav w-100 nav-fill">
+            <button type="button" className="nav-link btn btn-link w-200" onClick={() => window.history.back() }>
+              Volver
+            </button>
             <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/perfilarrendatario')}>
               Perfil
             </button>
@@ -88,7 +65,6 @@ function Navbar({ handleSearchTerm }) {
             </button>
           </div>
         </div>
-      </div>
     </nav>
   );
   
@@ -104,6 +80,7 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
   const searchParams = new URLSearchParams(location.search);
   const idEscuela = searchParams.get('id_escuela');
   const [nombreEscuela, setNombreEscuela] = useState(null);
+  const [fotoEscuela, setFotoEscuela] = useState(null);
 
   useEffect(() => {
     const obtenerEscuela = async () => {
@@ -114,11 +91,12 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
         }
         const data = await response.json();
         const escuela = data[0];
-        const { latitud, longitud, nombre, ...restoDatosEscuela } = escuela;
+        const { latitud, longitud, nombre, foto, ...restoDatosEscuela } = escuela;
         const nuevaPosition = { lat: parseFloat(latitud), lng: parseFloat(longitud) };
   
         setNombreEscuela(nombre);
         setPosition(nuevaPosition);
+        setFotoEscuela(foto);
   
         console.log("Coordenadas de la escuela:", nuevaPosition);
         console.log("Nombre de la escuela:", nombreEscuela);
@@ -225,6 +203,17 @@ return (
           >
           </Pin>
         </AdvancedMarker>
+        <InfoWindow position={position}>
+          <div style={{ display: 'flex', alignItems: 'center', maxWidth: '300px' }}>
+              <img
+                  src={`http://localhost:3031/images/` + fotoEscuela}
+                  alt="Imagen Escuela"
+                  style={{ width: '25%', objectFit: 'cover' }}
+              />
+              <h7 style={{ marginLeft: '10px' }}>{nombreEscuela}</h7>
+          </div>
+      </InfoWindow>
+
         {inmuebles.map(inmueble => (
           <AdvancedMarker 
             key={inmueble.id_inmueble}

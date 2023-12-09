@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function Signup() {
   const [values, setValues] = useState({
     nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
     correo: ''.trim(),
     contrasena: ''.trim(),
     confirmar_contrasena: '',
@@ -45,12 +47,15 @@ function Signup() {
       ) {
         const signupResponse = await axios.post('http://localhost:3031/signup', {
           nombre: values.nombre,
+          primer_apellido: values.primer_apellido,
+          segundo_apellido: values.segundo_apellido,
           correo: values.correo,
           contrasena: values.contrasena,  // Aquí debes usar values.contrasena en lugar de values.confirmar_contrasena
           tipo_de_usuario: values.tipo_de_usuario,
         });
   
         console.log(signupResponse.data);
+        console.log("ID USUARIO: ", signupResponse.data.insertId);
   
         if (signupResponse.data.error) {
           console.log('Error al registrar el usuario:', signupResponse.data.error);
@@ -59,11 +64,12 @@ function Signup() {
         
 
       const signupChatResponse = axios.post('http://localhost:3031/registrochat', {
-          mail: values.correo,
+          mail: signupResponse.data.insertId,
           name: values.nombre
         });
   
         console.log(signupChatResponse.data);
+        
         navigate('/');
       }
     } catch (err) {
@@ -128,6 +134,40 @@ function Signup() {
                   />
                   {errors.nombre && (
                     <span className="text-danger">{errors.nombre}</span>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="primer_apellido" className="form-label">
+                    <strong>Primer Apellido</strong>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ingresar nombre"
+                    name="primer_apellido"
+                    autoComplete="off"
+                    onChange={handleInput}
+                    className="form-control"
+                  />
+                  {errors.primer_apellido && (
+                    <span className="text-danger">{errors.primer_apellido}</span>
+                  )}
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="segundo_apellido" className="form-label">
+                    <strong>Segundo Apellido</strong>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ingresar nombre"
+                    name="segundo_apellido"
+                    autoComplete="off"
+                    onChange={handleInput}
+                    className="form-control"
+                  />
+                  {errors.segundo_apellido && (
+                    <span className="text-danger">{errors.segundo_apellido}</span>
                   )}
                 </div>
 
