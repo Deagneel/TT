@@ -1289,7 +1289,7 @@ function calcularFechaFin(fecha_inicio, periodo_de_renta) {
 // Ruta para obtener información de un usuario por ID
 app.get('/obtenerUsuario/:id_usuario', (req, res) => {
   const id_usuario = req.params.id_usuario;
-  const sql = 'SELECT nombre, FROM usuario WHERE id_usuario = ?';
+  const sql = 'SELECT nombre FROM usuario WHERE id_usuario = ?';
 
   db.query(sql, [id_usuario], (err, result) => {
     if (err) {
@@ -1467,14 +1467,14 @@ app.post('/enviarCorreoDocumentacion', async (req, res) => {
 
       // Rutas de los archivos PDF en tu servidor
       const rutaIdentificacion = `public/images/${identificacion_oficial}`;
-      //const rutaComprobanteDomicilio = `public/images/${comprobante_de_domicilio}`;
+      const rutaComprobanteDomicilio = `public/images/${comprobante_de_domicilio}`;
       const rutaCredencialEstudiante = `public/images/${credencial_de_estudiante}`;
       const rutaComprobanteInscripcion = `public/images/${comprobante_de_inscripcion}`;
 
       // Array de documentos adjuntos para el correo
       const documentosAdjuntos = [
           { filename: identificacion_oficial, path: rutaIdentificacion },
-          //{ filename: comprobante_de_domicilio, path: rutaComprobanteDomicilio },
+          { filename: comprobante_de_domicilio, path: rutaComprobanteDomicilio },
           { filename: credencial_de_estudiante, path: rutaCredencialEstudiante },
           { filename: comprobante_de_inscripcion, path: rutaComprobanteInscripcion },
       ];
