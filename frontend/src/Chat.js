@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+
 function Chat() {
   const [correo, setCorreo] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ function Chat() {
   return (
     <div style={{ height: '100vh' }}>
       <PrettyChatWindow
-        projectId='1c5e1f42-db0c-47be-88e3-58413263e9e9'
+        projectId='1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3'
         username={correo}
         secret={correo}
         style={{ height: '100%' }}

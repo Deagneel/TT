@@ -78,11 +78,12 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 app.get('/', (req, res) => {
     if(req.session.user.nombre) {
-        return res.json({valid: true, nombre: req.session.user.correo})
+        return res.json({valid: true, nombre: req.session.user.id})
     } else {
         return res.json({valid:false})
     }
 })
+
 
 app.get('/perfil', (req, res) => {
     const id_usuario = req.session.user ? req.session.user.id : null;
@@ -112,7 +113,7 @@ app.get('/logout', (req, res) => {
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/signup', (req, res) => {
-  const sql = "INSERT INTO usuario (nombre, correo, contrasena, tipo_de_usuario) VALUES (?, ?, ?, ?)";
+  const sql = "INSERT INTO usuario (nombre, primer_apellido, segundo_apellido, correo, contrasena, tipo_de_usuario) VALUES (?, ?, ?, ?, ?, ?)";
 
   bcrypt.hash(req.body.contrasena, salt, async (err, hash) => {
       if (err) {
@@ -122,6 +123,8 @@ app.post('/signup', (req, res) => {
 
       const values = [
           req.body.nombre,
+          req.body.primer_apellido,
+          req.body.segundo_apellido,
           req.body.correo,
           hash,
           req.body.tipo_de_usuario
@@ -141,7 +144,8 @@ app.post('/signup', (req, res) => {
               nombre: req.body.nombre,
               correo: req.body.correo,
               contrasena: req.body.contrasena,
-              tipo_de_usuario: req.body.tipo_de_usuario
+              tipo_de_usuario: req.body.tipo_de_usuario,
+              id: data.insertId
           });
 
           return res.json(data);
@@ -952,7 +956,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         const r = await axios.put(
             'https://api.chatengine.io/users',
             { username: mail, secret: mail, first_name: name },
-            { headers: { "private-key": "70e0851a-a83d-4bd5-9ed6-6c7dfdc6ee37" } }
+            { headers: { "private-key": "8c08728f-cad4-4b48-bf8d-b8e8db34e0db" } }
         );
     } catch (e) {
         return res.status(500).json({ error: 'Error desconocido' });
@@ -979,7 +983,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         console.log("ID recibido: ", id_usuario);
 
         // Consulta SQL para obtener correo del usuario
-        const sql2 = "SELECT correo FROM usuario WHERE id_usuario = ?";
+        const sql2 = "SELECT * FROM usuario WHERE id_usuario = ?";
         db.query(sql2, [id_usuario], async (err, result2) => {
             if (err) {
                 console.error('Error al obtener datos de usuario:', err);
@@ -991,24 +995,24 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            const destinatario = result2[0].correo;
+            const destinatario = result2[0].id_usuario;
             console.log("Correo Recibido: ", destinatario);
 
-            const mail = req.session.user.correo;
+            const mail = req.session.user.id;
             console.log("Correo del remitente: ", mail);
 
             try {
                 // Realizar la solicitud a la API de chat
-                const response = await axios.put(
+                const response = await axios.post(
                     'https://api.chatengine.io/chats/',
                     {
-                        usernames: [destinatario],
+                        usernames: destinatario,
                         title: "Chat",
                         is_direct_chat: false
                     },
                     {
                         headers: {
-                            "Project-ID": "1c5e1f42-db0c-47be-88e3-58413263e9e9",
+                            "Project-ID": "1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3",
                             "User-Name": mail,
                             "User-Secret": mail
                         }
