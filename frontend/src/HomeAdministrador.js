@@ -188,7 +188,7 @@ function UsuariosSection() {
             <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
               <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
                 {/* Contenido del usuario */}
-                <h4>{reporte.nombre_usuario} ID: {reporte.id_usuario}</h4>
+                <h4>{reporte.nombre_usuario} {reporte.p_apellido} {reporte.s_apellido} ID: {reporte.id_usuario}</h4>
                 <span className= 'subtitles-general'>Reportes asociados: {reporte.asociados}</span>
                 <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
                 <span className='subtitles-general'>{reporte.asunto}</span>

@@ -61,7 +61,7 @@ function Trato() {
             await axios.post(`http://localhost:3031/enviarCorreoDocumentacion`, {
               correoV,
               identificacion_oficial: documentosUsuario.identificacion_oficial,
-              //comprobante_de_domicilio: documentosUsuario.comprobante_de_domicilio,
+              comprobante_de_domicilio: documentosUsuario.comprobante_de_domicilio,
               credencial_de_estudiante: documentosUsuario.credencial_de_estudiante,
               comprobante_de_inscripcion: documentosUsuario.comprobante_de_inscripcion,
             });
