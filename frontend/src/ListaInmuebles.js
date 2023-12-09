@@ -9,7 +9,6 @@ import {
   Pin,
   AdvancedMarker,
   InfoWindow,
-  MarkerWithLabel,
 } from "@vis.gl/react-google-maps";
 import axios from 'axios';
 import swal from 'sweetalert';
@@ -17,7 +16,6 @@ import swal from 'sweetalert';
 
 
 function Navbar({ handleSearchTerm }) {
-  const [searchInput, setSearchInput] = useState('');
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -40,33 +38,34 @@ function Navbar({ handleSearchTerm }) {
     }
   };
 
-  const handleSearchClick = (e) => {
-    e.preventDefault();
-    handleSearchTerm(searchInput);
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} d-lg-flex justify-content-between w-100`} id="navbarNav">
-          <div className="navbar-nav w-100 nav-fill">
-            <button type="button" className="nav-link btn btn-link w-200" onClick={() => window.history.back() }>
-              Volver
-            </button>
-            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/perfilarrendatario')}>
-              Perfil
-            </button>
-            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/chat', 'Clic en el sobre')}>
-              Chats
-            </button>
-            <button type="button" className="nav-link btn btn-link w-200" onClick={handleLogoutClick}>
-              Cerrar sesión
-            </button>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+          <button className="navbar-toggler" type="button" onClick={toggleMenu}>
+              <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} justify-content-center w-100`} id="navbarNav">
+              <ul className="navbar-nav w-100 justify-content-around">
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendatario')}>Perfil</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/chat', 'Clic en el sobre')}>Chats</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
+                  </li>
+              </ul>
           </div>
-        </div>
-    </nav>
+      </nav>
   );
+
   
 }
 
@@ -230,20 +229,19 @@ return (
             lat: parseFloat(selectedInmueble.latitud),
             lng: parseFloat(selectedInmueble.longitud),
           }}
-          onCloseClick={() => setOpen(false)}
           >
-            <div className="container" style={{ maxWidth: '300%' }}>
-              <h2>{selectedInmueble.titulo}</h2>
+            <div className="container" style={{ maxWidth: '300px' }}>
+              <h4>{selectedInmueble.titulo}</h4>
               <img
                 src={`http://localhost:3031/images/${selectedInmueble.foto}`}
                 alt="Imagen inmueble"
                 className="img-fluid"
                 style={{ width: '100%' }}
               />
-              <h5>Dirección: {selectedInmueble.direccion}</h5>
-              <h5>Precio: ${selectedInmueble.precio}</h5>
-              <h5>Cuartos Disponibles: {selectedInmueble.no_habitaciones}</h5>
-              <h5>Distancia a la escuela: {getDistanceFromLatLonInKm(selectedInmueble.latitud, selectedInmueble.longitud, position.lat, position.lng)} km</h5>
+              <h6>Dirección: {selectedInmueble.direccion}</h6>
+              <h6>Precio: ${selectedInmueble.precio}</h6>
+              <h6>Cuartos Disponibles: {selectedInmueble.no_habitaciones}</h6>
+              <h6>Distancia a la escuela: {getDistanceFromLatLonInKm(selectedInmueble.latitud, selectedInmueble.longitud, position.lat, position.lng)} km</h6>
 
               {/* Use a button or a more descriptive element for the clickable area */}
               <button
@@ -313,9 +311,9 @@ function ListaInmuebles() {
         <div className="mb-3">
           <label htmlFor="distancia" className="text-white">Distancia:</label>
           <select id="distancia" className="form-select" onChange={(e) => handleSelectChange(e, 'distancia')}>
-            <option value="5">5 km</option>
-            <option value="10">10 km</option>
-            <option value="1000">15 km y más</option>
+            <option value="11">11 km</option>
+            <option value="20">20 km</option>
+            <option value="300">30 km y más</option>
           </select>
         </div>
   
