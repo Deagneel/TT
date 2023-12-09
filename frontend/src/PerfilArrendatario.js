@@ -47,7 +47,7 @@ const PerfilArrendatario = () => {
       // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     }
   };
-  
+
   
   const handleActualizarCorreo = async () => {
     console.log('Actualizar correo');

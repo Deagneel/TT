@@ -16,21 +16,28 @@ function InfoInmueble() {
   const idInmueble = searchParams.get('id_inmueble');
   const [correoUsuario, setCorreoUsuario] = useState('');
   
-  const handleInteresClick = () => {
-    // Se activa al presionar el botón Me interesa
-    console.log('Clic en el sobre');
-    axios.post(`http://localhost:3031/newchat/${idInmueble}`)
-      .then(async (response) => {
-        // Puedes hacer algo con la respuesta si es necesario
-        console.log('Petición completada con éxito:', response);
 
-        // Navega a '/chat' solo si la petición se completa correctamente
-        await navigate('/chat');
-      })
-      .catch((error) => {
-        console.error('Error al obtener datos del inmueble', error);
-      });
+  const handleInteresClick = async () => {
+  try {
+    // Realiza la consulta para obtener el valor de perfil_completado del usuario
+    const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+    const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
+
+    if (perfilCompletado == 0) {
+      // Si perfil_completado es 0, muestra un mensaje y no ejecuta el código
+      await swal('Primero debes completar la documentación de tu perfil');
+    } else {
+      // Si perfil_completado no es 0, continúa con la lógica actual
+      console.log('Clic en el sobre');
+      const response = await axios.post(`http://localhost:3031/newchat/${idInmueble}`);
+      console.log('Petición completada con éxito:', response);
+      await navigate('/chat');
+    }
+  } catch (error) {
+    console.error('Error al obtener datos del inmueble', error);
+  }
 };
+
 
 
 const handleReportClick = (idUsuario, idInmueble) => {
@@ -44,39 +51,48 @@ const handleReportClick = (idUsuario, idInmueble) => {
 
 const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   try {
-    // Mostrar SweetAlert2 de confirmación
-    console.log(correoUsuario);
-    const willDoTrato = await swal({
-      title: "¿Quieres mandar una solicitud para concretar un trato?",
-      text: "Enviaremos tu solicitud al arrendador.",
-      icon: "info",
-      buttons: true,
-      dangerMode: false,
-    });
+    // Realizar la consulta para obtener el valor de perfil_completado del usuario
+    const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+    const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
 
-    // Si el usuario confirma
-    if (willDoTrato) {
-      // Mostrar SweetAlert2 de éxito
-      await axios.post(`http://localhost:3031/rentar/${idInmueble}`);
-      swal("Tu solicitud se ha enviado.", {
-        icon: "success",
-      });
-
-      await axios.post(`http://localhost:3031/enviarCorreoArrendador`, {
-        idUsuario,
-        idInmueble,
-        correoUsuario,
-        tituloinmu,
-      });
-      
+    if (perfilCompletado == 0) {
+      // Mostrar mensaje si perfil_completado es 0
+      await swal('Primero debes completar la documentación de tu perfil');
     } else {
-      // Mostrar SweetAlert2 de cancelación
-      swal("Operación Cancelada");
+      // Mostrar SweetAlert2 de confirmación
+      console.log(correoUsuario);
+      const willDoTrato = await swal({
+        title: "¿Quieres mandar una solicitud para concretar un trato?",
+        text: "Enviaremos tu solicitud al arrendador.",
+        icon: "info",
+        buttons: true,
+        dangerMode: false,
+      });
+
+      // Si el usuario confirma
+      if (willDoTrato) {
+        // Mostrar SweetAlert2 de éxito
+        await axios.post(`http://localhost:3031/rentar/${idInmueble}`);
+        swal("Tu solicitud se ha enviado.", {
+          icon: "success",
+        });
+
+        await axios.post(`http://localhost:3031/enviarCorreoArrendador`, {
+          idUsuario,
+          idInmueble,
+          correoUsuario,
+          tituloinmu,
+        });
+      } else {
+        // Mostrar SweetAlert2 de cancelación
+        swal("Operación Cancelada");
+      }
     }
   } catch (error) {
     console.error('Error al realizar el trato:', error);
   }
 };
+
 
 
 

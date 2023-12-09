@@ -1231,7 +1231,7 @@ function calcularFechaFin(fecha_inicio, periodo_de_renta) {
 // Ruta para obtener información de un usuario por ID
 app.get('/obtenerUsuario/:id_usuario', (req, res) => {
   const id_usuario = req.params.id_usuario;
-  const sql = 'SELECT nombre FROM usuario WHERE id_usuario = ?';
+  const sql = 'SELECT nombre, FROM usuario WHERE id_usuario = ?';
 
   db.query(sql, [id_usuario], (err, result) => {
     if (err) {
@@ -1541,3 +1541,22 @@ app.post('/enviarCorreoResena', (req, res) => {
   }
 });
 
+
+app.get('/perfilCompletado', (req, res) => {
+  const idSesion = req.session.user.id; // Obtén el ID de sesión desde la sesión del usuario
+
+  const sql = 'SELECT perfil_completado FROM usuario WHERE id_usuario = ?';
+  db.query(sql, [idSesion], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el perfil completado:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      if (result.length > 0) {
+        const perfilCompletado = result[0].perfil_completado;
+        res.json({ perfilCompletado });
+      } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+    }
+  });
+});

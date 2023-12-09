@@ -11,10 +11,25 @@ function ArrendadorNavbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleNavigation = (path) => {
-    console.log(`Navegando a ${path}`);
-    navigate(path);
+  const handleNavigation = async (path) => {
+    try {
+      // Realizar la consulta para obtener el valor de perfil_completado del usuario
+      const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+      const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
+  
+      if (perfilCompletado === 0) {
+        // Mostrar mensaje si perfil_completado es 0
+        await swal('Primero debes completar la documentación de tu perfil');
+      } else {
+        // Si el perfil está completo, navegar a la ruta indicada
+        console.log(`Navegando a ${path}`);
+        navigate(path);
+      }
+    } catch (error) {
+      console.error('Error al realizar la navegación:', error);
+    }
   };
+  
 
   const handleIconClick = (icon) => {
     console.log(`Clic en el icono ${icon}`);
