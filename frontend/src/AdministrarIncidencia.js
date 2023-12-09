@@ -197,7 +197,7 @@ function PageContent() {
             <button className="btn btn-secondary me-auto" onClick={handleContactar}>
               Contactar al usuario
             </button>
-            {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
+            {reporte.id_inmueble !== 21 && reporte.inmueble && (
               <button
                 className="btn btn-secondary me-3"
                 onClick={handlePausa}

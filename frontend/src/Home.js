@@ -143,7 +143,7 @@ function Home() {
 
     // Filtrar las escuelas por término de búsqueda
     const filteredSchls = registeredSchools.filter(school =>
-      school.nombre.toLowerCase().includes(term.toLowerCase()) || school.direccion.toLowerCase().includes(term.toLowerCase())
+      school.nombre.toLowerCase().includes(term.toLowerCase()) || school.direccion.toLowerCase().includes(term.toLowerCase()) || school.institucion.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredSchools(filteredSchls);
   };
@@ -180,6 +180,7 @@ function Home() {
                       <div className="col-md-8">
                         <div className="card-body">
                           <h5 className="card-title">{property.nombre}</h5>
+                          <h6 className="card-title">{property.institucion}</h6>
                           <p className="card-text" style={{ marginTop: '20px' }}>
                             Dirección: {property.direccion}
                           </p>
@@ -217,6 +218,7 @@ function Home() {
                       <div className="col-md-8">
                         <div className="card-body">
                           <h5 className="card-title">{property.nombre}</h5>
+                          <h6 className="card-title">{property.institucion}</h6>
                           <p className="card-text" style={{ marginTop: '20px' }}>
                             Dirección: {property.direccion}
                           </p>

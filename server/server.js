@@ -692,12 +692,11 @@ app.put('/pausarInmueble/:id_inmueble', (req, res) => {
 
   // Ruta para llenar los datos de la tabla reporte
   app.post('/generarReporte', (req, res) => {
-    const sqlInsert = "INSERT INTO reporte (asunto, descripción, fecha, estado, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?, ?)";
+    const sqlInsert = "INSERT INTO reporte (asunto, descripción, fecha, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?)";
     const valuesInsert = [
         req.body.aff,
         req.body.description,
         req.body.date,
-        req.body.state,
         req.body.id_usuario,
         req.body.id_inmueble
     ];
@@ -1350,8 +1349,195 @@ app.put('/actualizarEstadoInmueble/:id_inmueble', (req, res) => {
       if (result.affectedRows > 0) {
         res.json({ message: 'Estado del inmueble actualizado correctamente' });
       } else {
-        res.status(400).send('No se cumple la condición para actualizar el estado del inmueble');
+        // No se hace nada si la condición no se cumple
+        // res.status(400).send('No se cumple la condición para actualizar el estado del inmueble');
+        res.json({ message: 'No se cumple la condición para actualizar el estado del inmueble' });
       }
     }
   });
 });
+
+
+// En tu servidor, podrías agregar una nueva ruta para obtener el correo del usuario según su ID
+app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
+  const { id_usuario } = req.params;
+  const sql = `SELECT correo FROM usuario WHERE id_usuario = ${id_usuario}`;
+  db.query(sql, (err, result) => {
+      if (err) {
+          console.error('Error al obtener correo del usuario:', err);
+          return res.json({ message: "Error al obtener correo del usuario" });
+      }
+      if (result.length > 0) {
+          const correoUsuario = result[0].correo;
+          return res.json({ correo: correoUsuario });
+      } else {
+          return res.json({ message: "Usuario no encontrado" });
+      }
+  });
+});
+
+
+ //Correo para los documentos con trato completo
+ const enviarCorreoDatos = async (correoV, documentosAdjuntos) => {
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+          pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+      },
+  });
+
+  const mailOptions = {
+      from: 'inmueblesestudiante@gmail.com', 
+      to: correoV, 
+      subject: 'Solicitud de trato en inmueble',
+      html: `<p>A continuación te facilitamos la documentación del usuario con el que cerraste el trato.</p>`,
+      attachments: documentosAdjuntos, // Aquí se adjuntan los archivos
+  };
+
+  try {
+      await transporter.sendMail(mailOptions);
+      console.log('Correo enviado al arrendador:', correoV);
+  } catch (error) {
+      throw error;
+  }
+};
+
+app.post('/enviarCorreoDocumentacion', async (req, res) => {
+  try {
+      const { correoV, identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion } = req.body;
+
+      // Rutas de los archivos PDF en tu servidor
+      const rutaIdentificacion = `public/images/${identificacion_oficial}`;
+      //const rutaComprobanteDomicilio = `public/images/${comprobante_de_domicilio}`;
+      const rutaCredencialEstudiante = `public/images/${credencial_de_estudiante}`;
+      const rutaComprobanteInscripcion = `public/images/${comprobante_de_inscripcion}`;
+
+      // Array de documentos adjuntos para el correo
+      const documentosAdjuntos = [
+          { filename: identificacion_oficial, path: rutaIdentificacion },
+          //{ filename: comprobante_de_domicilio, path: rutaComprobanteDomicilio },
+          { filename: credencial_de_estudiante, path: rutaCredencialEstudiante },
+          { filename: comprobante_de_inscripcion, path: rutaComprobanteInscripcion },
+      ];
+
+      // Llamar a la función para enviar el correo al arrendador con los archivos adjuntos
+      await enviarCorreoDatos(correoV, documentosAdjuntos);
+
+      res.json({ message: 'Correo enviado al arrendador' });
+  } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+  
+  app.get('/obtenerDocumentosUsuario/:id_usuario', (req, res) => {
+    const { id_usuario } = req.params;
+    const sql = `SELECT identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion FROM usuario WHERE id_usuario = ${id_usuario}`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error al obtener documentos del usuario:', err);
+            return res.json({ message: "Error al obtener documentos del usuario" });
+        }
+        if (result.length > 0) {
+            const documentosUsuario = result[0];
+            return res.json(documentosUsuario);
+        } else {
+            return res.json({ message: "Usuario no encontrado" });
+        }
+    });
+});
+
+
+//Enviar correo para reportar
+const enviarCorreoReporte = async (correoV, link, usuarioNombre, inmuebleTitulo) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+    },
+  });
+
+  const mailOptions = {
+    from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+    to: correoV, // Cambiar al correo del arrendador
+    subject: 'Consulta sobre contrato',
+    html: `<p>Una vez finalizado el contrato con "${usuarioNombre}" en su inmueble "${inmuebleTitulo}" nos gustaría saber si tuvo algún problema con el usuario que le gustaría reportar. <br/> Puede realizar el reporte en el siguiente enlace, de otra forma ignore el correo <a href="${link}">aquí</a>.</p>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado al arrendador:', correoV);
+  } catch (error) {
+    throw error;
+  }
+};
+
+app.post('/enviarCorreoReporte', (req, res) => {
+  try {
+    
+    const { correoV, id_usuario, usuarioNombre, inmuebleTitulo} = req.body;
+    const link = `http://localhost:3000/incidencia/${id_usuario}/${21}`; // Reemplaza con tu URL real
+
+    // Llamar a la función para enviar el correo al arrendador con el correo y el enlace generado
+    enviarCorreoReporte(correoV, link, usuarioNombre, inmuebleTitulo)
+      .then(() => {
+        res.json({ message: 'Correo enviado al arrendador' });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ error: 'Error al enviar el correo' });
+      });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+//Enviar correo para reseña
+const enviarCorreoReseña= async (correoT, link) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+    },
+  });
+
+  const mailOptions = {
+    from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+    to: correoT, // Cambiar al correo del arrendador
+    subject: 'Califica tu experiencia',
+    html: `<p>Notamos que tu contrato ha terminado recienetemente, nos gustaría conocer tu experiencia. <br/> Puedes calificar tu experiencia en <a href="${link}">aquí</a>.</p>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado al arrendador:', correoT);
+  } catch (error) {
+    throw error;
+  }
+};
+
+app.post('/enviarCorreoResena', (req, res) => {
+  try {
+    const { correoT, id_inmueble} = req.body;
+    const link = `http://localhost:3000/calificaarrendatario?id_inmueble=${id_inmueble}`;
+
+    enviarCorreoReseña(correoT, link)
+      .then(() => {
+        res.json({ message: 'Correo enviado al arrendatario' });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el correo:', error);
+        res.status(500).json({ error: 'Error al enviar el correo' });
+      });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+

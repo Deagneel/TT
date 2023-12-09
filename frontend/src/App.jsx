@@ -53,7 +53,7 @@ function App() {
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
         <Route path="/administrarincidencia/:id_reporte" element={<AdministrarIncidencia />} />
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
-        <Route path="/trato/:id_usuario/:id_inmueble/:id_usuario" element={<Trato />} />
+        <Route path="/trato/:id_arrendador/:id_inmueble/:id_usuario" element={<Trato />} />
       </Routes>
     </BrowserRouter>
   );

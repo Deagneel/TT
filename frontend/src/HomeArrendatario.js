@@ -211,6 +211,7 @@ function HomeArrendatario() {
                       <div className="col-md-8">
                         <div className="card-body">
                           <h5 className="card-title">{property.nombre}</h5>
+                          <h6 className="card-title">{property.institucion}</h6>
                           <p className="card-text" style={{ marginTop: '20px' }}>
                             Dirección: {property.direccion}
                           </p>
@@ -248,6 +249,7 @@ function HomeArrendatario() {
                       <div className="col-md-8">
                         <div className="card-body">
                           <h5 className="card-title">{property.nombre}</h5>
+                          <h6 className="card-title">{property.institucion}</h6>
                           <p className="card-text" style={{ marginTop: '20px' }}>
                             Dirección: {property.direccion}
                           </p>
