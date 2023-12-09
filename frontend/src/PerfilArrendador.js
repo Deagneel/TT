@@ -8,6 +8,8 @@ const PerfilArrendador = () => {
   const [formData, setFormData] = useState({
     id: '',
     nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
     correo: '',
   });
 
@@ -22,6 +24,8 @@ const PerfilArrendador = () => {
         setFormData({
           id: responsePerfil.data.id_usuario,
           nombre: responsePerfil.data.nombre,
+          primer_apellido: responsePerfil.data.primer_apellido,
+          segundo_apellido: responsePerfil.data.segundo_apellido,
           correo: responsePerfil.data.correo,
         });
       } catch (error) {
@@ -32,6 +36,14 @@ const PerfilArrendador = () => {
 
     fetchPerfil();
   }, []); // Empty dependency array ensures the effect runs once on component mount
+
+  const actualizarPerfilCompletado = async () => {
+    try {
+      await axios.get(`http://localhost:3031/actualizarPerfilCompletadoArrendador`);
+    } catch (error) {
+      console.error('Error al actualizar perfil completado:', error);
+    }
+  };
 
   const handleActualizarNombre = async () => {
     try {
@@ -122,7 +134,7 @@ const PerfilArrendador = () => {
         });
 
         swal("INE Actualizada Correctamente", " ", "success");
-
+        await actualizarPerfilCompletado();
         console.log(response.data); // Puedes manejar la respuesta exitosa aquí
         
     } catch (error) {
@@ -177,28 +189,26 @@ const PerfilArrendador = () => {
     const handleEliminarIncidencia = async (repoId) => {
       console.log(repoId);
       try {
-        // Mostrar SweetAlert2 de confirmación
-        const willDelete = await swal({
-          title: "¿Estás seguro?",
-          text: "Una vez eliminado, no se podrá recuperar.",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        });
-
-        // Si el usuario confirma la eliminación
-        if (willDelete) {
-          // Realizar la solicitud al servidor para eliminar el usuario
-          await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
-          // Mostrar SweetAlert2 de éxito
-          swal("Usuario Borrado del Sistema", {
-            icon: "success",
-          });
-          // Recargar la página
-          window.location.reload();
+        const rentadosCheckResponse = await axios.get(`http://localhost:3031/checkRentados`);
+        const tieneEstadoActivo = rentadosCheckResponse.data.tieneEstadoActivo;
+        if (tieneEstadoActivo == 0) {
+          await swal('No puedes eliminar el perfil porque hay al menos un inmueble rentado');
         } else {
-          // Mostrar SweetAlert2 de cancelación
-          swal("Operación Cancelada");
+          const willDelete = await swal({
+            title: "¿Estás seguro?",
+            text: "Una vez eliminado, no se podrá recuperar.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          });
+    
+          if (willDelete) {
+            await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
+            swal("Usuario Borrado del Sistema", { icon: "success" });
+            window.location.reload();
+          } else {
+            swal("Operación Cancelada");
+          }
         }
       } catch (error) {
         console.error('Error al eliminar el usuario:', error);

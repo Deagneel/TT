@@ -1651,3 +1651,94 @@ app.get('/actualizarPerfilCompletado', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
+app.get('/actualizarPerfilCompletadoArrendador', async (req, res) => {
+  try {
+    // Obtener el ID de usuario de la sesión
+    const idUsuario = req.session.user.id;
+
+    // Realizar la consulta para comprobar si los campos están completos
+    const sql = `
+      UPDATE usuario
+      SET perfil_completado = 
+        CASE
+          WHEN identificacion_oficial IS NOT NULL 
+            THEN 1
+          ELSE perfil_completado
+        END
+      WHERE id_usuario = ?`;
+
+    db.query(sql, [idUsuario], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar perfil completado:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ message: 'Perfil completado actualizado correctamente' });
+      }
+    });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.get('/verificarEstadoRentados', async (req, res) => {
+  try {
+    // Obtener el ID de usuario de la sesión
+    const idUsuario = req.session.user.id;
+
+    // Realizar la consulta para verificar el estado de rentados
+    const sql = `
+      SELECT CASE
+        WHEN EXISTS (
+          SELECT 1 FROM rentados
+          WHERE id_usuario = ? AND estado = 1
+        ) THEN 0
+        ELSE 1
+      END AS resultado`;
+
+    db.query(sql, [idUsuario], (err, result) => {
+      if (err) {
+        console.error('Error al verificar estado de rentados:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ resultado: result[0].resultado });
+      }
+    });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.get('/checkRentados', async (req, res) => {
+  try {
+    const idUsuario = req.session.user.id;
+
+    const sql = `
+      SELECT CASE
+        WHEN EXISTS (
+          SELECT 1
+          FROM inmueble
+          WHERE id_usuario = ? AND id_inmueble IN (
+            SELECT id_inmueble
+            FROM rentados
+            WHERE id_inmueble = inmueble.id_inmueble AND estado = 1
+          )
+        ) THEN 0
+        ELSE 1
+      END AS tieneEstadoActivo`;
+
+    db.query(sql, [idUsuario], (err, result) => {
+      if (err) {
+        console.error('Error al verificar estado de inmuebles rentados:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ tieneEstadoActivo: result[0].tieneEstadoActivo });
+      }
+    });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
