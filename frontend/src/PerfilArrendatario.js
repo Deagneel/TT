@@ -47,7 +47,7 @@ const PerfilArrendatario = () => {
       // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     }
   };
-  
+
   
   const handleActualizarCorreo = async () => {
     console.log('Actualizar correo');
@@ -188,6 +188,37 @@ const PerfilArrendatario = () => {
     });
   };
 
+  const handleEliminarIncidencia = async (repoId) => {
+    console.log(repoId);
+    try {
+      // Mostrar SweetAlert2 de confirmación
+      const willDelete = await swal({
+        title: "¿Estás seguro?",
+        text: "Una vez eliminado, no se podrá recuperar.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+
+      // Si el usuario confirma la eliminación
+      if (willDelete) {
+        // Realizar la solicitud al servidor para eliminar el usuario
+        await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
+        // Mostrar SweetAlert2 de éxito
+        swal("Usuario Borrado del Sistema", {
+          icon: "success",
+        });
+        // Recargar la página
+        window.location.reload();
+      } else {
+        // Mostrar SweetAlert2 de cancelación
+        swal("Operación Cancelada");
+      }
+    } catch (error) {
+      console.error('Error al eliminar el usuario:', error);
+    }
+  };
+
   return (
     <div className="container-fluid" style={{ margin: 0, fontFamily: 'Roboto, sans-serif', backgroundColor: '#999999' }}>
       <div className="row justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
@@ -270,6 +301,7 @@ const PerfilArrendatario = () => {
                 <button class="btn btn-dark" onClick={handleCambiarContraseña}>
                   Cambiar Contraseña
                 </button>
+                <button className="btn btn-dark btn-block" onClick={() => handleEliminarIncidencia(formData.id)}>Eliminar cuenta</button>
               </div>
             </div>
 

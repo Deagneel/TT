@@ -20,6 +20,7 @@ import PerfilArrendatario from './PerfilArrendatario';
 import HomeAdministrador from './HomeAdministrador';
 import CalificaInmuebleArrendador from './CalificaInmuebleArrendador';
 import CalificaArrendatario from './CalificaArrendatario';
+import Trato from './trato';
 
 
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
         <Route path="/calificainmueblearrendador" element={<CalificaInmuebleArrendador />} />
         <Route path="/calificaarrendatario" element={<CalificaArrendatario />} />
+        <Route path="/trato/:id_arrendador/:id_inmueble/:id_usuario" element={<Trato />} />
       </Routes>
     </BrowserRouter>
   );
