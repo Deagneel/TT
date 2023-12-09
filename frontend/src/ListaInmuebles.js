@@ -15,7 +15,7 @@ import swal from 'sweetalert';
 
 
 
-function Navbar({ handleSearchTerm }) {
+function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -295,38 +295,39 @@ function ListaInmuebles() {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
-  
-      <div className="bg-secondary d-flex flex-wrap justify-content-around p-3">
-        <div className="mb-3">
-          <label htmlFor="precio" className="text-white">Precio:</label>
-          <select id="precio" className="form-select" onChange={(e) => handleSelectChange(e, 'precio')}>
-            <option value="5000">Hasta $5000</option>
-            <option value="10000">$5000 a $10000</option>
-            <option value="100000">$10000 y más</option>
-          </select>
+      <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+        <div className="bg-secondary d-flex flex-wrap justify-content-around p-3">
+          <div className="mb-3">
+            <label htmlFor="precio" className="text-white">Precio:</label>
+            <select id="precio" className="form-select" onChange={(e) => handleSelectChange(e, 'precio')}>
+              <option value="5000">Hasta $5000</option>
+              <option value="10000">$5000 a $10000</option>
+              <option value="100000">$10000 y más</option>
+            </select>
+          </div>
+    
+          <div className="mb-3">
+            <label htmlFor="distancia" className="text-white">Distancia:</label>
+            <select id="distancia" className="form-select" onChange={(e) => handleSelectChange(e, 'distancia')}>
+              <option value="11">11 km</option>
+              <option value="20">20 km</option>
+              <option value="300">30 km y más</option>
+            </select>
+          </div>
+    
+          <div className="mb-3">
+            <label htmlFor="tipoHabitacion" className="text-white">Tipo de Habitación:</label>
+            <select id="tipoHabitacion" className="form-select" onChange={(e) => handleSelectChange(e, 'tipoHabitacion')}>
+              <option value= {0}>Individual</option>
+              <option value= {1}>Compartida</option>
+            </select>
+          </div>
         </div>
-  
-        <div className="mb-3">
-          <label htmlFor="distancia" className="text-white">Distancia:</label>
-          <select id="distancia" className="form-select" onChange={(e) => handleSelectChange(e, 'distancia')}>
-            <option value="11">11 km</option>
-            <option value="20">20 km</option>
-            <option value="300">30 km y más</option>
-          </select>
-        </div>
-  
-        <div className="mb-3">
-          <label htmlFor="tipoHabitacion" className="text-white">Tipo de Habitación:</label>
-          <select id="tipoHabitacion" className="form-select" onChange={(e) => handleSelectChange(e, 'tipoHabitacion')}>
-            <option value= {0}>Individual</option>
-            <option value= {1}>Compartida</option>
-          </select>
-        </div>
+    
+        <PageContent precio={precio} distancia={distancia} tipoHabitacion={tipoHabitacion}/>
       </div>
-  
-      <PageContent precio={precio} distancia={distancia} tipoHabitacion={tipoHabitacion}/>
     </div>
   );
   
