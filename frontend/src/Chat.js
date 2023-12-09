@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
-import { PrettyChatWindow } from 'react-chat-engine-pretty';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { 
+  ChatEngine, 
+  ChatList, ChatCard, NewChatForm,
+  ChatFeed, ChatHeader, IceBreaker, MessageBubble, IsTyping, NewMessageForm,
+  ChatSettings, ChatSettingsTop, PeopleSettings, PhotosSettings, OptionsSettings
+} from 'react-chat-engine'
 
 
 function Chat() {
@@ -30,14 +35,12 @@ function Chat() {
   }
 
   return (
-    <div style={{ height: '100vh' }}>
-      <PrettyChatWindow
-        projectId='1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3'
-        username={correo}
-        secret={correo}
-        style={{ height: '100%' }}
-      />
-    </div>
+      <ChatEngine
+      height='100vh'
+			projectID='1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3'
+			userName={correo}
+			userSecret={correo}
+		/>
   );
 }
 

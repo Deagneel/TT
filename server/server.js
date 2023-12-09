@@ -78,7 +78,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
 
 app.get('/', (req, res) => {
     if(req.session.user.nombre) {
-        return res.json({valid: true, nombre: req.session.user.id})
+        return res.json({valid: true, nombre: req.session.user.correo})
     } else {
         return res.json({valid:false})
     }
@@ -1070,7 +1070,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
   app.post("/registrochat", async (req, res) => {
 
     // Desestructura directamente de req.body
-    const { mail, name } = req.body;
+    const { mail, name, last_name } = req.body;
 
     console.log("Nombre: ", name);
     console.log("Correo: ", mail);
@@ -1078,7 +1078,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     try {
         const r = await axios.put(
             'https://api.chatengine.io/users',
-            { username: mail, secret: mail, first_name: name },
+            { username: name, secret: mail, first_name: name, last_name: last_name },
             { headers: { "private-key": "8c08728f-cad4-4b48-bf8d-b8e8db34e0db" } }
         );
     } catch (e) {
@@ -1106,7 +1106,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         console.log("ID recibido: ", id_usuario);
 
         // Consulta SQL para obtener correo del usuario
-        const sql2 = "SELECT * FROM usuario WHERE id_usuario = ?";
+        const sql2 = "SELECT correo FROM usuario WHERE id_usuario = ?";
         db.query(sql2, [id_usuario], async (err, result2) => {
             if (err) {
                 console.error('Error al obtener datos de usuario:', err);
@@ -1118,20 +1118,20 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
                 return res.status(404).json({ error: 'Usuario no encontrado' });
             }
 
-            const destinatario = result2[0].id_usuario;
+            const destinatario = result2[0].correo;
             console.log("Correo Recibido: ", destinatario);
 
-            const mail = req.session.user.id;
+            const mail = req.session.user.correo;
             console.log("Correo del remitente: ", mail);
 
             try {
                 // Realizar la solicitud a la API de chat
-                const response = await axios.post(
+                const response = await axios.put(
                     'https://api.chatengine.io/chats/',
                     {
-                        usernames: destinatario,
+                        usernames: [destinatario],
                         title: "Chat",
-                        is_direct_chat: false
+                        is_direct_chat: true
                     },
                     {
                         headers: {

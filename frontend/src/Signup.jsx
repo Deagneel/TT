@@ -54,9 +54,6 @@ function Signup() {
           tipo_de_usuario: values.tipo_de_usuario,
         });
   
-        console.log(signupResponse.data);
-        console.log("ID USUARIO: ", signupResponse.data.insertId);
-  
         if (signupResponse.data.error) {
           console.log('Error al registrar el usuario:', signupResponse.data.error);
           return;
@@ -64,8 +61,8 @@ function Signup() {
         
 
       const signupChatResponse = axios.post('http://localhost:3031/registrochat', {
-          mail: signupResponse.data.insertId,
-          name: values.nombre
+          mail: values.correo,
+          name: values.nombre,
         });
   
         console.log(signupChatResponse.data);

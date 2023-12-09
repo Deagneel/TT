@@ -29,9 +29,16 @@ function InfoInmueble() {
     } else {
       // Si perfil_completado no es 0, continúa con la lógica actual
       console.log('Clic en el sobre');
-      const response = await axios.post(`http://localhost:3031/newchat/${idInmueble}`);
-      console.log('Petición completada con éxito:', response);
-      await navigate('/chat');
+      axios.post(`http://localhost:3031/newchat/${idInmueble}`)
+      .then(async (response) => {
+        console.log('Petición completada con éxito:', response);
+        await swal('Chat Creado');
+        await navigate('/chat');
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos del inmueble', error);
+      });
+
     }
   } catch (error) {
     console.error('Error al obtener datos del inmueble', error);
