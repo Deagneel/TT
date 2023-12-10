@@ -120,7 +120,17 @@ function ArrendadorPageContent() {
     }
   };
   
-  
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        swal('Necesitas iniciar sesión para acceder a esta función');
+        navigate('/login');
+      }
+    })
+  })
   
   useEffect(() => {
     axios.get('http://localhost:3031/inmuebles')
@@ -138,20 +148,20 @@ function ArrendadorPageContent() {
       <div className="row justify-content-center">
         {registeredProperties.map((property, index) => (
           <div key={index} className={`col-md-4 mb-4 ${property.activo === 0 || property.activo_usuario === 1 ? 'inactive' : ''}`}>
-            <div className="card shadow">
+            <div className="card shadow" style={{ width: '100%', height: '100%' }}>
               <img
                 src={`http://localhost:3031/images/${property.foto}`}
                 alt="Imagen"
                 className="card-img-top"
-                style={{ width: '100%', height: 'auto' }}
+                style={{ width: '100%', height: '50%', objectFit: 'cover' }}
               />
               <div className="card-body">
                 <h5 className="card-title">{property.titulo}</h5>
                 <p className="card-text">Dirección: {property.direccion}</p>
                 <p className="card-text">Precio: {property.precio}</p>
                 <button
-                  className="btn btn-primary"
-                  style={{ marginRight: '10px', border: '2px solid #422985' }}
+                  className="btn btn-secondary"
+                  style={{ backgroundColor: '#beaf87', color: 'black' }}
                   onClick={() => handleEditClick(property.id_inmueble)}
                 >
                   Editar

@@ -58,7 +58,20 @@ function Navbar({ handleSearchTerm }) {
 }
 
 function RegistroInmueble() {
+  
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
+
   const [aceptarTerminos, setAceptarTerminos] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const handleCheckbox = () => {
     setAceptarTerminos(!aceptarTerminos);
@@ -66,10 +79,11 @@ function RegistroInmueble() {
 
   axios.defaults.withCredentials = true;
   const [escuelas, setEscuelas] = useState([]);
+
   useEffect(() => {
     axios.get('http://localhost:3031/obtenerEscuelas')
       .then(response => {
-        setEscuelas(response.data); // Establecer los nombres de las escuelas en el estado
+        setEscuelas(response.data);
       })
       .catch(error => {
         console.error('Error al obtener las escuelas:', error);
@@ -87,18 +101,26 @@ function RegistroInmueble() {
     period: 'mensual',
     numRooms: '',
     regulations: '',
-    images: '',
-    idEscuela: '',
-    privacyAccepted: false,
-    Tvivienda: '',
-    activo: '',
     caracteristicas: '',
+    idEscuela: '',
+    Tvivienda: ''
   });
 
   const [file, setFile] = useState();
-
   const navigate = useNavigate();
-  const[errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const checkFormValidity = () => {
+      const requiredFieldsFilled = formData.title && formData.address && formData.cp &&
+        formData.alcaldia && formData.latitud && formData.longitud && formData.price &&
+        formData.period && formData.numRooms && formData.regulations && formData.caracteristicas &&
+        formData.idEscuela && formData.Tvivienda && file;
+
+      setIsFormValid(requiredFieldsFilled && aceptarTerminos);
+    };
+
+    checkFormValidity();
+  }, [formData, file, aceptarTerminos]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -106,25 +128,17 @@ function RegistroInmueble() {
   };
 
   const handleFile = (e) => {
-    setFile(e.target.files[0])
-  }
-
-  const handleImageAdd = () => {
-    const formdata = new FormData();
-    formdata.append('image', file);
-    axios.post('http://localhost:3031/upload', formdata)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+    setFile(e.target.files[0]);
   };
 
   const handleRegister = async () => {
+    if (!isFormValid) return;
 
     try {
-      // Handle image upload
-    const formImage = new FormData();
-    formImage.append('image', file);
-    const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
-    console.log(imageResponse.data);
+      const formImage = new FormData();
+      formImage.append('image', file);
+      const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+      console.log(imageResponse.data);
 
       const response = await axios.post('http://localhost:3031/registroinmueble', {
         title: formData.title,
@@ -133,7 +147,6 @@ function RegistroInmueble() {
         alcaldia: formData.alcaldia,
         latitud: formData.latitud,
         longitud: formData.longitud,
-        coordinates: formData.coordinates,
         price: formData.price,
         period: formData.period,
         numRooms: formData.numRooms,
@@ -142,83 +155,71 @@ function RegistroInmueble() {
         images: imageResponse.data.url,
         idEscuela: formData.idEscuela,
         Tvivienda: formData.Tvivienda,
-        activo: 1,
+        activo: 1
       });
 
-      console.log(response.data);
-  
-        if (response.data.error) {
-          console.log('Error al registrar inmueble:', response.data.error);
-          return;
-        }
+      if (response.data.error) {
+        console.log('Error al registrar inmueble:', response.data.error);
+        return;
+      }
 
-        swal("Inmueble Registrado Correctamente", " ", "success");
-  
-        navigate('/homearrendador');
-
-      
-      // Manejar la respuesta del servidor según sea necesario
-
+      swal("Inmueble Registrado Correctamente", " ", "success");
+      navigate('/homearrendador');
     } catch (error) {
       console.error('Error al enviar la solicitud al servidor:', error);
-
     }
   };
 
-  const handleregresarClick = () => {
-    // Manejar la acción cuando se hace clic en cerrar
-    navigate('/homearrendador');
-  };
-
-return (
-  <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-    <Navbar />
-    <div className="container-fluid registro-inmueble-container bg-secondary">
+  return (
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar />
+      <div className="container-fluid registro-inmueble-container bg-secondary">
         <div className="container bg-white" style={{ maxWidth: '100%' }}>
-            <div className="row justify-content-center align-items-center" style={{ maxWidth: '100%' }}>
-            <div className="col-lg-5" >
-                <h1 className="h3 mb-3 font-weight-bold">Registrar nuevo inmueble</h1>
-
-                {/* Título del anuncio */}
-                <div className="form-group">
-                    <label htmlFor="title" >Título del anuncio</label>
+          <div className="row justify-content-center align-items-center" style={{ maxWidth: '100%' }}>
+            <div className="col-lg-5">
+              <h1 className="h3 mb-3 font-weight-bold">Registrar nuevo inmueble</h1>
+            <p>Todos los campos son obligatorios.</p> {/* Mensaje de instrucción */}
+              {/* Aquí van todos los campos del formulario como estaban originalmente */}
+              {/* Título del anuncio */}
+              <div className="form-group">
+              <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}
                     <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Ingresa el título del anuncio..." />
                 </div>
 
                 {/* Resto de los campos con la misma clase para mantener el tamaño uniforme */}
                 {/* Dirección */}
                 <div className="form-group">
-                    <label htmlFor="address">Dirección</label>
+                    <label htmlFor="address" style={{ fontWeight: 'bold', fontSize: '18px' }}>Dirección<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} placeholder="Ingrese la dirección" />
                 </div>
 
                 {/* Código Postal */}
                 <div className="form-group">
-                    <label htmlFor="cp">Código Postal</label>
+                    <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
                 </div>
 
                 {/* Alcaldía */}
                 <div className="form-group">
-                    <label htmlFor="alcaldia">Alcaldía</label>
+                    <label htmlFor="alcaldia" style={{ fontWeight: 'bold', fontSize: '18px' }}>Alcaldía<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="Ingrese la Alcaldía" />
                 </div>
 
                 {/* Latitud */}
                 <div className="form-group">
-                    <label htmlFor="latitud">Latitud - Google Maps</label>
+                    <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Latitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="latitud" name="latitud" value={formData.latitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
 
                 {/* Longitud */}
                 <div className="form-group">
-                    <label htmlFor="longitud">Longitud - Google Maps</label>
+                    <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
 
                 {/* Escuela cercana */}
                 <div className="form-group">
-                    <label htmlFor="idEscuela">Escuela cercana</label>
+                    <label htmlFor="idEscuela" style={{ fontWeight: 'bold', fontSize: '18px' }}>Escuela cercana<span style={{ color: 'red' }}>*</span></label>
                     <select className="form-control" id="idEscuela" name="idEscuela" value={formData.idEscuela} onChange={handleChange}>
                         <option value="">Selecciona una escuela</option>
                         {escuelas.map((escuela, index) => (
@@ -229,7 +230,7 @@ return (
 
                 {/* Tipo de vivienda */}
                 <div className="form-group">
-                    <label htmlFor="Tvivienda">Tipo de vivienda</label>
+                    <label htmlFor="Tvivienda" style={{ fontWeight: 'bold', fontSize: '18px' }}>Tipo de vivienda<span style={{ color: 'red' }}>*</span></label>
                     <select className="form-control" id="Tvivienda" name="Tvivienda" value={formData.Tvivienda} onChange={handleChange}>
                         <option value="">Selecciona un tipo de vivienda</option>
                         <option value="0">Individual</option>
@@ -240,41 +241,41 @@ return (
                 {/* Precio y Periodo */}
                 <div className="form-row">
                     <div className="col">
-                        <label htmlFor="price">Precio</label>
+                        <label htmlFor="price" style={{ fontWeight: 'bold', fontSize: '18px' }}>Precio<span style={{ color: 'red' }}>*</span></label>
                         <input type="text" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} placeholder="Ingrese el precio" />
                     </div>
                     <div className="col">
-                        <label htmlFor="period">Periodo</label>
+                        <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>Periodo<span style={{ color: 'red' }}>*</span></label>
                         <select className="form-control" id="period" name="period" value={formData.period} onChange={handleChange} >
-                          <option value="mensual">Mensual</option>
-                          <option value="bimestral">Bimestral</option>
-                          <option value="trimestral">Tremestral</option>
-                          <option value="semestral">Semestral</option>
+                          <option value="Mensual">Mensual</option>
+                          <option value="Cuatrimestral">Cuatrimestral</option>
+                          <option value="Semestral">Semestral</option>
+                          <option value="Anual">Anual</option>
                       </select>
                     </div>
                 </div>
 
                 {/* Número de habitaciones */}
                 <div className="form-group">
-                    <label htmlFor="numRooms">Número de habitaciones</label>
+                    <label htmlFor="numRooms" style={{ fontWeight: 'bold', fontSize: '18px' }}>Número de habitaciones<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="numRooms" name="numRooms" value={formData.numRooms} onChange={handleChange} placeholder="..." />
                 </div>
 
                 {/* Reglamento */}
                 <div className="form-group">
-                    <label htmlFor="regulations">Reglamento</label>
+                    <label htmlFor="regulations" style={{ fontWeight: 'bold', fontSize: '18px' }}>Reglamento<span style={{ color: 'red' }}>*</span></label>
                     <textarea className="form-control" id="regulations" name="regulations" value={formData.regulations} onChange={handleChange} placeholder="Ingrese el reglamento"></textarea>
                 </div>
 
                 {/* Caracteristicas */}
                 <div className="form-group">
-                    <label htmlFor="caracteristicas">Características</label>
+                    <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Características<span style={{ color: 'red' }}>*</span></label>
                     <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características del Inmueble"></textarea>
                 </div>
 
                 {/* Carga de imagen */}
                 <div className="form-group">
-                    <label htmlFor="imageUpload">Imagen</label>
+                    <label htmlFor="imageUpload" style={{ fontWeight: 'bold', fontSize: '18px' }}>Imagen<span style={{ color: 'red' }}>*</span></label>
                     <input type="file" className="form-control-file" id="imageUpload" onChange={handleFile} />
                 </div>
 
@@ -284,17 +285,16 @@ return (
                     <label className="form-check-label" htmlFor="aceptar_terminos">Acepto políticas de privacidad</label>
                 </div>
 
-                {/* Botón de registro */}
-                <button type="button" className="btn btn-primary" onClick={handleRegister} disabled={!aceptarTerminos}>Registrar</button>
-
-                </div>
+              <button type="button" className="btn btn-primary" onClick={handleRegister} disabled={!isFormValid}>
+                Registrar
+              </button>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-  </div>
-);
-
-
+  );
 }
+
 
 export default RegistroInmueble;

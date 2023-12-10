@@ -1,12 +1,75 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './EditInmue.css';
-import { faEnvelope, faExclamationTriangle, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faExclamationTriangle, faHouse, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 
+function Navbar({ handleSearchTerm }) {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleClick = (path, message) => {
+    navigate(path);
+    if (message) console.log(message);
+  };
+
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
+
+  const handleLogoutClick = async () => {
+    try {
+      const res = await axios.get('http://localhost:3031/logout');
+      if (res.data.Status === 'Success') {
+        swal('Sesión Cerrada Correctamente', ' ', 'success');
+        navigate('/login');
+      } else {
+        alert('error');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  return (
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+          <button className="navbar-toggler" type="button" onClick={toggleMenu}>
+              <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} justify-content-center w-100`} id="navbarNav">
+              <ul className="navbar-nav w-100 justify-content-around">
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendatario')}>Perfil</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/chat', 'Clic en el sobre')}>Chats</button>
+                  </li>
+                  <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+  );
+
+  
+}
 function InfoInmueble() {
   let tipoVivienda; //Auxiliar tipo de vivienda
   const navigate = useNavigate();
@@ -100,11 +163,6 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   }
 };
 
-
-
-
-
-
   const handleRegresarClick = () => {
     //Se activa al presionar el boton regresar
     navigate('/homearrendatario');
@@ -149,10 +207,10 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   }, [idInmueble]);
 
   return (
-    <div className="app-container text-center">
+    <div className="app-container text-center bg-dark">
+      <Navbar />
       {registeredProperties.map((property, index) => (
-      <div key={index} style={{ width: '50%', padding: '10px', borderRadius: '8px' }} className="bg-light mx-auto">
-          <button onClick={handleRegresarClick} className="btn btn-danger close-button">X</button>
+      <div key={index} className="bg-light mx-auto p-2 rounded col-12 col-md-6">
 
           <div className="align-center mb-4">
             <h2 className="font-weight-bold">{property.titulo}</h2>
@@ -166,67 +224,89 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   
           {/* Detalles del departamento */}
           <div className="mb-4">
-            {/* Direccion */}
-            <div className="mb-3">
-              <h5 className="font-weight-bold">Dirección</h5>
-              <textarea readOnly value={property.direccion} placeholder="Ingresar reglamento" className="fondo-placeholder form-control" style={{ height: '130px' }} />
+            {/* Calificaciones */}
+            <h3 className="font-weight-bold">Calificaciones Obtenidas:</h3>
+            <div className="col mb-3">
+              <h5 className="font-weight-bold">Condiciones: {(property.condiciones / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} /></h5>
             </div>
-            {/* Coordenadas */}
-            <div className="mb-3">
-              <h5 className="font-weight-bold">Coordenadas</h5>
-              <p className="fondo-placeholder" type="text">{property.coordenadas}</p>
+
+            <div className="col mb-3">
+              <h5 className="font-weight-bold">
+              Servicios: {(property.servicios / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} />
+              </h5>
             </div>
-            {/* Num cuartos */}
-            <div className="mb-3">
-              <h5 className="font-weight-bold">Número de cuartos</h5>
-              <p className="fondo-placeholder" type="text">{property.no_habitaciones}</p>
+
+            <div className="col mb-5">
+              <h5 className="font-weight-bold">
+                Seguridad: {(property.seguridad / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} />
+              </h5>
             </div>
+
+            <h3 className="mb-3 font-weight-bold">Información de Inmueble:</h3>
+            
+            {/* Dirección */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Dirección: {property.direccion}</h5>
+            </div>
+
+            {/* Alcaldía */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Alcaldía: {property.alcaldia}</h5>
+            </div>
+
+            {/* Número de cuartos */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Número de cuartos: {property.no_habitaciones}</h5>
+            </div>
+
             {/* Precio */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">Precio</h5>
-              <p className="fondo-placeholder" type="text">{property.precio}</p>
+              <h5 className="font-weight-bold">Precio: ${property.precio}</h5>
             </div>
+
             {/* Periodo del contrato */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">Periodo del contrato</h5>
-              <p className="fondo-placeholder" type="text">{property.periodo_de_renta}</p>
+              <h5 className="font-weight-bold">Periodo del contrato: {property.periodo_de_renta}</h5>
             </div>
-            {/* Tipo de habitación */}
+
+            {/* Tipo de vivienda */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">Tipo de vivienda</h5>
-              <p className="fondo-placeholder" type="text">{tipoVivienda}</p>
+              <h5 className="font-weight-bold">Tipo de vivienda: {tipoVivienda}</h5>
             </div>
-          </div>
-  
-          <div className="mb-4">
+
             {/* Reglamento */}
-            <div className="mb-3" style={{ width: '100%', margin: '0 auto' }}>
-              <h5 className="mb-3 font-weight-bold">Reglamento</h5>
-              <textarea readOnly value={property.reglamento} placeholder="Ingresar reglamento" className="fondo-placeholder form-control" style={{ height: '300px' }} />
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Reglamento: {property.reglamento}</h5>
+            </div>
+
+            {/* Características */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Características: {property.caracteristicas}</h5>
             </div>
           </div>
-          <div className="mb-4 d-flex justify-content-center">
+
+          <div className="mb-4 justify-content-center">
             {/* Botón "Me interesa" */}
-            <div className="me-3">
-              <p className="mb-0 font-weight-bold">Me interesa</p>
-              <button onClick={handleInteresClick} className="btn btn-primary">
-                <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+            <div className="mb-3">
+              <button className="btn btn-secondary"
+                  style={{ backgroundColor: '#beaf87', color: 'black' }} onClick={handleInteresClick}>
+                <FontAwesomeIcon icon={faEnvelope} className="me-2" /> Me interesa
               </button>
             </div>
 
             {/* Botón "Reportar" */}
-            <div className="me-3">
-              <p className="mb-0 font-weight-bold">Reportar</p>
-              <button onClick={() => handleReportClick(property.id_usuario, property.id_inmueble)} className="btn btn-warning">
-                <FontAwesomeIcon icon={faExclamationTriangle} className="me-2" />
+            <div className="mb-3">
+              <button onClick={() => handleReportClick(property.id_usuario, property.id_inmueble)} className="btn btn-secondary"
+                  style={{ backgroundColor: '#beaf87', color: 'black' }}>
+                <FontAwesomeIcon icon={faExclamationTriangle} className="me-2" /> Reportar
               </button>
             </div>
 
             {/* Botón "Trato" */}
-            <div className="me-3">
-              <p className="mb-0 font-weight-bold">Hacer Trato</p>
-              <button onClick={() => handleTrato(property.id_usuario, property.id_inmueble, property.titulo)} className="btn btn-primary">
-                <FontAwesomeIcon icon={faHouse} className="me-2" />
+            <div className="mb-3">
+              <button onClick={() => handleTrato(property.id_usuario, property.id_inmueble, property.titulo)} className="btn btn-secondary"
+                  style={{ backgroundColor: '#beaf87', color: 'black' }}> 
+                <FontAwesomeIcon icon={faHouse} className="me-2" /> Hacer Trato
               </button>
             </div>
           </div>

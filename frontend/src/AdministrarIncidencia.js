@@ -11,6 +11,17 @@ function Navbar() {
   };
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">

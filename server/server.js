@@ -581,8 +581,10 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
         periodo_de_renta: req.body.period,
         no_habitaciones: req.body.numRooms,
         reglamento: req.body.regulations,
+        caracteristicas: req.body.caracteristicas,
         tipo_de_habitacion : req.body.Tvivienda,
         activo_usuario: req.body.activo,
+        foto: req.body.foto,
     };
 
     // Consulta SQL para actualizar la información del inmueble

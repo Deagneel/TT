@@ -1,11 +1,24 @@
-import React, { useState} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import swal from 'sweetalert';
 
-function Incidencia({ }) {
+function Incidencia({}) {
+  const navigate = useNavigate();
+
   axios.defaults.withCredentials = true;
   const { id_usuario, id_inmueble } = useParams();
+
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
 
   const handleGoBack = () => {
     window.history.back(); // Esta línea te lleva a la página anterior

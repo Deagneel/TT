@@ -14,6 +14,18 @@ function Navbar() {
     navigate(path);
   };
 
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        swal('Necesitas iniciar sesión para acceder a esta función');
+        navigate('/login');
+      }
+    })
+  })
+
   const handleIconClick = (icon) => {
     console.log(`Clic en el icono ${icon}`);
   };

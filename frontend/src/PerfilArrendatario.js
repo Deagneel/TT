@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNavigate } from 'react';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
 
@@ -14,6 +14,18 @@ const PerfilArrendatario = () => {
   });
 
   const [file, setFile] = useState();
+
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
 
   useEffect(() => {
     const fetchPerfil = async () => {
@@ -435,10 +447,10 @@ const PerfilArrendatario = () => {
 
             <div className="row">
               <div className="col-12">
-                <button className="btn btn-dark" onClick={handleCambiarContraseña}>
+                <button className="btn btn-dark md-5" onClick={handleCambiarContraseña}>
                   Cambiar Contraseña
                 </button>
-                <button className="btn btn-dark btn-block" onClick={() => handleEliminarIncidencia(formData.id)}>Eliminar cuenta</button>
+                <button className="btn btn-dark btn-block md-5" onClick={() => handleEliminarIncidencia(formData.id)}>Eliminar cuenta</button>
               </div>
             </div>
 

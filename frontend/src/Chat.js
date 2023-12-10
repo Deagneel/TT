@@ -3,11 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { 
-  ChatEngine, 
-  ChatList, ChatCard, NewChatForm,
-  ChatFeed, ChatHeader, IceBreaker, MessageBubble, IsTyping, NewMessageForm,
-  ChatSettings, ChatSettingsTop, PeopleSettings, PhotosSettings, OptionsSettings
+  ChatEngine
 } from 'react-chat-engine'
+import swal from 'sweetalert';
 
 
 function Chat() {
@@ -22,6 +20,7 @@ function Chat() {
         if (res.data.valid) {
           setCorreo(res.data.nombre);
         } else {
+          swal('Necesitas iniciar sesión para acceder a esta función');
           navigate('/login');
         }
       })

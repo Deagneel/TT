@@ -157,6 +157,7 @@ function HomeArrendatario() {
       if(res.data.valid) {
         setName(res.data.nombre);
       } else {
+        swal('Necesitas iniciar sesión para acceder a esta función');
         navigate('/login');
       }
     })

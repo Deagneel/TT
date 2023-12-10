@@ -14,6 +14,17 @@ const PerfilArrendador = () => {
   });
 
   const [file, setFile] = useState();
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
 
   useEffect(() => {
     const fetchPerfil = async () => {

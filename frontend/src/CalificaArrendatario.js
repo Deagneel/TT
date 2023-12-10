@@ -57,83 +57,14 @@ const CalificaInmuebleArrendador = () => {
     return <div>Loading...</div>; // or render a loading spinner
   }
 
-
   return (
-    <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{ backgroundColor: '#8e44ad' }}>
-      <form className="card p-5" onSubmit={handleSubmit}>
-        <h2 className="mb-4">Califica tu Experiencia</h2>
-        <div className="mb-3">
-          <label htmlFor="fachada" className="form-label">Condiciones de la fachada:</label>
-          <select
-            id="fachada"
-            className="form-select"
-            value={fachada}
-            onChange={(e) => setFachada(parseInt(e.target.value, 10))}
-          >
-            <option value={0}>Selecciona...</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>
-                {star}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="servicios" className="form-label">Eficiencia de los servicios básicos:</label>
-          <select
-            id="servicios"
-            className="form-select"
-            value={servicios}
-            onChange={(e) => setServicios(parseInt(e.target.value, 10))}
-          >
-            <option value={0}>Selecciona...</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>
-                {star}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="seguridad" className="form-label">Seguridad de la zona del inmueble:</label>
-          <select
-            id="seguridad"
-            className="form-select"
-            value={seguridad}
-            onChange={(e) => setSeguridad(parseInt(e.target.value, 10))}
-          >
-            <option value={0}>Selecciona...</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>
-                {star}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="trato" className="form-label">Trato brindado por el arrendador:</label>
-          <select
-            id="trato"
-            className="form-select"
-            value={trato}
-            onChange={(e) => setTrato(parseInt(e.target.value, 10))}
-          >
-            <option value={0}>Selecciona...</option>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <option key={star} value={star}>
-                {star}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button type="submit" className="btn btn-primary">Enviar</button>
-      </form>
-
-      <div className="card p-5 ms-3">
+    <div className="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark">
+      <div className="card p-lg-5">
+        {/* Detalles del Inmueble */}
         <h2>Detalles del Inmueble</h2>
         {inmuebleInfo && (
           <div>
-            <img src={'http://localhost:3031/images/'+inmuebleInfo.foto}  alt="Imagen" style={{ width: '550px', height: '270px'}} />
+            <img src={'http://localhost:3031/images/'+inmuebleInfo.foto} alt="Imagen del inmueble" className="img-fluid" style={{ maxHeight: '270px' }} />
           </div>
         )}
         {inmuebleInfo && (
@@ -142,11 +73,52 @@ const CalificaInmuebleArrendador = () => {
             <p>{inmuebleInfo.direccion}</p>
           </div>
         )}
+  
+        {/* Formulario para Calificar Experiencia */}
+        <form onSubmit={handleSubmit}>
+          <h2 className="mb-4">Califica tu Experiencia</h2>
+          <div className="mb-3">
+              <label htmlFor="fachada" className="form-label">Condiciones de la fachada:</label>
+              <select id="fachada" className="form-select" value={fachada} onChange={(e) => setFachada(parseInt(e.target.value, 10))}>
+                <option value={0}>Selecciona...</option>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <option key={star} value={star}>{star}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="servicios" className="form-label">Eficiencia de los servicios básicos:</label>
+              <select id="servicios" className="form-select" value={servicios} onChange={(e) => setServicios(parseInt(e.target.value, 10))}>
+                <option value={0}>Selecciona...</option>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <option key={star} value={star}>{star}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="seguridad" className="form-label">Seguridad de la zona del inmueble:</label>
+              <select id="seguridad" className="form-select" value={seguridad} onChange={(e) => setSeguridad(parseInt(e.target.value, 10))}>
+                <option value={0}>Selecciona...</option>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <option key={star} value={star}>{star}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="trato" className="form-label">Trato brindado por el arrendador:</label>
+              <select id="trato" className="form-select" value={trato} onChange={(e) => setTrato(parseInt(e.target.value, 10))}>
+                <option value={0}>Selecciona...</option>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <option key={star} value={star}>{star}</option>
+                ))}
+              </select>
+            </div>
+          <button type="submit" className="btn btn-primary">Enviar</button>
+        </form>
       </div>
-
-
     </div>
   );
+  
 };
 
 export default CalificaInmuebleArrendador;

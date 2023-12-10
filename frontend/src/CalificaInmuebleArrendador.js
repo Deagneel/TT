@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const CalificaInmuebleArrendador = () => {
+  const navigate = useNavigate();
+
   const [fachada, setFachada] = useState(0);
   const [servicios, setServicios] = useState(0);
   const [seguridad, setSeguridad] = useState(0);
@@ -26,6 +29,7 @@ const CalificaInmuebleArrendador = () => {
         break;
     }
   };
+  
 
   const handleSubmit = () => {
     const data = {
@@ -44,6 +48,17 @@ const CalificaInmuebleArrendador = () => {
         console.error('Error al enviar las reseñas:', error);
       });
   };
+
+  axios.defaults.withCredentials = true;
+  useEffect(()=> {
+    axios.get('http://localhost:3031')
+    .then(res => {
+      if(res.data.valid) {
+      } else {
+        navigate('/login');
+      }
+    })
+  })
 
   return (
     <div style={{ display: 'flex', height: '100vh', margin: 0 }}>
