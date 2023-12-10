@@ -1,6 +1,6 @@
 import axios from 'axios';
-import React, { useEffect, useState, useNavigate } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate} from 'react-router-dom';
 import swal from 'sweetalert';
 
 const PerfilArrendatario = () => {
@@ -383,17 +383,7 @@ const PerfilArrendatario = () => {
             <div className="mb-3 row align-items-center">
               <label htmlFor="correo" className="col-sm-3 col-form-label">Correo:</label>
               <div className="col-sm-6">
-                <input
-                  type="email"
-                  className="form-control"
-                  value={formData.correo}
-                  onChange={handleCorreoChange}
-                />
-              </div>
-              <div className="col-sm-3">
-                <button className="btn btn-secondary" onClick={handleActualizarCorreo}>
-                  Actualizar
-                </button>
+              {formData.correo}
               </div>
             </div>
 

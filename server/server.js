@@ -1080,7 +1080,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     try {
         const r = await axios.put(
             'https://api.chatengine.io/users',
-            { username: name, secret: mail, first_name: name, last_name: last_name },
+            { username: mail, secret: mail, first_name: name, last_name: last_name },
             { headers: { "private-key": "8c08728f-cad4-4b48-bf8d-b8e8db34e0db" } }
         );
     } catch (e) {

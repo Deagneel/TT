@@ -181,44 +181,44 @@ function RegistroInmueble() {
             <p>Todos los campos son obligatorios.</p> {/* Mensaje de instrucción */}
               {/* Aquí van todos los campos del formulario como estaban originalmente */}
               {/* Título del anuncio */}
-              <div className="form-group">
+              <div className="mb-3 form-group">
               <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}
                     <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Ingresa el título del anuncio..." />
                 </div>
 
                 {/* Resto de los campos con la misma clase para mantener el tamaño uniforme */}
                 {/* Dirección */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="address" style={{ fontWeight: 'bold', fontSize: '18px' }}>Dirección<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} placeholder="Ingrese la dirección" />
                 </div>
 
                 {/* Código Postal */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
                 </div>
 
                 {/* Alcaldía */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="alcaldia" style={{ fontWeight: 'bold', fontSize: '18px' }}>Alcaldía<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="Ingrese la Alcaldía" />
                 </div>
 
                 {/* Latitud */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Latitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="latitud" name="latitud" value={formData.latitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
 
                 {/* Longitud */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
 
                 {/* Escuela cercana */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="idEscuela" style={{ fontWeight: 'bold', fontSize: '18px' }}>Escuela cercana<span style={{ color: 'red' }}>*</span></label>
                     <select className="form-control" id="idEscuela" name="idEscuela" value={formData.idEscuela} onChange={handleChange}>
                         <option value="">Selecciona una escuela</option>
@@ -229,7 +229,7 @@ function RegistroInmueble() {
                 </div>
 
                 {/* Tipo de vivienda */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="Tvivienda" style={{ fontWeight: 'bold', fontSize: '18px' }}>Tipo de vivienda<span style={{ color: 'red' }}>*</span></label>
                     <select className="form-control" id="Tvivienda" name="Tvivienda" value={formData.Tvivienda} onChange={handleChange}>
                         <option value="">Selecciona un tipo de vivienda</option>
@@ -239,12 +239,12 @@ function RegistroInmueble() {
                 </div>
 
                 {/* Precio y Periodo */}
-                <div className="form-row">
-                    <div className="col">
+                <div className="mb-3 form-row">
+                    <div className="mb-3 col">
                         <label htmlFor="price" style={{ fontWeight: 'bold', fontSize: '18px' }}>Precio<span style={{ color: 'red' }}>*</span></label>
                         <input type="text" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} placeholder="Ingrese el precio" />
                     </div>
-                    <div className="col">
+                    <div className="mb-3 col">
                         <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>Periodo<span style={{ color: 'red' }}>*</span></label>
                         <select className="form-control" id="period" name="period" value={formData.period} onChange={handleChange} >
                           <option value="Mensual">Mensual</option>
@@ -256,36 +256,37 @@ function RegistroInmueble() {
                 </div>
 
                 {/* Número de habitaciones */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="numRooms" style={{ fontWeight: 'bold', fontSize: '18px' }}>Número de habitaciones<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="numRooms" name="numRooms" value={formData.numRooms} onChange={handleChange} placeholder="..." />
                 </div>
 
                 {/* Reglamento */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="regulations" style={{ fontWeight: 'bold', fontSize: '18px' }}>Reglamento<span style={{ color: 'red' }}>*</span></label>
                     <textarea className="form-control" id="regulations" name="regulations" value={formData.regulations} onChange={handleChange} placeholder="Ingrese el reglamento"></textarea>
                 </div>
 
                 {/* Caracteristicas */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Características<span style={{ color: 'red' }}>*</span></label>
                     <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características del Inmueble"></textarea>
                 </div>
 
                 {/* Carga de imagen */}
-                <div className="form-group">
+                <div className="mb-3 form-group">
                     <label htmlFor="imageUpload" style={{ fontWeight: 'bold', fontSize: '18px' }}>Imagen<span style={{ color: 'red' }}>*</span></label>
                     <input type="file" className="form-control-file" id="imageUpload" onChange={handleFile} />
                 </div>
 
                 {/* Políticas de privacidad */}
-                <div className="form-check">
+                <div className="mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="aceptar_terminos" name="aceptar_terminos" onChange={handleCheckbox} checked={aceptarTerminos} />
                     <label className="form-check-label" htmlFor="aceptar_terminos">Acepto políticas de privacidad</label>
                 </div>
 
-              <button type="button" className="btn btn-primary" onClick={handleRegister} disabled={!isFormValid}>
+              <button type="mb-3 button" className="btn btn-secondary"
+                  style={{ backgroundColor: '#beaf87', color: 'black' }} onClick={handleRegister} disabled={!isFormValid}> 
                 Registrar
               </button>
             </div>

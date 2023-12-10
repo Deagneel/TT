@@ -63,6 +63,7 @@ function Signup() {
       const signupChatResponse = axios.post('http://localhost:3031/registrochat', {
           mail: values.correo,
           name: values.nombre,
+          last_name: values.primer_apellido,
         });
   
         console.log(signupChatResponse.data);

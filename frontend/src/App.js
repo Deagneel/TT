@@ -18,8 +18,8 @@ import Incidencia from './Incidencia';
 import AdministrarIncidencia from './AdministrarIncidencia';
 import PerfilArrendatario from './PerfilArrendatario';
 import HomeAdministrador from './HomeAdministrador';
-import CalificaInmuebleArrendador from './CalificaInmuebleArrendador';
 import Trato from './trato';
+import CalificaArrendatario from './CalificaArrendatario';
 
 
 
@@ -46,7 +46,7 @@ function App() {
         <Route path="/perfilarrendatario" element={<PerfilArrendatario />} />
         <Route path="/administrarincidencia/:id_reporte" element={<AdministrarIncidencia />} />
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
-        <Route path="/calificainmueblearrendador" element={<CalificaInmuebleArrendador />} />
+        <Route path="/calificaarrendatario" element={< CalificaArrendatario />} />
         <Route path="/trato/:id_arrendador/:id_inmueble/:id_usuario" element={<Trato />} />
       </Routes>
     </BrowserRouter>
