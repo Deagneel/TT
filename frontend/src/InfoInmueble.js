@@ -276,14 +276,30 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
 
             {/* Reglamento */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">Reglamento: {property.reglamento}</h5>
+              <h5 className="font-weight-bold">Reglamento:</h5>
+              <div className="reglamento-content" style={{ marginTop: '10px', marginLeft: '20px', textAlign: 'justify' }}>
+                {property.reglamento.split('\n').map((line, index) => (
+                  <p key={index} style={{ marginBottom: '5px' }}>
+                    {line}
+                  </p>
+                ))}
+              </div>
             </div>
 
+
             {/* Características */}
-            <div className="mb-3">
-              <h5 className="font-weight-bold">Características: {property.caracteristicas}</h5>
+            
+            <h5 className="font-weight-bold">Características:</h5>
+            <div className="caracteristicas-content" style={{ marginTop: '10px', marginLeft: '20px', textAlign: 'justify' }}>
+              {property.caracteristicas.split('\n').map((line, index) => (
+                <p key={index} style={{ marginBottom: '5px' }}>
+                  {line}
+                </p>
+              ))}
             </div>
           </div>
+
+          
 
           <div className="mb-4 justify-content-center">
             {/* Botón "Me interesa" */}
