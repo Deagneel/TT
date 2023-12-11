@@ -98,6 +98,7 @@ function Home() {
       axios.get('http://localhost:3031/inmueblearrendatario') // Actualiza el endpoint según sea necesario
         .then((response) => {
           setRegisteredProperties(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.error('Error al obtener datos de propiedades:', error);
@@ -250,7 +251,7 @@ function Home() {
               filteredProperties
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
-                  property.activo !== 0 && (
+                  (property.activo === 1 && property.activo_usuario === 0) && (
                     <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
@@ -287,7 +288,7 @@ function Home() {
               registeredProperties
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
-                  property.activo !== 0 && (
+                (property.activo === 1 && property.activo_usuario === 0) && (
                     <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
