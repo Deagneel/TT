@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -72,6 +74,23 @@ function RegistroInmueble() {
 
   const [aceptarTerminos, setAceptarTerminos] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [esCpValido, setEsCpValido] = useState(null);
+
+  const validarCP = (cp) => {
+    // Convertir el CP a número para la comparación
+    const cpNumerico = parseInt(cp);
+  
+    // Definir el rango de CPs de la Ciudad de México
+    const rangoCPsCDMX = { min: 1000, max: 19999 };
+  
+    // Verificar si el CP está en el rango
+    if (cpNumerico >= rangoCPsCDMX.min && cpNumerico <= rangoCPsCDMX.max) {
+      setEsCpValido(true);
+    } else {
+      setEsCpValido(false);
+    }
+  };
+  
 
   const handleCheckbox = () => {
     setAceptarTerminos(!aceptarTerminos);
@@ -125,7 +144,13 @@ function RegistroInmueble() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  
+    if (name === 'cp') {
+      validarCP(value);
+    }
   };
+  
+  
 
   const handleFile = (e) => {
     setFile(e.target.files[0]);
@@ -197,7 +222,11 @@ function RegistroInmueble() {
                 <div className="mb-3 form-group">
                     <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
+                    {esCpValido === false && (
+                        <div style={{ color: 'red' }}>El código postal no es válido para la Ciudad de México.</div>
+                    )}
                 </div>
+
 
                 {/* Alcaldía */}
                 <div className="mb-3 form-group">
@@ -284,11 +313,13 @@ function RegistroInmueble() {
                     <input type="checkbox" className="form-check-input" id="aceptar_terminos" name="aceptar_terminos" onChange={handleCheckbox} checked={aceptarTerminos} />
                     <label className="form-check-label" htmlFor="aceptar_terminos">Acepto políticas de privacidad</label>
                 </div>
-
-              <button type="mb-3 button" className="btn btn-secondary"
-                  style={{ backgroundColor: '#beaf87', color: 'black' }} onClick={handleRegister} disabled={!isFormValid}> 
-                Registrar
-              </button>
+                {/* Botón de registro */}
+                <button type="button" className="btn btn-secondary"
+                    style={{ backgroundColor: '#beaf87', color: 'black' }}
+                    onClick={handleRegister}
+                    disabled={!isFormValid || esCpValido === false}>
+                  Registrar
+                </button>
             </div>
           </div>
         </div>
