@@ -234,18 +234,23 @@ function RegistroInmueble() {
                     <input type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="Ingrese la Alcaldía" />
                 </div>
 
+                <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Coordenadas de Google Maps</label>
+                <div className="mb-3">
+                    <a href="https://support.google.com/maps/answer/18539?hl=es-MX&co=GENIE.Platform%3DDesktop#:~:text=C%C3%B3mo%20obtener%20las%20coordenadas%20de,decimal%20en%20la%20parte%20superior." target="_blank">¿Cómo obtener las coordenadas de Google Maps?</a>
+                </div>
+
                 {/* Latitud */}
                 <div className="mb-3 form-group">
-                    <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Latitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
+                    <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Latitud<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="latitud" name="latitud" value={formData.latitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
 
                 {/* Longitud */}
                 <div className="mb-3 form-group">
-                    <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud - Google Maps<span style={{ color: 'red' }}>*</span></label>
+                    <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
-
+                                
                 {/* Escuela cercana */}
                 <div className="mb-3 form-group">
                     <label htmlFor="idEscuela" style={{ fontWeight: 'bold', fontSize: '18px' }}>Escuela cercana<span style={{ color: 'red' }}>*</span></label>
