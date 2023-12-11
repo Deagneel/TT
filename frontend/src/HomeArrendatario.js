@@ -282,7 +282,7 @@ function HomeArrendatario() {
               filteredProperties
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
-                  property.activo !== 0 && (
+                (property.activo === 1 && property.activo_usuario === 0) && (
                     <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
@@ -319,7 +319,7 @@ function HomeArrendatario() {
               registeredProperties
                 .slice(indexOfFirstItem, indexOfLastItem)
                 .map((property, index) =>
-                  property.activo !== 0 && (
+                (property.activo === 1 && property.activo_usuario === 0) && (
                     <div key={index} className="card mb-3 shadow">
                       <div className="row g-0">
                         <div className="col-md-4">
