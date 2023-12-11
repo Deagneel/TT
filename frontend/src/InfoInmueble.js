@@ -227,18 +227,18 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
             {/* Calificaciones */}
             <h3 className="font-weight-bold">Calificaciones Obtenidas:</h3>
             <div className="col mb-3">
-              <h5 className="font-weight-bold">Condiciones: {(property.condiciones / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} /></h5>
+              <h5 className="font-weight-bold">Condiciones: {(property.condiciones / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} /></h5>
             </div>
 
             <div className="col mb-3">
               <h5 className="font-weight-bold">
-              Servicios: {(property.servicios / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} />
+              Servicios: {(property.servicios / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} />
               </h5>
             </div>
 
             <div className="col mb-5">
               <h5 className="font-weight-bold">
-                Seguridad: {(property.seguridad / property.contador_evaluaciones).toFixed(2)}<FontAwesomeIcon icon={faStar} />
+                Seguridad: {(property.seguridad / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} />
               </h5>
             </div>
 
