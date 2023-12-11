@@ -274,7 +274,7 @@ function RegistroInmueble() {
                         <input type="text" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} placeholder="Ingrese el precio" />
                     </div>
                     <div className="mb-3 col">
-                        <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>Periodo<span style={{ color: 'red' }}>*</span></label>
+                        <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>Periodo de renta<span style={{ color: 'red' }}>*</span></label>
                         <select className="form-control" id="period" name="period" value={formData.period} onChange={handleChange} >
                           <option value="Mensual">Mensual</option>
                           <option value="Cuatrimestral">Cuatrimestral</option>

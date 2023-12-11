@@ -406,7 +406,7 @@ function EditarInmueble() {
             />
           </div>
           <div className="col">
-            <label htmlFor="period" className="form-label">Periodo</label>
+            <label htmlFor="period" className="form-label">Periodo de renta</label>
             <select
               name="period"
               id="period"
