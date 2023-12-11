@@ -150,6 +150,23 @@ function UsuariosSection() {
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
+  const handleInteresClick = async (idInmueble) => {
+    try {
+        console.log('Clic en el sobre');
+        axios.post(`http://localhost:3031/newchat/${idInmueble}`)
+        .then(async (response) => {
+            console.log('Petición completada con éxito:', response);
+            await swal('Chat Creado');
+            await navigate('/chat');
+        })
+        .catch((error) => {
+            console.error('Error al crear el chat', error);
+        });
+    } catch (error) {
+        console.error('Error al crear el chat', error);
+    }
+};
+
   const handleEliminarIncidencia = async (repoId) => {
     try {
       // Mostrar SweetAlert2 de confirmación
@@ -213,7 +230,7 @@ function UsuariosSection() {
                   <button onClick={() => handleEliminarIncidencia(reporte.id_usuario)} className="btn btn-danger" style={{ marginRight: '10px' }}>
                     Eliminar Usuario
                   </button>
-                  <button className="btn btn-success">Mensaje</button>
+                  <button className="btn btn-success" onClick={() => handleInteresClick(reporte.id_inmueble)}>Mensaje</button>
                 </div>
               </div>
             </div>
@@ -262,6 +279,24 @@ function InmueblesSection() {
     }
   };
 
+  const handleInteresClick = async (idInmueble) => {
+    try {
+        console.log('Clic en el sobre');
+        axios.post(`http://localhost:3031/newchat/${idInmueble}`)
+        .then(async (response) => {
+            console.log('Petición completada con éxito:', response);
+            await swal('Chat Creado');
+            await navigate('/chat');
+        })
+        .catch((error) => {
+            console.error('Error al crear el chat', error);
+        });
+    } catch (error) {
+        console.error('Error al crear el chat', error);
+    }
+  };
+
+
   return (
     <div className="container-fluid" style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
       <h2>Inmuebles</h2>
@@ -307,7 +342,7 @@ function InmueblesSection() {
                 >
                   {reporte.inmueble_activo == 1 ? "Pausar Publicación" : "Activar Publicación"}
                 </button>
-                <button className="btn btn-success">Mensaje</button>
+                <button className="btn btn-success" onClick={() => handleInteresClick(reporte.id_inmueble)}>Mensaje</button>
               </div>
             </div>
           </div>
