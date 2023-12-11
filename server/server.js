@@ -652,35 +652,25 @@ app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
 
-// Ruta para obtener datos de la tabla "escuela"
-app.get('/obtenerEscuelas', (req, res) => {
-    const sql = "SELECT * FROM escuela"; // Selecciona solo el campo "nombre" de la tabla
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error al obtener datos de escuela:', err);
-            return res.json({ message: "Error al obtener datos de escuela" });
-        }
-        return res.json(result);
-    });
-});
 
 //Consulta en union de la tabla escuela e inmueble para HomeArrendatario
 app.get('/inmueblearrendatario', (req, res) => {
-    const sql = `
-      SELECT i.*, e.nombre AS nombre_escuela 
-      FROM inmueble AS i 
-      LEFT JOIN escuela AS e ON i.id_escuela = e.id_escuela
-    `;
-    
-    db.query(sql, (err, result) => {
-      if (err) {
-        console.error('Error al obtener datos de la tabla inmueble:', err);
-        res.status(500).json({ error: 'Error interno del servidor' });
-      } else {
-        res.json(result);
-      }
-    });
+  const sql = `
+    SELECT i.*, e.nombre AS nombre_escuela, i.activo, i.activo_usuario
+    FROM inmueble AS i 
+    LEFT JOIN escuela AS e ON i.id_escuela = e.id_escuela
+  `;
+  
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de la tabla inmueble:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
   });
+});
+
 
   app.get('/obtenerReporteesp/:id_reporte', (req, res) => {
     const { id_reporte } = req.params;
