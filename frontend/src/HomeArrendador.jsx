@@ -37,10 +37,6 @@ function ArrendadorNavbar() {
   };
   
 
-  const handleIconClick = (icon) => {
-    console.log(`Clic en el icono ${icon}`);
-  };
-
   const handleLogoutClick = () => {
     axios
       .get('http://localhost:3031/logout')
@@ -91,9 +87,7 @@ function ArrendadorNavbar() {
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={handleLogoutClick}>
-              Cerrar Sesión
-            </a>
+            <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
           </li>
         </ul>
       </div>

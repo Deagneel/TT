@@ -21,29 +21,41 @@ function NuevaContra() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const values = { contrasena, confirmarContrasena };
-    const err = Validation(values);
 
-    if (!err.contrasena && !err.confirmarContrasena) {
-        axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
-            contrasena: contrasena,
-        })
-        .then((response) => {
-            navigate('/exito');
-        })
-        .catch((error) => {
-            console.error('Error al cambiar la contraseña:', error);
-            alert('Error al cambiar la contraseña');
-        });
-    } else {
-        if (err.contrasena) {
-            alert(err.contrasena);
+    // Preparar los valores para la validación
+    const values = { contrasena, confirmarContrasena };
+
+    // Ejecutar la validación
+    const errors = Validation(values);
+
+    // Comprobar si hay errores y mostrarlos con swal
+    if (errors.contrasena || errors.confirmarContrasena) {
+        let errorMessage = '';
+        if (errors.contrasena) {
+            errorMessage += errors.contrasena + '\n';
         }
-        if (err.confirmarContrasena) {
-            alert(err.confirmarContrasena);
+        if (errors.confirmarContrasena) {
+            errorMessage += errors.confirmarContrasena;
         }
+        swal("Error en la validación", errorMessage, "error");
+        return;
     }
-};
+
+    // No hay errores, proceder con la solicitud
+    axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
+        contrasena: contrasena,
+    })
+    .then((response) => {
+        swal("Éxito", "Contraseña actualizada correctamente", "success").then(() => {
+            navigate('/exito');
+        });
+    })
+    .catch((error) => {
+        console.error('Error al cambiar la contraseña:', error);
+        swal("Error", "Error al cambiar la contraseña", "error");
+    });
+  };
+
 
 
   return (

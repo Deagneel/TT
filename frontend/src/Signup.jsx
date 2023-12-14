@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Validation from './SignupValidation.js';
 import axios from 'axios';
+import swal from 'sweetalert';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Signup() {
@@ -23,9 +24,45 @@ function Signup() {
   const navigate = useNavigate();
   const[errors, setErrors] = useState({});
 
-  const handleInput = (event) => {
-    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-  };
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+
+    // Definir las validaciones para campos específicos
+    const validations = {
+        nombre: value => /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*$/.test(value),
+        primer_apellido: value => /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*$/.test(value),
+        segundo_apellido: value => /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]*$/.test(value)
+    };
+
+    const errorMessages = {
+        nombre: "El nombre solo puede contener letras y espacios",
+        primer_apellido: "El primer apellido solo puede contener letras y espacios",
+        segundo_apellido: "El segundo apellido solo puede contener letras y espacios"
+    };
+
+    // Verificar si hay una validación definida para este campo
+    if (validations[name] && !validations[name](value)) {
+        // Si la validación falla, mostrar un error
+        swal(errorMessages[name], "", "error");
+        return; // Detener la ejecución aquí si la validación falla
+    } else {
+        // Actualizar el estado solo si la validación es exitosa
+        setValues(prev => ({ ...prev, [name]: value }));
+    }
+};
+
+const handleKeyPress = (e) => {
+  // Crear una expresión regular que permita solo letras y espacios
+  const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/;
+
+  // Verificar si la tecla presionada es un carácter no permitido
+  if (!regex.test(e.key) && e.key !== 'Backspace' && e.key !== 'Tab') {
+      // Prevenir la acción predeterminada del evento (escribir el carácter en el campo)
+      e.preventDefault();
+  }
+};
+
+
 
   const handleCheckbox = (event) => {
     setValues((prev) => ({ ...prev, aceptar_terminos: event.target.checked }));
@@ -128,6 +165,7 @@ function Signup() {
                     name="nombre"
                     autoComplete="off"
                     onChange={handleInput}
+                    onKeyPress={handleKeyPress}
                     className="form-control"
                   />
                   {errors.nombre && (
@@ -145,6 +183,7 @@ function Signup() {
                     name="primer_apellido"
                     autoComplete="off"
                     onChange={handleInput}
+                    onKeyPress={handleKeyPress}
                     className="form-control"
                   />
                   {errors.primer_apellido && (
@@ -162,6 +201,7 @@ function Signup() {
                     name="segundo_apellido"
                     autoComplete="off"
                     onChange={handleInput}
+                    onKeyPress={handleKeyPress}
                     className="form-control"
                   />
                   {errors.segundo_apellido && (
