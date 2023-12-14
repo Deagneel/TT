@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import swal from 'sweetalert';
 import { faPause, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MapComponent from './MapComponent'; // Asegúrate de que la ruta sea correcta
+
 
 function Navbar({ handleSearchTerm }) {
   const navigate = useNavigate();
@@ -399,9 +401,10 @@ function EditarInmueble() {
             onChange={handleChange}
             className="form-control"
             placeholder="Ingrese la Latitud"
+            disabled
           />
         </div>
-  
+
         {/* Longitud */}
         <div className="mb-3">
           <label htmlFor="longitud" className="form-label">Longitud</label>
@@ -413,8 +416,18 @@ function EditarInmueble() {
             onChange={handleChange}
             className="form-control"
             placeholder="Ingrese la longitud"
+            disabled
           />
         </div>
+
+        {/* Mapa para seleccionar la ubicación */}
+        <MapComponent
+          latitud={parseFloat(formData.latitud)}
+          longitud={parseFloat(formData.longitud)}
+          onMarkerDragEnd={(position) => {
+            setFormData({ ...formData, latitud: position.lat, longitud: position.lng });
+          }}
+        />
   
         {/* Escuela cercana */}
         <div className="mb-3">
