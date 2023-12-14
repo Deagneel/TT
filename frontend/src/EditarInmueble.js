@@ -84,6 +84,7 @@ function EditarInmueble() {
     id: id_inmueble,
     title: '',
     address: '',
+    asentamiento: '',
     cp: '',
     alcaldia: '',
     latitud: '',
@@ -112,6 +113,7 @@ function EditarInmueble() {
           ...prevData,
           title: responseInmueble.data.titulo,
           address: responseInmueble.data.direccion,
+          asentamiento: responseInmueble.data.asentamiento,
           cp: responseInmueble.data.cp,
           alcaldia: responseInmueble.data.alcaldia,
           latitud: responseInmueble.data.latitud,
@@ -143,17 +145,42 @@ function EditarInmueble() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Definir las validaciones para campos específicos
+    const validations = {
+        title: value => !/[\d]/.test(value), // No permite números en el título
+        cp: value => /^$|^[0-9]+$/.test(value), // Solo permite números en el código postal
+        price: value => /^$|^[0-9]+$/.test(value), // Solo permite números en el precio
+        numRooms: value => /^$|^[0-9]+$/.test(value) // Solo permite números en el número de habitaciones
+    };
+
+    const errorMessages = {
+        title: "El título no puede incluir números",
+        cp: "El código postal solo puede contener números",
+        price: "El precio solo puede contener números",
+        numRooms: "El número de habitaciones solo puede contener números"
+    };
+
+    // Aplicar validaciones solo a los campos definidos
+    if (validations[name] && !validations[name](value)) {
+        swal(errorMessages[name], "", "error");
+        return; // Detener la ejecución si la validación falla
+    }
+
+    // Actualizar el estado manteniendo la lógica existente
     setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value,
     }));
-  };
+};
+
 
   const handleEdit = async () => {
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
       formDataToSend.append('address', formData.address);
+      formDataToSend.append('asentamiento', formData.asentamiento);
       formDataToSend.append('cp', formData.cp);
       formDataToSend.append('alcaldia', formData.alcaldia);
       formDataToSend.append('latitud', formData.latitud);
@@ -222,7 +249,31 @@ function EditarInmueble() {
     }
   };
   
+  const handlecpvalidation = async () => {
+    const cpInput = document.getElementById('cp');
+    const cpValue = cpInput.value;
   
+    try {
+      const response = await axios.get(`http://localhost:3031/validateCP?cp=${cpValue}`);
+      if (response.status === 200) {
+        setFormData({
+          ...formData,
+          asentamiento: response.data.asentamiento,
+          alcaldia: response.data.alcaldia // Actualiza el estado con la alcaldía
+        });
+      } else {
+        console.error('Error en la solicitud al servidor: ', response.status);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        swal("Código postal no encontrado", "", "error");
+      } else {
+        // Manejo de otros errores
+        swal("Error en la solicitud al servidor", "", "error");
+        console.error('Error en la solicitud al servidor soy try', error);
+      }
+    }
+  };
   
   
   
@@ -304,25 +355,29 @@ function EditarInmueble() {
             placeholder="Ingrese la dirección"
           />
         </div>
+
+        {/* Asentamiento */}
+        <div className="mb-3">
+                    <label htmlFor="asentamiento" style={{ fontWeight: 'bold', fontSize: '18px' }}>Asentamiento<span style={{ color: 'red' }}>*</span></label>
+                    <input disabled type="text" className="form-control" id="asentamiento" name="asentamiento" value={formData.asentamiento} onChange={handleChange} placeholder="..." />
+                </div>
   
         {/* Código Postal */}
         <div className="mb-3">
-          <label htmlFor="cp" className="form-label">Código Postal</label>
-          <input
-            type="text"
-            name="cp"
-            id="cp"
-            value={formData.cp}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Ingrese el código postal"
-          />
+        <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
+                    <div className="input-group">
+                        <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
+                        <div className="input-group-append">
+                            <button onClick={handlecpvalidation} className="btn btn-outline-secondary" type="button" id="button-addon2">Validar</button>
+                        </div>
+                    </div>
         </div>
   
         {/* Alcaldía */}
         <div className="mb-3">
           <label htmlFor="alcaldia" className="form-label">Alcaldía</label>
           <input
+            disabled
             type="text"
             name="alcaldia"
             id="alcaldia"

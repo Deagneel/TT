@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import swal from 'sweetalert';
 
+
 function Navbar({ handleSearchTerm }) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,7 +72,7 @@ function RegistroInmueble() {
       }
     })
   })
-
+  const XLSX = require('xlsx');
   const [aceptarTerminos, setAceptarTerminos] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [esCpValido, setEsCpValido] = useState(null);
@@ -112,6 +113,7 @@ function RegistroInmueble() {
   const [formData, setFormData] = useState({
     title: '',
     address: '',
+    asentamiento: '',
     cp: '',
     alcaldia: '',
     latitud: '',
@@ -130,7 +132,7 @@ function RegistroInmueble() {
 
   useEffect(() => {
     const checkFormValidity = () => {
-      const requiredFieldsFilled = formData.title && formData.address && formData.cp &&
+      const requiredFieldsFilled = formData.title && formData.address && formData.asentamiento && formData.cp &&
         formData.alcaldia && formData.latitud && formData.longitud && formData.price &&
         formData.period && formData.numRooms && formData.regulations && formData.caracteristicas &&
         formData.idEscuela && formData.Tvivienda && file;
@@ -141,14 +143,71 @@ function RegistroInmueble() {
     checkFormValidity();
   }, [formData, file, aceptarTerminos]);
 
+
+
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  
-    if (name === 'cp') {
-      validarCP(value);
-    }
+
+    // Definir las validaciones para campos específicos
+    const validations = {
+        title: value => !/[\d]/.test(value), // No permite números en el título
+        cp: value => /^$|^[0-9]+$/.test(value), // Solo permite números en el código postal
+        price: value => /^$|^[0-9]+$/.test(value),
+        numRooms: value => /^$|^[0-9]+$/.test(value)
+    };
+
+    const errorMessages = {
+      title: "El título no puede incluir números",
+      cp: "El código postal solo puede contener números",
+      price: "El precio solo puede contener números",
+      numRooms: "El número de habitaciones solo puede contener números"
   };
+
+    // Verificar si hay una validación definida para este campo
+    if (validations[name]) {
+        // Si la validación falla, no actualizar el estado y, opcionalmente, mostrar un error
+        if (!validations[name](value)) {
+            swal(errorMessages[name], "", "error");
+            return; // Detener la ejecución aquí
+        }
+    }
+    setFormData({
+        ...formData,
+        [name]: value
+    });
+  };
+  
+
+  //Sección de validacion de CP
+
+const handlecpvalidation = async () => {
+  const cpInput = document.getElementById('cp');
+  const cpValue = cpInput.value;
+
+  try {
+    const response = await axios.get(`http://localhost:3031/validateCP?cp=${cpValue}`);
+    if (response.status === 200) {
+      setFormData({
+        ...formData,
+        asentamiento: response.data.asentamiento,
+        alcaldia: response.data.alcaldia // Actualiza el estado con la alcaldía
+      });
+    } else {
+      console.error('Error en la solicitud al servidor: ', response.status);
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      swal("Código postal no encontrado", "", "error");
+    } else {
+      // Manejo de otros errores
+      swal("Error en la solicitud al servidor", "", "error");
+      console.error('Error en la solicitud al servidor soy try', error);
+    }
+  }
+};
+
+  
   
   
 
@@ -168,6 +227,7 @@ function RegistroInmueble() {
       const response = await axios.post('http://localhost:3031/registroinmueble', {
         title: formData.title,
         address: formData.address,
+        asentamiento: formData.asentamiento,
         cp: formData.cp,
         alcaldia: formData.alcaldia,
         latitud: formData.latitud,
@@ -218,20 +278,29 @@ function RegistroInmueble() {
                     <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} placeholder="Ingrese la dirección" />
                 </div>
 
+                {/* Asentamiento */}
+                <div className="mb-3 form-group">
+                    <label htmlFor="asentamiento" style={{ fontWeight: 'bold', fontSize: '18px' }}>Asentamiento<span style={{ color: 'red' }}>*</span></label>
+                    <input disabled type="text" className="form-control" id="asentamiento" name="asentamiento" value={formData.asentamiento} onChange={handleChange} placeholder="..." />
+                </div>
+
                 {/* Código Postal */}
                 <div className="mb-3 form-group">
                     <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
-                    {esCpValido === false && (
-                        <div style={{ color: 'red' }}>El código postal no es válido para la Ciudad de México.</div>
-                    )}
+                    <div className="input-group">
+                        <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
+                        <div className="input-group-append">
+                            <button onClick={handlecpvalidation} className="btn btn-outline-secondary" type="button" id="button-addon2">Validar</button>
+                        </div>
+                    </div>
                 </div>
+
 
 
                 {/* Alcaldía */}
                 <div className="mb-3 form-group">
                     <label htmlFor="alcaldia" style={{ fontWeight: 'bold', fontSize: '18px' }}>Alcaldía<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="Ingrese la Alcaldía" />
+                    <input disabled type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="..." />
                 </div>
 
                 <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Coordenadas de Google Maps</label>
@@ -304,7 +373,7 @@ function RegistroInmueble() {
                 {/* Caracteristicas */}
                 <div className="mb-3 form-group">
                     <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Características<span style={{ color: 'red' }}>*</span></label>
-                    <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características del Inmueble"></textarea>
+                    <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características destacables del Inmueble"></textarea>
                 </div>
 
                 {/* Carga de imagen */}

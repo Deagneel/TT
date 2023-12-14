@@ -116,9 +116,6 @@ const handleReportClick = (idUsuario, idInmueble) => {
 };
 
 
-
-
-
 const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   try {
     // Realizar la consulta para obtener el valor de perfil_completado del usuario
@@ -227,18 +224,32 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
             {/* Calificaciones */}
             <h3 className="font-weight-bold">Calificaciones Obtenidas:</h3>
             <div className="col mb-3">
-              <h5 className="font-weight-bold">Condiciones: {(property.condiciones / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} /></h5>
+              <h5 className="font-weight-bold">
+                  Condiciones: 
+                  {property.contador_evaluaciones 
+                      ? ((property.condiciones / property.contador_evaluaciones).toFixed(2) + " de 5")
+                      : "Sin evaluaciones aún"}
+                  <FontAwesomeIcon icon={faStar} />
+              </h5>
             </div>
 
             <div className="col mb-3">
               <h5 className="font-weight-bold">
-              Servicios: {(property.servicios / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} />
+                  Servicios: 
+                  {property.contador_evaluaciones 
+                      ? ((property.servicios / property.contador_evaluaciones).toFixed(2) + " de 5")
+                      : " Sin evaluaciones aún"}
+                  <FontAwesomeIcon icon={faStar} />
               </h5>
             </div>
 
             <div className="col mb-5">
               <h5 className="font-weight-bold">
-                Seguridad: {(property.seguridad / property.contador_evaluaciones).toFixed(2)} de 5<FontAwesomeIcon icon={faStar} />
+                  Seguridad: 
+                  {property.contador_evaluaciones 
+                      ? ((property.seguridad / property.contador_evaluaciones).toFixed(2) + " de 5")
+                      : " Sin evaluaciones aún"}
+                  <FontAwesomeIcon icon={faStar} />
               </h5>
             </div>
 
@@ -249,14 +260,15 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
               <h5 className="font-weight-bold">Dirección: {property.direccion}</h5>
             </div>
 
+            {/* Asentamientos */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">{property.asentamiento} &nbsp; &nbsp; &nbsp; Código postal: {property.cp}</h5>
+            </div>
+
             {/* Alcaldía */}
             <div className="mb-3">
               <h5 className="font-weight-bold">Alcaldía: {property.alcaldia}</h5>
-            </div>
-
-            {/* Número de cuartos */}
-            <div className="mb-3">
-              <h5 className="font-weight-bold">Número de cuartos: {property.no_habitaciones}</h5>
+              <br/>
             </div>
 
             {/* Precio */}
@@ -274,6 +286,12 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
               <h5 className="font-weight-bold">Tipo de vivienda: {tipoVivienda}</h5>
             </div>
 
+            {/* Número de cuartos */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold">Número de habitaciones: {property.no_habitaciones}</h5>
+              <br/>
+            </div>
+
             {/* Reglamento */}
             <div className="mb-3">
               <h5 className="font-weight-bold">Reglamento:</h5>
@@ -284,6 +302,7 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
                   </p>
                 ))}
               </div>
+              <br/>
             </div>
 
 
