@@ -93,6 +93,7 @@ function RegistroInmueble() {
     }
   };
   
+  
 
   const handleCheckbox = () => {
     setAceptarTerminos(!aceptarTerminos);
@@ -210,6 +211,8 @@ const handlecpvalidation = async () => {
       console.error('Error en la solicitud al servidor soy try', error);
     }
   }
+  getAddressForMap();
+
 };
 
   
@@ -218,27 +221,33 @@ const handlecpvalidation = async () => {
     setFile(e.target.files[0]);
   };
 
-  const handleAddressChange = async (e) => {
+  
+  const handleAddressChange = (e) => {
     const address = e.target.value;
     setFormData({ ...formData, address });
+  };
+
+  const getAddressForMap = () => {
+    const fullAddress = `${formData.address}, ${formData.asentamiento}, ${formData.cp}, ${formData.alcaldia}`;
+    
+    // Llamar a la función para obtener las coordenadas con la dirección completa
+    fetchCoordinates(fullAddress);
+  };
   
-    if (address.length > 5) { // Puedes ajustar esta condición según tus necesidades
+  const fetchCoordinates = async (fullAddress) => {
+    if (fullAddress.length > 10) { // Asegúrate de que la dirección sea lo suficientemente larga
       try {
-        // Aquí haces la solicitud al proxy en lugar de la API de Google directamente
-        const response = await axios.get(`http://localhost:3031/geocode?address=${encodeURIComponent(address)}`);
+        const response = await axios.get(`http://localhost:3031/geocode?address=${encodeURIComponent(fullAddress)}`);
         const { results } = response.data;
         if (results.length > 0) {
           const { lat, lng } = results[0].geometry.location;
           setFormData({ ...formData, latitud: lat, longitud: lng });
-          // También actualiza la posición del marcador si es necesario
         }
       } catch (error) {
         console.error('Error en la geocodificación:', error);
-        // Manejo de errores
       }
     }
   };
-  
 
   const handleRegister = async () => {
     if (!isFormValid) return;
@@ -279,6 +288,12 @@ const handlecpvalidation = async () => {
       console.error('Error al enviar la solicitud al servidor:', error);
     }
   };
+  
+  useEffect(() => {
+    if (formData.address && formData.asentamiento && formData.cp && formData.alcaldia) {
+      getAddressForMap();
+    }
+  }, [formData.address, formData.asentamiento, formData.cp, formData.alcaldia]);
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>

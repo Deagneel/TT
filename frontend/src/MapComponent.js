@@ -31,7 +31,7 @@ const MapComponent = ({ onMarkerDragEnd, latitud, longitud }) => {
 
     return (
         <APIProvider apiKey="AIzaSyArrTAZutsOGQ0qEXumdsKfqz6sryLq3bw">
-            <div style={{ height: "100vh", width: "100%" }}>
+            <div style={{ height: "50vh", width: "100%" }}>
                 <Map
                     mapContainerStyle={containerStyle}
                     center={markerPosition}
