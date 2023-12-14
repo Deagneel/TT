@@ -20,6 +20,7 @@ import PerfilArrendatario from './PerfilArrendatario';
 import HomeAdministrador from './HomeAdministrador';
 import Trato from './trato';
 import CalificaArrendatario from './CalificaArrendatario';
+import MapComponent from './MapComponent';
 
 
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/homeadministrador" element={<HomeAdministrador />} />
         <Route path="/calificaarrendatario" element={< CalificaArrendatario />} />
         <Route path="/trato/:id_arrendador/:id_inmueble/:id_usuario" element={<Trato />} />
+        <Route path="/mapcomponent" element={<MapComponent/>} />
       </Routes>
     </BrowserRouter>
   );

@@ -79,6 +79,20 @@ app.post('/upload', upload.single('image'), (req, res) => {
     res.json({url: req.file.filename});
 })
 
+app.get('/geocode', async (req, res) => {
+  try {
+      const address = req.query.address;
+      const apiKey = 'AIzaSyArrTAZutsOGQ0qEXumdsKfqz6sryLq3bw'; // Reemplaza con tu clave API de Google Maps
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+
+      const response = await axios.get(url);
+      res.json(response.data);
+  } catch (error) {
+      console.error('Error en el proxy de geocodificación:', error);
+      res.status(500).send('Error en el servidor');
+  }
+});
+
 app.get('/', (req, res) => {
   if(req.session.user && req.session.user.nombre) {
       return res.json({valid: true, nombre: req.session.user.correo})
