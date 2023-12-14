@@ -300,13 +300,15 @@ const handlecpvalidation = async () => {
                 {/* Dirección */}
                 <div className="mb-3 form-group">
                     <label htmlFor="address" style={{ fontWeight: 'bold', fontSize: '18px' }}>Dirección<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleAddressChange} placeholder="Ingrese la dirección" />
-                </div>
-
-                {/* Asentamiento */}
-                <div className="mb-3 form-group">
-                    <label htmlFor="asentamiento" style={{ fontWeight: 'bold', fontSize: '18px' }}>Asentamiento<span style={{ color: 'red' }}>*</span></label>
-                    <input disabled type="text" className="form-control" id="asentamiento" name="asentamiento" value={formData.asentamiento} onChange={handleChange} placeholder="..." />
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleAddressChange}
+                      placeholder={formData.address}
+                    />
                 </div>
 
                 {/* Asentamiento */}
