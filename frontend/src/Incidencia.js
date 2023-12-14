@@ -39,6 +39,16 @@ function Incidencia({}) {
   };
 
   const handleRegister = async () => {
+    if (!formData.aff.trim() || !formData.description.trim()) {
+      swal("Error", "El asunto y la descripción son obligatorios", "error");
+      return;
+    }
+    // Validar la longitud mínima de 'aff' y 'description'
+    if (formData.aff.trim().length < 5 || formData.description.trim().length < 10) {
+      swal("Error", "Necesitamos un poco más de información para ayudarte mejor", "error");
+      return;
+    }
+
     try {
       const currentDate = new Date().toISOString().slice(0, 10);
 

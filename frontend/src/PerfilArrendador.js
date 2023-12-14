@@ -226,6 +226,11 @@ const PerfilArrendador = () => {
       }
     };
 
+    const handleBack = () => {
+      window.history.back();
+    };
+    
+
   return (
     <div className="container-fluid" style={{ margin: 0, fontFamily: 'Roboto, sans-serif', backgroundColor: '#999999' }}>
       <div className="row justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
@@ -301,7 +306,9 @@ const PerfilArrendador = () => {
               </div>
             </div>
 
-            <Link to="/homearrendador" className="return-link" style={{ color: 'black', textDecoration: 'none', position: 'absolute', top: '10px', left: '10px' }}>Volver</Link>
+            <button className="btn btn-secondary" style={{ position: 'absolute', top: '10px', left: '10px' }} onClick={handleBack}>
+              Volver
+            </button>
           </div>
         </div>
       </div>

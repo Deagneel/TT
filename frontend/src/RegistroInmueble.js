@@ -44,7 +44,7 @@ function Navbar({ handleSearchTerm }) {
                       <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
                   </li>
                   <li className="nav-item">
-                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendatario')}>Perfil</button>
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendador')}>Perfil</button>
                   </li>
                   <li className="nav-item">
                       <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/chat', 'Clic en el sobre')}>Chats</button>
