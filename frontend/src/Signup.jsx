@@ -217,16 +217,17 @@ function Signup() {
 
                 <div className="mb-3 form-check">
                   <input
-                    type="checkbox"
-                    className="form-check-input"
-                    name="aceptar_terminos"
-                    onChange={handleCheckbox}
-                    id="aceptar_terminos"
+                      type="checkbox"
+                      className="form-check-input"
+                      name="aceptar_terminos"
+                      onChange={handleCheckbox}
+                      id="aceptar_terminos"
                   />
                   <label className="form-check-label" htmlFor="aceptar_terminos">
-                    Acepto términos y condiciones.
+                      Acepto los <Link to="/termsandconditions">términos y condiciones</Link>.
                   </label>
-                </div>
+              </div>
+
 
                 <div className="d-grid gap-2">
                   <button

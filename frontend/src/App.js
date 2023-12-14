@@ -21,6 +21,8 @@ import HomeAdministrador from './HomeAdministrador';
 import Trato from './trato';
 import CalificaArrendatario from './CalificaArrendatario';
 import MapComponent from './MapComponent';
+import PrivacyPolicy from './PrivacyPolicy';
+import TermsAndConditions from './TermsAndConditions';
 
 
 
@@ -50,6 +52,8 @@ function App() {
         <Route path="/calificaarrendatario" element={< CalificaArrendatario />} />
         <Route path="/trato/:id_arrendador/:id_inmueble/:id_usuario" element={<Trato />} />
         <Route path="/mapcomponent" element={<MapComponent/>} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
+        <Route path="/termsandconditions" element={<TermsAndConditions/>} />
       </Routes>
     </BrowserRouter>
   );

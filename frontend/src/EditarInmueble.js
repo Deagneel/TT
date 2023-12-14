@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import swal from 'sweetalert';
@@ -178,6 +178,29 @@ function EditarInmueble() {
 
 
   const handleEdit = async () => {
+    // Validar la longitud mínima de título.
+    if (formData.regulations.trim().length < 10) {
+      swal("Error", "Necesitamos un poco más de información en el reglamento.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de características.
+    if (formData.caracteristicas.trim().length < 10) {
+      swal("Error", "Necesitamos un poco más de información en las características.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de título
+    if (formData.title.trim().length < 10) {
+      swal("Error", "Necesitamos un título más extenso.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de dirección
+    if (formData.address.trim().length < 5) {
+      swal("Error", "Necesitamos una dirección valida.", "error");
+      return;
+    }
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
@@ -545,17 +568,17 @@ function EditarInmueble() {
   
         {/* Políticas de privacidad */}
         <div className="form-check mb-3">
-          <input
-            type="checkbox"
-            name="aceptar_terminos"
-            id="aceptar_terminos"
-            onChange={handleCheckbox}
-            checked={aceptarTerminos}
-            className="form-check-input"
-          />
-          <label htmlFor="aceptar_terminos" className="form-check-label">
-            Acepto políticas de privacidad
-          </label>
+            <input
+                type="checkbox"
+                name="aceptar_terminos"
+                id="aceptar_terminos"
+                onChange={handleCheckbox}
+                checked={aceptarTerminos}
+                className="form-check-input"
+            />
+            <label htmlFor="aceptar_terminos" className="form-check-label">
+                Acepto las <Link to="/privacypolicy">políticas de privacidad</Link>
+            </label>
         </div>
   
         <button

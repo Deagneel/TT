@@ -252,6 +252,32 @@ const handlecpvalidation = async () => {
   const handleRegister = async () => {
     if (!isFormValid) return;
 
+    // Validar la longitud mínima de título.
+    if (formData.regulations.trim().length < 10) {
+      swal("Error", "Necesitamos un poco más de información en el reglamento.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de características.
+    if (formData.caracteristicas.trim().length < 10) {
+      swal("Error", "Necesitamos un poco más de información en las características.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de título
+    if (formData.title.trim().length < 10) {
+      swal("Error", "Necesitamos un título más extenso.", "error");
+      return;
+    }
+
+    // Validar la longitud mínima de dirección
+    if (formData.address.trim().length < 5) {
+      swal("Error", "Necesitamos una dirección valida.", "error");
+      return;
+    }
+
+
+
     try {
       const formImage = new FormData();
       formImage.append('image', file);
@@ -322,7 +348,7 @@ const handlecpvalidation = async () => {
                       name="address"
                       value={formData.address}
                       onChange={handleAddressChange}
-                      placeholder={formData.address}
+                      placeholder="Ingrese la dirección"
                     />
                 </div>
 
@@ -349,11 +375,6 @@ const handlecpvalidation = async () => {
                 <div className="mb-3 form-group">
                     <label htmlFor="alcaldia" style={{ fontWeight: 'bold', fontSize: '18px' }}>Alcaldía<span style={{ color: 'red' }}>*</span></label>
                     <input disabled type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="..." />
-                </div>
-
-                <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Coordenadas de Google Maps</label>
-                <div className="mb-3">
-                    <a href="https://support.google.com/maps/answer/18539?hl=es-MX&co=GENIE.Platform%3DDesktop#:~:text=C%C3%B3mo%20obtener%20las%20coordenadas%20de,decimal%20en%20la%20parte%20superior." target="_blank">¿Cómo obtener las coordenadas de Google Maps?</a>
                 </div>
 
                 {/* Latitud */}
@@ -440,8 +461,11 @@ const handlecpvalidation = async () => {
                 {/* Políticas de privacidad */}
                 <div className="mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="aceptar_terminos" name="aceptar_terminos" onChange={handleCheckbox} checked={aceptarTerminos} />
-                    <label className="form-check-label" htmlFor="aceptar_terminos">Acepto políticas de privacidad</label>
+                    <label className="form-check-label" htmlFor="aceptar_terminos">
+                        Acepto las <Link to="/privacypolicy">políticas de privacidad</Link>
+                    </label>
                 </div>
+
                 {/* Botón de registro */}
                 <button type="button" className="btn btn-secondary"
                     style={{ backgroundColor: '#beaf87', color: 'black' }}
