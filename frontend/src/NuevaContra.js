@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate, useParams, } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate, useParams, } from 'react-router-dom';
+import Validation from './LoginValidation';
+import swal from 'sweetalert';
+
 
 function NuevaContra() {
   const { id_usuario } = useParams();
@@ -20,22 +21,30 @@ function NuevaContra() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const values = { contrasena, confirmarContrasena };
+    const err = Validation(values);
 
-    if (contrasena !== '' && contrasena === confirmarContrasena) {
-      axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
-        contrasena: contrasena,
-      })
-      .then((response) => {
-        navigate('/exito');
-      })
-      .catch((error) => {
-        console.error('Error al cambiar la contraseña:', error);
-        alert('Error al cambiar la contraseña');
-      });
+    if (!err.contrasena && !err.confirmarContrasena) {
+        axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
+            contrasena: contrasena,
+        })
+        .then((response) => {
+            navigate('/exito');
+        })
+        .catch((error) => {
+            console.error('Error al cambiar la contraseña:', error);
+            alert('Error al cambiar la contraseña');
+        });
     } else {
-      alert('Las contraseñas no coinciden');
+        if (err.contrasena) {
+            alert(err.contrasena);
+        }
+        if (err.confirmarContrasena) {
+            alert(err.confirmarContrasena);
+        }
     }
-  };
+};
+
 
   return (
     <div className="container-fluid bg-white min-vh-100 d-flex flex-column justify-content-center align-items-center">

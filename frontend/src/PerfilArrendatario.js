@@ -265,23 +265,48 @@ const PerfilArrendatario = () => {
   };
 
   const handleNombreChange = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      nombre: e.target.value,
+      nombre: value,
     });
   };
 
+
   const handleApeChange = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      primer_apellido: e.target.value,
+      primer_apellido: value,
     });
   };
 
   const handleApe2Change = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      segundo_apellido: e.target.value,
+      segundo_apellido: value,
     });
   };
 
