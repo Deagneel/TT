@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import swal from 'sweetalert';
+import MapComponent from './MapComponent';
+
 
 function Navbar({ handleSearchTerm }) {
   const navigate = useNavigate();
@@ -125,6 +127,10 @@ function RegistroInmueble() {
     Tvivienda: ''
   });
 
+  const handleMarkerDragEnd = (position) => {
+    setFormData({ ...formData, latitud: position.lat, longitud: position.lng });
+  };
+
   const [file, setFile] = useState();
   const navigate = useNavigate();
 
@@ -149,12 +155,32 @@ function RegistroInmueble() {
       validarCP(value);
     }
   };
-  
-  
 
   const handleFile = (e) => {
     setFile(e.target.files[0]);
   };
+
+  const handleAddressChange = async (e) => {
+    const address = e.target.value;
+    setFormData({ ...formData, address });
+  
+    if (address.length > 5) { // Puedes ajustar esta condición según tus necesidades
+      try {
+        // Aquí haces la solicitud al proxy en lugar de la API de Google directamente
+        const response = await axios.get(`http://localhost:3031/geocode?address=${encodeURIComponent(address)}`);
+        const { results } = response.data;
+        if (results.length > 0) {
+          const { lat, lng } = results[0].geometry.location;
+          setFormData({ ...formData, latitud: lat, longitud: lng });
+          // También actualiza la posición del marcador si es necesario
+        }
+      } catch (error) {
+        console.error('Error en la geocodificación:', error);
+        // Manejo de errores
+      }
+    }
+  };
+  
 
   const handleRegister = async () => {
     if (!isFormValid) return;
@@ -215,7 +241,7 @@ function RegistroInmueble() {
                 {/* Dirección */}
                 <div className="mb-3 form-group">
                     <label htmlFor="address" style={{ fontWeight: 'bold', fontSize: '18px' }}>Dirección<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} placeholder="Ingrese la dirección" />
+                    <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleAddressChange} placeholder="Ingrese la dirección" />
                 </div>
 
                 {/* Código Postal */}
@@ -250,6 +276,13 @@ function RegistroInmueble() {
                     <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud<span style={{ color: 'red' }}>*</span></label>
                     <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
                 </div>
+
+                <MapComponent 
+                  onMarkerDragEnd={handleMarkerDragEnd} 
+                  latitud={parseFloat(formData.latitud)} 
+                  longitud={parseFloat(formData.longitud)}
+                />
+
                                 
                 {/* Escuela cercana */}
                 <div className="mb-3 form-group">
