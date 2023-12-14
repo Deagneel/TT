@@ -9,7 +9,7 @@ import multer from 'multer';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import axios from 'axios';
-
+import XLSX from 'xlsx';
 
 
 const salt = 10;
@@ -25,6 +25,9 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
     }
 })
+
+
+
 
 const upload = multer ({
     storage: storage 
@@ -220,10 +223,11 @@ app.post('/registroinmueble', (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' });
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, caracteristicas, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+    const sql = "INSERT INTO inmueble (titulo, direccion, asentamiento, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, caracteristicas, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
     const values = [
         req.body.title,
         req.body.address,
+        req.body.asentamiento,
         req.body.cp,
         req.body.alcaldia,
         req.body.latitud,
@@ -587,6 +591,7 @@ app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
     const updatedData = {
         titulo: req.body.title,
         direccion: req.body.address,
+        asentamiento: req.body.asentamiento,
         cp: req.body.cp,
         alcaldia: req.body.alcaldia,
         latitud: req.body.latitud,
@@ -1750,5 +1755,38 @@ app.get('/checkRentados', async (req, res) => {
   } catch (error) {
     console.error('Error al procesar la solicitud:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+app.get('/validateCP', (req, res) => {
+  const cpValue = req.query.cp;
+  const excelFilePath = 'CodigosPostales.xlsx'; // Ruta al archivo Excel
+  let alcaldiaValue = null;
+
+  // Leer el archivo Excel y realizar la validación
+  const workbook = XLSX.readFile(excelFilePath);
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  // Realizar la búsqueda del código postal en el archivo Excel
+  let asentamientoValue = null;
+
+  for (let cell in worksheet) {
+    if (cell.toString()[0] === 'A' && cell !== 'A1') {
+      const cpFromExcel = worksheet[cell].v.toString();
+
+      if (cpFromExcel === cpValue) {
+        // Encuentra el código postal, obtén el valor de la columna F
+        asentamientoValue = worksheet[`F${cell.substring(1)}`].v;
+        alcaldiaValue = worksheet[`C${cell.substring(1)}`].v;
+        break; // Termina el bucle una vez que se encuentra el código postal
+      }
+    }
+  }
+
+  // Enviar los resultados al navegador
+  if (asentamientoValue !== null && alcaldiaValue !== null) {
+    res.json({ asentamiento: asentamientoValue, alcaldia: alcaldiaValue });
+  } else {
+    res.status(404).json({ error: 'Código postal no encontrado' });
   }
 });
