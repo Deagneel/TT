@@ -94,13 +94,12 @@ app.get('/geocode', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    if(req.session.user.nombre) {
-        return res.json({valid: true, nombre: req.session.user.correo})
-    } else {
-        return res.json({valid:false})
-    }
+  if(req.session.user && req.session.user.nombre) {
+      return res.json({valid: true, nombre: req.session.user.correo})
+  } else {
+      return res.json({valid:false})
+  }
 })
-
 
 app.get('/perfil', (req, res) => {
     const id_usuario = req.session.user ? req.session.user.id : null;
@@ -124,9 +123,16 @@ app.get('/perfil', (req, res) => {
   
 
 app.get('/logout', (req, res) => {
-    res.clearCookie('token');
-    return res.json({Status: "Success"});
-})
+  req.session.destroy((err) => {
+      if(err) {
+          // manejar el error
+      } else {
+          res.clearCookie('nombreDeTuCookie');
+          return res.json({Status: "Success"});
+      }
+  });
+});
+
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/signup', (req, res) => {

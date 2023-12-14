@@ -164,21 +164,30 @@ function HomeArrendatario() {
   })
 
   //Busqueda filtrada por la barra
+  const removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+  
   const handleSearchTerm = (term) => {
     setSearchTerm(term);
-
+    const normalizedTerm = removeAccents(term.toLowerCase());
+  
     // Filtrar los inmuebles por término de búsqueda
     const filteredProps = registeredProperties.filter(property =>
-      property.titulo.toLowerCase().includes(term.toLowerCase()) || property.nombre_escuela.toLowerCase().includes(term.toLowerCase())
+      removeAccents(property.titulo.toLowerCase()).includes(normalizedTerm) || 
+      removeAccents(property.nombre_escuela.toLowerCase()).includes(normalizedTerm)
     );
     setFilteredProperties(filteredProps);
-
+  
     // Filtrar las escuelas por término de búsqueda
     const filteredSchls = registeredSchools.filter(school =>
-      school.nombre.toLowerCase().includes(term.toLowerCase()) || school.direccion.toLowerCase().includes(term.toLowerCase())
+      removeAccents(school.nombre.toLowerCase()).includes(normalizedTerm) || 
+      removeAccents(school.direccion.toLowerCase()).includes(normalizedTerm) ||
+      removeAccents(school.institucion.toLowerCase()).includes(normalizedTerm)
     );
     setFilteredSchools(filteredSchls);
   };
+  
 
   return (
     <div style={{ height: '100vh' }}>
