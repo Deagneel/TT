@@ -1,8 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate, useParams, } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate, useParams, } from 'react-router-dom';
+import Validation from './LoginValidation';
+import swal from 'sweetalert';
+
 
 function NuevaContra() {
   const { id_usuario } = useParams();
@@ -21,21 +22,41 @@ function NuevaContra() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (contrasena !== '' && contrasena === confirmarContrasena) {
-      axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
-        contrasena: contrasena,
-      })
-      .then((response) => {
-        navigate('/exito');
-      })
-      .catch((error) => {
-        console.error('Error al cambiar la contraseña:', error);
-        alert('Error al cambiar la contraseña');
-      });
-    } else {
-      alert('Las contraseñas no coinciden');
+    // Preparar los valores para la validación
+    const values = { contrasena, confirmarContrasena };
+
+    // Ejecutar la validación
+    const errors = Validation(values);
+
+    // Comprobar si hay errores y mostrarlos con swal
+    if (errors.contrasena || errors.confirmarContrasena) {
+        let errorMessage = '';
+        if (errors.contrasena) {
+            errorMessage += errors.contrasena + '\n';
+        }
+        if (errors.confirmarContrasena) {
+            errorMessage += errors.confirmarContrasena;
+        }
+        swal("Error en la validación", errorMessage, "error");
+        return;
     }
+
+    // No hay errores, proceder con la solicitud
+    axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
+        contrasena: contrasena,
+    })
+    .then((response) => {
+        swal("Éxito", "Contraseña actualizada correctamente", "success").then(() => {
+            navigate('/exito');
+        });
+    })
+    .catch((error) => {
+        console.error('Error al cambiar la contraseña:', error);
+        swal("Error", "Error al cambiar la contraseña", "error");
+    });
   };
+
+
 
   return (
     <div className="container-fluid bg-white min-vh-100 d-flex flex-column justify-content-center align-items-center">

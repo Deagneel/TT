@@ -168,25 +168,51 @@ const PerfilArrendador = () => {
         // Manejar el error, mostrar un mensaje al usuario, etc.
       });
   };
+  
 
   const handleNombreChange = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      nombre: e.target.value,
+      nombre: value,
     });
   };
 
+
   const handleApeChange = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      primer_apellido: e.target.value,
+      primer_apellido: value,
     });
   };
 
   const handleApe2Change = (e) => {
+    const { value } = e.target;
+
+    // Validación para el nombre: solo permite letras y espacios
+    if (!(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$/.test(value) || value === '')) {
+        swal("El nombre no puede incluir números ni caracteres especiales", "", "error");
+        return;
+    }
+
     setFormData({
       ...formData,
-      segundo_apellido: e.target.value,
+      segundo_apellido: value,
     });
   };
 
@@ -229,6 +255,8 @@ const PerfilArrendador = () => {
     const handleBack = () => {
       window.history.back();
     };
+
+    
     
 
   return (
@@ -241,7 +269,7 @@ const PerfilArrendador = () => {
             <div className="mb-3 row align-items-center">
               <label htmlFor="nombre" className="col-sm-3 col-form-label">Nombre:</label>
               <div className="col-sm-6">
-                <input type="text" className="form-control" value={formData.nombre} onChange={handleNombreChange} />
+                <input id="name" name="name" type="text" className="form-control" value={formData.nombre} onChange={handleNombreChange} />
               </div>
               <div className="col-sm-3">
                 <button className="btn btn-secondary" onClick={handleActualizarNombre}>Actualizar</button>
