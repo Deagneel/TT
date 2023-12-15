@@ -18,7 +18,7 @@ const PerfilArrendatario = () => {
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -31,7 +31,7 @@ const PerfilArrendatario = () => {
     const fetchPerfil = async () => {
       try {
         axios.defaults.withCredentials = true;
-        const responsePerfil = await axios.get(`http://localhost:3031/perfil`);
+        const responsePerfil = await axios.get(`https://apirest-408205.uc.r.appspot.com/perfil`);
         console.log('Información de Usuario:', responsePerfil.data);
         setFormData({
           id: responsePerfil.data.id_usuario,
@@ -52,7 +52,7 @@ const PerfilArrendatario = () => {
   const handleActualizarNombre = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.put(`http://localhost:3031/newName/${formData.id}`, {
+      const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newName/${formData.id}`, {
         nombre: formData.nombre,
       });
   
@@ -67,7 +67,7 @@ const PerfilArrendatario = () => {
   const handleActualizarApe = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.put(`http://localhost:3031/newApe/${formData.id}`, {
+      const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newApe/${formData.id}`, {
         primer_apellido: formData.primer_apellido,
       });
       console.log(response.data);
@@ -80,7 +80,7 @@ const PerfilArrendatario = () => {
   const handleActualizarApe2= async () => {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.put(`http://localhost:3031/newApe2/${formData.id}`, {
+      const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newApe2/${formData.id}`, {
         segundo_apellido: formData.segundo_apellido,
       });
       console.log(response.data);
@@ -98,7 +98,7 @@ const PerfilArrendatario = () => {
     console.log('Actualizar correo');
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.put(`http://localhost:3031/newMail/${formData.id}`, {
+      const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newMail/${formData.id}`, {
         correo: formData.correo,
       });
 
@@ -119,7 +119,7 @@ const PerfilArrendatario = () => {
 
   const actualizarPerfilCompletado = async () => {
     try {
-      await axios.get(`http://localhost:3031/actualizarPerfilCompletado`);
+      await axios.get(`https://apirest-408205.uc.r.appspot.com/actualizarPerfilCompletado`);
     } catch (error) {
       console.error('Error al actualizar perfil completado:', error);
     }
@@ -139,11 +139,11 @@ const PerfilArrendatario = () => {
         formImage.append('image', file);
 
         // Sube la imagen y obtén la URL
-        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        const imageResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formImage);
         console.log(imageResponse.data);
 
         // Realiza la solicitud PUT para actualizar el INE
-        const response = await axios.put(`http://localhost:3031/newIne/${formData.id}`, {
+        const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newIne/${formData.id}`, {
             correo: imageResponse.data.url,
         });
 
@@ -158,7 +158,7 @@ const PerfilArrendatario = () => {
   };
 
   const handleCambiarContraseña = () => {
-    axios.post('http://localhost:3031/recuperar-contrasena', { correo: formData.correo })
+    axios.post('https://apirest-408205.uc.r.appspot.com/recuperar-contrasena', { correo: formData.correo })
       .then((response) => {
         console.log(response.data);
         swal("Correo enviado con éxito.", " ", "success");
@@ -184,11 +184,11 @@ const PerfilArrendatario = () => {
         formImage.append('image', file);
 
         // Sube la imagen y obtén la URL
-        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        const imageResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formImage);
         console.log(imageResponse.data);
 
         // Realiza la solicitud PUT para actualizar el INE
-        const response = await axios.put(`http://localhost:3031/newCredencial/${formData.id}`, {
+        const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newCredencial/${formData.id}`, {
             correo: imageResponse.data.url,
         });
 
@@ -215,11 +215,11 @@ const PerfilArrendatario = () => {
         formImage.append('image', file);
 
         // Sube la imagen y obtén la URL
-        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        const imageResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formImage);
         console.log(imageResponse.data);
 
         // Realiza la solicitud PUT para actualizar el INE
-        const response = await axios.put(`http://localhost:3031/newComprobante/${formData.id}`, {
+        const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newComprobante/${formData.id}`, {
             correo: imageResponse.data.url,
         });
 
@@ -246,11 +246,11 @@ const PerfilArrendatario = () => {
         formImage.append('image', file);
 
         // Sube la imagen y obtén la URL
-        const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+        const imageResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formImage);
         console.log(imageResponse.data);
 
         // Realiza la solicitud PUT para actualizar el INE
-        const response = await axios.put(`http://localhost:3031/newComprobanteD/${formData.id}`, {
+        const response = await axios.put(`https://apirest-408205.uc.r.appspot.com/newComprobanteD/${formData.id}`, {
             correo: imageResponse.data.url,
         });
 
@@ -319,7 +319,7 @@ const PerfilArrendatario = () => {
 
   const handleEliminarIncidencia = async (repoId) => {
     try {
-      const rentadosCheckResponse = await axios.get(`http://localhost:3031/verificarEstadoRentados`);
+      const rentadosCheckResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/verificarEstadoRentados`);
       const tieneEstadoActivo = rentadosCheckResponse.data.resultado;
 
       if (tieneEstadoActivo == 0) {
@@ -335,7 +335,7 @@ const PerfilArrendatario = () => {
         });
   
         if (willDelete) {
-          await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
+          await axios.delete(`https://apirest-408205.uc.r.appspot.com/eliminarUsuario/${repoId}`);
           swal("Usuario Borrado del Sistema", { icon: "success" });
           window.location.reload();
         } else {

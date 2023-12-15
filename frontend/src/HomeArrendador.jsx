@@ -13,7 +13,7 @@ function ArrendadorNavbar() {
 
   const handleRegistrarInmueble = async () => {
     try {
-      const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+      const perfilCompletadoResponse = await axios.get('https://apirest-408205.uc.r.appspot.com/perfilCompletado');
       const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
   
       if (perfilCompletado === 0) {
@@ -39,7 +39,7 @@ function ArrendadorNavbar() {
 
   const handleLogoutClick = () => {
     axios
-      .get('http://localhost:3031/logout')
+      .get('https://apirest-408205.uc.r.appspot.com/logout')
       .then((res) => {
         if (res.data.Status === 'Success') {
           swal('Sesión Cerrada Correctamente', ' ', 'success');
@@ -116,7 +116,7 @@ function ArrendadorPageContent() {
   
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -127,7 +127,7 @@ function ArrendadorPageContent() {
   })
   
   useEffect(() => {
-    axios.get('http://localhost:3031/inmuebles')
+    axios.get('https://apirest-408205.uc.r.appspot.com/inmuebles')
       .then((response) => {
         setRegisteredProperties(response.data);
       })
@@ -144,7 +144,7 @@ function ArrendadorPageContent() {
           <div key={index} className={`col-md-4 mb-4 ${property.activo === 0 || property.activo_usuario === 1 ? 'inactive' : ''}`}>
             <div className="card shadow" style={{ width: '100%', height: '100%' }}>
               <img
-                src={`http://localhost:3031/images/${property.foto}`}
+                src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
                 alt="Imagen"
                 className="card-img-top"
                 style={{ width: '100%', height: '50%', objectFit: 'cover' }}
@@ -182,7 +182,7 @@ function HomeArrendador() {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
         setCorreo(res.data.nombre);

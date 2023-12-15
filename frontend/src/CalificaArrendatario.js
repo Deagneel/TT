@@ -31,7 +31,7 @@ const CalificaArrendatario = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:3031/evaluarinmueble', data);
+      const response = await axios.post('https://apirest-408205.uc.r.appspot.com/evaluarinmueble', data);
       console.log('Reseñas enviadas:', response.data);
       swal("Reseña Enviada", "Gracias, tu opinión es muy importante.", "success");
       navigate('/home');
@@ -42,7 +42,7 @@ const CalificaArrendatario = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${id}`)
+    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerInmuebleInfo/${id}`)
       .then(response => {
         console.log('Inmueble info response:', response.data);
         setInmuebleInfo(response.data[0]);
@@ -64,7 +64,7 @@ const CalificaArrendatario = () => {
         <h2>Detalles del Inmueble</h2>
         {inmuebleInfo && (
           <div>
-            <img src={'http://localhost:3031/images/'+inmuebleInfo.foto} alt="Imagen del inmueble" className="img-fluid" style={{ maxHeight: '270px' }} />
+            <img src={'https://apirest-408205.uc.r.appspot.com/images/'+inmuebleInfo.foto} alt="Imagen del inmueble" className="img-fluid" style={{ maxHeight: '270px' }} />
           </div>
         )}
         {inmuebleInfo && (

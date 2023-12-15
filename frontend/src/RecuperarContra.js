@@ -11,7 +11,7 @@ function RecuperarContrasena() {
   const handleInput = (event) => {
     event.preventDefault();
   
-    axios.post('http://localhost:3031/recuperar-contrasena', { correo })
+    axios.post('https://apirest-408205.uc.r.appspot.com/recuperar-contrasena', { correo })
       .then((response) => {
         console.log(response.data);
         swal("Correo enviado con éxito.", " ", "success");

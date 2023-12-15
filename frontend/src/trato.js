@@ -15,11 +15,11 @@ function Trato() {
   useEffect(() => {
     async function fetchDetails() {
       try {
-        const usuarioResponse = await axios.get(`http://localhost:3031/obtenerUsuario/${id_usuario}`);
-        const inmuebleResponse = await axios.get(`http://localhost:3031/obtenerInmueble/${id_inmueble}`);
-        const usuariocoreoResponse = await axios.get(`http://localhost:3031/obtenerCorreoUsuario/${id_arrendador}`);
-        const usuarioArrendatarioResponse = await axios.get(`http://localhost:3031/obtenerCorreoUsuario/${id_usuario}`);
-        const documentosResponse = await axios.get(`http://localhost:3031/obtenerDocumentosUsuario/${id_usuario}`);
+        const usuarioResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerUsuario/${id_usuario}`);
+        const inmuebleResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerInmueble/${id_inmueble}`);
+        const usuariocoreoResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerCorreoUsuario/${id_arrendador}`);
+        const usuarioArrendatarioResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerCorreoUsuario/${id_usuario}`);
+        const documentosResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerDocumentosUsuario/${id_usuario}`);
         const documentos = documentosResponse.data;
 
         setDocumentosUsuario(documentos);
@@ -32,7 +32,7 @@ function Trato() {
         setcorreoT(correoArrendatario);
 
 
-        const rentadosResponse = await axios.get(`http://localhost:3031/obtenerIdRenta/${id_inmueble}`);
+        const rentadosResponse = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerIdRenta/${id_inmueble}`);
         setIdRenta(rentadosResponse.data.id_renta);
         
       } catch (error) {
@@ -53,12 +53,12 @@ function Trato() {
           dangerMode: false,
         });
         if (willDoTrato) {
-            await axios.put(`http://localhost:3031/actualizarEstado/${idRenta}`);
-            await axios.put(`http://localhost:3031/restarHabitacion/${id_inmueble}`);
-            await axios.put(`http://localhost:3031/actualizarEstadoInmueble/${id_inmueble}`);
+            await axios.put(`https://apirest-408205.uc.r.appspot.com/actualizarEstado/${idRenta}`);
+            await axios.put(`https://apirest-408205.uc.r.appspot.com/restarHabitacion/${id_inmueble}`);
+            await axios.put(`https://apirest-408205.uc.r.appspot.com/actualizarEstadoInmueble/${id_inmueble}`);
 
             //Envio del correo con datos del arrendatario
-            await axios.post(`http://localhost:3031/enviarCorreoDocumentacion`, {
+            await axios.post(`https://apirest-408205.uc.r.appspot.com/enviarCorreoDocumentacion`, {
               correoV,
               identificacion_oficial: documentosUsuario.identificacion_oficial,
               comprobante_de_domicilio: documentosUsuario.comprobante_de_domicilio,
@@ -66,7 +66,7 @@ function Trato() {
               comprobante_de_inscripcion: documentosUsuario.comprobante_de_inscripcion,
             });
 
-            await axios.post(`http://localhost:3031/enviarCorreoReporte`, {
+            await axios.post(`https://apirest-408205.uc.r.appspot.com/enviarCorreoReporte`, {
               correoV,
               id_usuario,
               usuarioNombre,
@@ -74,7 +74,7 @@ function Trato() {
             });
             
             //Envio de correo para calificar
-            await axios.post(`http://localhost:3031/enviarCorreoResena`, {
+            await axios.post(`https://apirest-408205.uc.r.appspot.com/enviarCorreoResena`, {
               correoT,
               id_inmueble,
             });
@@ -102,7 +102,7 @@ function Trato() {
         });
         if (willDoTrato) {
 
-          await axios.delete(`http://localhost:3031/eliminarRentado/${idRenta}`);
+          await axios.delete(`https://apirest-408205.uc.r.appspot.com/eliminarRentado/${idRenta}`);
           
           swal("Has declinado el trato.", {
             icon: "success",

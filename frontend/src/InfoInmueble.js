@@ -17,7 +17,7 @@ function Navbar({ handleSearchTerm }) {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -28,7 +28,7 @@ function Navbar({ handleSearchTerm }) {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('http://localhost:3031/logout');
+      const res = await axios.get('https://apirest-408205.uc.r.appspot.com/logout');
       if (res.data.Status === 'Success') {
         swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
@@ -83,7 +83,7 @@ function InfoInmueble() {
   const handleInteresClick = async () => {
   try {
     // Realiza la consulta para obtener el valor de perfil_completado del usuario
-    const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+    const perfilCompletadoResponse = await axios.get('https://apirest-408205.uc.r.appspot.com/perfilCompletado');
     const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
 
     if (perfilCompletado == 0) {
@@ -92,7 +92,7 @@ function InfoInmueble() {
     } else {
       // Si perfil_completado no es 0, continúa con la lógica actual
       console.log('Clic en el sobre');
-      axios.post(`http://localhost:3031/newchat/${idInmueble}`)
+      axios.post(`https://apirest-408205.uc.r.appspot.com/newchat/${idInmueble}`)
       .then(async (response) => {
         console.log('Petición completada con éxito:', response);
         await swal('Chat Creado');
@@ -119,7 +119,7 @@ const handleReportClick = (idUsuario, idInmueble) => {
 const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   try {
     // Realizar la consulta para obtener el valor de perfil_completado del usuario
-    const perfilCompletadoResponse = await axios.get('http://localhost:3031/perfilCompletado');
+    const perfilCompletadoResponse = await axios.get('https://apirest-408205.uc.r.appspot.com/perfilCompletado');
     const perfilCompletado = perfilCompletadoResponse.data.perfilCompletado;
 
     if (perfilCompletado == 0) {
@@ -139,12 +139,12 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
       // Si el usuario confirma
       if (willDoTrato) {
         // Mostrar SweetAlert2 de éxito
-        await axios.post(`http://localhost:3031/rentar/${idInmueble}`);
+        await axios.post(`https://apirest-408205.uc.r.appspot.com/rentar/${idInmueble}`);
         swal("Tu solicitud se ha enviado.", {
           icon: "success",
         });
 
-        await axios.post(`http://localhost:3031/enviarCorreoArrendador`, {
+        await axios.post(`https://apirest-408205.uc.r.appspot.com/enviarCorreoArrendador`, {
           idUsuario,
           idInmueble,
           correoUsuario,
@@ -166,7 +166,7 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${idInmueble}`)
+    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerInmuebleInfo/${idInmueble}`)
       .then((response) => {
         setRegisteredProperties(response.data);
       })
@@ -182,13 +182,13 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:3031/obtenerInmuebleInfo/${idInmueble}`)
+    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerInmuebleInfo/${idInmueble}`)
       .then((response) => {
         setRegisteredProperties(response.data);
   
         // Obtener el correo del usuario y almacenarlo en un estado
         const idUsuario = response.data[0].id_usuario;
-        axios.get(`http://localhost:3031/obtenerCorreoUsuario/${idUsuario}`)
+        axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerCorreoUsuario/${idUsuario}`)
           .then((correoResponse) => {
             const correoUsuario = correoResponse.data[0].correo;
             setCorreoUsuario(correoUsuario); // Guardar el correo del usuario en un estado
@@ -215,7 +215,7 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
   
           {/* Carrusel de imágenes */}
           <div className="border mb-4" style={{ width: '80%', height: '50%', margin: '0 auto' }}>
-            <img src={`http://localhost:3031/images/${property.foto}`} alt="Imagen" className="img-fluid" />
+            <img src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`} alt="Imagen" className="img-fluid" />
           </div>
 
   

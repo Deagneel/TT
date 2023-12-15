@@ -19,7 +19,7 @@ function Navbar({ handleSearchTerm }) {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('http://localhost:3031/logout');
+      const res = await axios.get('https://apirest-408205.uc.r.appspot.com/logout');
       if (res.data.Status === 'Success') {
         swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
@@ -65,7 +65,7 @@ function Navbar({ handleSearchTerm }) {
 function EditarInmueble() {
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -109,7 +109,7 @@ function EditarInmueble() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseInmueble = await axios.get(`http://localhost:3031/infoinmuebles/${id_inmueble}`);
+        const responseInmueble = await axios.get(`https://apirest-408205.uc.r.appspot.com/infoinmuebles/${id_inmueble}`);
         console.log('Información del inmueble:', responseInmueble.data);
         setFormData((prevData) => ({
           ...prevData,
@@ -133,7 +133,7 @@ function EditarInmueble() {
         }));
 
 
-        const responseEscuelas = await axios.get('http://localhost:3031/obtenerEscuelas');
+        const responseEscuelas = await axios.get('https://apirest-408205.uc.r.appspot.com/obtenerEscuelas');
         setEscuelas(responseEscuelas.data);
 
         setLoading(false);
@@ -219,7 +219,7 @@ function EditarInmueble() {
       formDataToSend.append('Tvivienda', formData.Tvivienda);
       formDataToSend.append('activo', formData.activo);
       formDataToSend.append('foto', formData.foto);
-      await axios.put(`http://localhost:3031/editarinmueble/${id_inmueble}`, formDataToSend);
+      await axios.put(`https://apirest-408205.uc.r.appspot.com/editarinmueble/${id_inmueble}`, formDataToSend);
 
       swal("Datos Actualizados Correctamente", " ", "success");
       navigate('/homearrendador');
@@ -241,7 +241,7 @@ function EditarInmueble() {
       };
   
       // Realizar la petición PUT con todos los campos existentes y activo actualizado
-      await axios.put(`http://localhost:3031/editarinmueble/${id_inmueble}`, updatedData);
+      await axios.put(`https://apirest-408205.uc.r.appspot.com/editarinmueble/${id_inmueble}`, updatedData);
   
       swal("Inmueble actualizado correctamente", "", "success");
       navigate('/homearrendador');
@@ -261,7 +261,7 @@ function EditarInmueble() {
     formDataImage.append('image', selectedFile);
   
     try {
-      const response = await axios.post('http://localhost:3031/upload', formDataImage);
+      const response = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formDataImage);
       console.log('Imagen subida:', response.data);
   
       // Actualizar el estado con la URL de la imagen
@@ -279,7 +279,7 @@ function EditarInmueble() {
     const cpValue = cpInput.value;
   
     try {
-      const response = await axios.get(`http://localhost:3031/validateCP?cp=${cpValue}`);
+      const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/validateCP?cp=${cpValue}`);
       if (response.status === 200) {
         setFormData({
           ...formData,
@@ -312,7 +312,7 @@ function EditarInmueble() {
         dangerMode: true,
       });
       if (willDelete) {
-        await axios.delete(`http://localhost:3031/eliminarinmueble/${id_inmueble}`);
+        await axios.delete(`https://apirest-408205.uc.r.appspot.com/eliminarinmueble/${id_inmueble}`);
         swal("Inmueble eliminado con éxito", {
           icon: "success",
         });

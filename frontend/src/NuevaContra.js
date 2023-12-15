@@ -42,7 +42,7 @@ function NuevaContra() {
     }
 
     // No hay errores, proceder con la solicitud
-    axios.put(`http://localhost:3031/actualizar-contrasena/${id_usuario}`, {
+    axios.put(`https://apirest-408205.uc.r.appspot.com/actualizar-contrasena/${id_usuario}`, {
         contrasena: contrasena,
     })
     .then((response) => {

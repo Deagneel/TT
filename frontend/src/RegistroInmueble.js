@@ -18,7 +18,7 @@ function Navbar({ handleSearchTerm }) {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('http://localhost:3031/logout');
+      const res = await axios.get('https://apirest-408205.uc.r.appspot.com/logout');
       if (res.data.Status === 'Success') {
         swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
@@ -65,7 +65,7 @@ function RegistroInmueble() {
   
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('http://localhost:3031')
+    axios.get('https://apirest-408205.uc.r.appspot.com')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -103,7 +103,7 @@ function RegistroInmueble() {
   const [escuelas, setEscuelas] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3031/obtenerEscuelas')
+    axios.get('https://apirest-408205.uc.r.appspot.com/obtenerEscuelas')
       .then(response => {
         setEscuelas(response.data);
       })
@@ -192,7 +192,7 @@ const handlecpvalidation = async () => {
   const cpValue = cpInput.value;
 
   try {
-    const response = await axios.get(`http://localhost:3031/validateCP?cp=${cpValue}`);
+    const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/validateCP?cp=${cpValue}`);
     if (response.status === 200) {
       setFormData({
         ...formData,
@@ -237,7 +237,7 @@ const handlecpvalidation = async () => {
   const fetchCoordinates = async (fullAddress) => {
     if (fullAddress.length > 10) { // Asegúrate de que la dirección sea lo suficientemente larga
       try {
-        const response = await axios.get(`http://localhost:3031/geocode?address=${encodeURIComponent(fullAddress)}`);
+        const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/geocode?address=${encodeURIComponent(fullAddress)}`);
         const { results } = response.data;
         if (results.length > 0) {
           const { lat, lng } = results[0].geometry.location;
@@ -281,10 +281,10 @@ const handlecpvalidation = async () => {
     try {
       const formImage = new FormData();
       formImage.append('image', file);
-      const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+      const imageResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/upload', formImage);
       console.log(imageResponse.data);
 
-      const response = await axios.post('http://localhost:3031/registroinmueble', {
+      const response = await axios.post('https://apirest-408205.uc.r.appspot.com/registroinmueble', {
         title: formData.title,
         address: formData.address,
         asentamiento: formData.asentamiento,

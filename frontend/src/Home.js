@@ -95,7 +95,7 @@ function Home() {
   
     useEffect(() => {
       // Fetch solo la información relevante de la tabla inmueble
-      axios.get('http://localhost:3031/inmueblearrendatario') // Actualiza el endpoint según sea necesario
+      axios.get('https://apirest-408205.uc.r.appspot.com/inmueblearrendatario') // Actualiza el endpoint según sea necesario
         .then((response) => {
           setRegisteredProperties(response.data);
           console.log(response.data);
@@ -120,7 +120,7 @@ function Home() {
 
   useEffect(() => {
     // Fetch solo la información relevante de la tabla inmueble
-    axios.get('http://localhost:3031/obtenerEscuelas') // Actualiza el endpoint según sea necesario
+    axios.get('https://apirest-408205.uc.r.appspot.com/obtenerEscuelas') // Actualiza el endpoint según sea necesario
       .then((response) => {
         setRegisteredSchools(response.data);
       })
@@ -182,7 +182,7 @@ function Home() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <img
-                          src={`http://localhost:3031/images/${property.foto}`}
+                          src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
                           alt="Imagen"
                           className="img-fluid rounded-start"
                         />
@@ -220,7 +220,7 @@ function Home() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <img
-                          src={`http://localhost:3031/images/${property.foto}`}
+                          src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
                           alt="Imagen"
                           className="img-fluid rounded-start"
                         />
@@ -265,7 +265,7 @@ function Home() {
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
-                            src={`http://localhost:3031/images/${property.foto}`}
+                            src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
                             alt="Imagen"
                             className="img-fluid rounded-start"
                             style={{ width: '100%', height: 'auto' }}
@@ -302,7 +302,7 @@ function Home() {
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
-                            src={`http://localhost:3031/images/${property.foto}`}
+                            src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
                             alt="Imagen"
                             className="img-fluid rounded-start"
                             style={{ width: '100%', height: 'auto' }}
