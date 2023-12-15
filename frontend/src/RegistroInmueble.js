@@ -380,13 +380,13 @@ const handlecpvalidation = async () => {
                 {/* Latitud */}
                 <div className="mb-3 form-group">
                     <label htmlFor="latitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Latitud<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="latitud" name="latitud" value={formData.latitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
+                    <input type="text" className="form-control" id="latitud" name="latitud" value={formData.latitud} onChange={handleChange} placeholder="..." disabled/>
                 </div>
 
                 {/* Longitud */}
                 <div className="mb-3 form-group">
                     <label htmlFor="longitud" style={{ fontWeight: 'bold', fontSize: '18px' }}>Longitud<span style={{ color: 'red' }}>*</span></label>
-                    <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="Ingrese las coordenadas" />
+                    <input type="text" className="form-control" id="longitud" name="longitud" value={formData.longitud} onChange={handleChange} placeholder="..." disabled/>
                 </div>
 
                 <MapComponent 

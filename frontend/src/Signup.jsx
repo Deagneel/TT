@@ -41,6 +41,13 @@ function Signup() {
     };
 
     // Verificar si hay una validación definida para este campo
+    if (validations[name]) {
+      // Si la validación falla, no actualizar el estado y, opcionalmente, mostrar un error
+      if (!validations[name](value)) {
+          swal(errorMessages[name], "", "error");
+          return; // Detener la ejecución aquí
+      }
+    }
     if (validations[name] && !validations[name](value)) {
         // Si la validación falla, mostrar un error
         swal(errorMessages[name], "", "error");
@@ -73,6 +80,27 @@ const handleKeyPress = (e) => {
     setValues((prev) => ({ ...prev, intento_envio: true, boton_deshabilitado: true }));
     const err = Validation(values);
     setErrors(err);
+
+    // Validar la longitud mínima de título.
+    if (values.nombre.trim().length < 3) {
+      swal("Error", "Ingresa un nombre válido.", "error");
+      setValues(prev => ({ ...prev, boton_deshabilitado: false }));
+      return;
+    }
+
+    // Validar la longitud mínima de título.
+    if (values.primer_apellido.trim().length < 3) {
+      swal("Error", "Ingresa un primer apellido válido.", "error");
+      setValues(prev => ({ ...prev, boton_deshabilitado: false }));
+      return;
+    }
+
+    // Validar la longitud mínima de título.
+    if (values.segundo_apellido.trim().length < 3) {
+      swal("Error", "Ingresa un segundo apellido válido.", "error");
+      setValues(prev => ({ ...prev, boton_deshabilitado: false }));
+      return;
+    }
   
     try {
       if (
