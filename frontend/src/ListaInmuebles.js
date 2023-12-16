@@ -21,7 +21,7 @@ function Navbar() {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -37,7 +37,7 @@ function Navbar() {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('https://apirest-408205.uc.r.appspot.com/logout');
+      const res = await axios.get('http://localhost:3031/logout');
       if (res.data.Status === 'Success') {
         swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
@@ -95,7 +95,7 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
   useEffect(() => {
     const obtenerEscuela = async () => {
       try {
-        const response = await fetch(`https://apirest-408205.uc.r.appspot.com/escuela/${idEscuela}`);
+        const response = await fetch(`http://localhost:3031/escuela/${idEscuela}`);
         if (!response.ok) {
           throw new Error('Error al obtener la escuela');
         }
@@ -130,7 +130,7 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
         console.log("Distancia:", distancia);
 
         try {
-          const response = await fetch('https://apirest-408205.uc.r.appspot.com/infoinmueblesmap');
+          const response = await fetch('http://localhost:3031/infoinmueblesmap');
           if (!response.ok) {
             throw new Error('Error al obtener los inmuebles');
           }
@@ -216,7 +216,7 @@ return (
         <InfoWindow position={position}>
           <div style={{ display: 'flex', alignItems: 'center', maxWidth: '300px' }}>
               <img
-                  src={`https://apirest-408205.uc.r.appspot.com/images/` + fotoEscuela}
+                  src={`http://localhost:3031/images/` + fotoEscuela}
                   alt="Imagen Escuela"
                   style={{ width: '25%', objectFit: 'cover' }}
               />
@@ -244,7 +244,7 @@ return (
             <div className="container" style={{ maxWidth: '300px' }}>
               <h4>{selectedInmueble.titulo}</h4>
               <img
-                src={`https://apirest-408205.uc.r.appspot.com/images/${selectedInmueble.foto}`}
+                src={`http://localhost:3031/images/${selectedInmueble.foto}`}
                 alt="Imagen inmueble"
                 className="img-fluid"
                 style={{ width: '100%' }}

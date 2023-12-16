@@ -11,7 +11,7 @@ function Chat() {
 
   axios.defaults.withCredentials = true;
   useEffect(() => {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
       .then(res => {
         if (res.data.valid) {
           setCorreo(res.data.nombre);

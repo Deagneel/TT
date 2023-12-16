@@ -110,7 +110,7 @@ const handleKeyPress = (e) => {
         values.contrasena === values.confirmar_contrasena &&
         values.aceptar_terminos
       ) {
-        const signupResponse = await axios.post('https://apirest-408205.uc.r.appspot.com/signup', {
+        const signupResponse = await axios.post('http://localhost:3031/signup', {
           nombre: values.nombre,
           primer_apellido: values.primer_apellido,
           segundo_apellido: values.segundo_apellido,
@@ -125,7 +125,7 @@ const handleKeyPress = (e) => {
         }
         
 
-      const signupChatResponse = axios.post('https://apirest-408205.uc.r.appspot.com/registrochat', {
+      const signupChatResponse = axios.post('http://localhost:3031/registrochat', {
           mail: values.correo,
           name: values.nombre,
           last_name: values.primer_apellido,

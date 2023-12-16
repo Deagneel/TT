@@ -16,7 +16,7 @@ function Navbar() {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -32,7 +32,7 @@ function Navbar() {
 
   const handleLogoutClick = () => {
     axios
-      .get('https://apirest-408205.uc.r.appspot.com/logout')
+      .get('http://localhost:3031/logout')
       .then((res) => {
         if (res.data.Status === 'Success') {
           swal('Sesión Cerrada Correctamente', ' ', 'success');
@@ -93,7 +93,7 @@ function ReportesSection() {
 
   useEffect(() => {
     // Realizar la petición para obtener los reportes de la base de datos
-    axios.get('https://apirest-408205.uc.r.appspot.com/obtenerReportes')
+    axios.get('http://localhost:3031/obtenerReportes')
       .then(response => {
         // Establecer los reportes en el estado
         setReportes(response.data);
@@ -137,7 +137,7 @@ function UsuariosSection() {
 
   const handleSearch = () => {
     // Realizar la petición al servidor con el ID del reporte
-    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerReportesPorUsuario/${userId}`)
+    axios.get(`http://localhost:3031/obtenerReportesPorUsuario/${userId}`)
       .then(response => {
         setUserReports(response.data);
       })
@@ -153,7 +153,7 @@ function UsuariosSection() {
   const handleInteresClick = async (idInmueble) => {
     try {
         console.log('Clic en el sobre');
-        axios.post(`https://apirest-408205.uc.r.appspot.com/newchat/${idInmueble}`)
+        axios.post(`http://localhost:3031/newchat/${idInmueble}`)
         .then(async (response) => {
             console.log('Petición completada con éxito:', response);
             await swal('Chat Creado');
@@ -181,7 +181,7 @@ function UsuariosSection() {
       // Si el usuario confirma la eliminación
       if (willDelete) {
         // Realizar la solicitud al servidor para eliminar el usuario
-        await axios.delete(`https://apirest-408205.uc.r.appspot.com/eliminarUsuario/${repoId}`);
+        await axios.delete(`http://localhost:3031/eliminarUsuario/${repoId}`);
         // Mostrar SweetAlert2 de éxito
         swal("Usuario Borrado del Sistema", {
           icon: "success",
@@ -248,7 +248,7 @@ function InmueblesSection() {
 
   const handleSearch = () => {
     // Realizar la petición al servidor con el parámetro de búsqueda
-    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerReportesPorInmueble/${searchParam}`)
+    axios.get(`http://localhost:3031/obtenerReportesPorInmueble/${searchParam}`)
       .then(response => {
         setUserReports(response.data);
       })
@@ -266,11 +266,11 @@ function InmueblesSection() {
       const estadoActivo = activo;
       if (estadoActivo === 1) {
         // Si activo es 1, cambiar a 0
-        await axios.put(`https://apirest-408205.uc.r.appspot.com/pausarInmueble/${IdInmueble}`, { activo: 0 });
+        await axios.put(`http://localhost:3031/pausarInmueble/${IdInmueble}`, { activo: 0 });
         swal("Publicación Pausada Correctamente", "", "success");
       } else if (estadoActivo === 0) {
         // Si activo es 0, cambiar a 1
-        await axios.put(`https://apirest-408205.uc.r.appspot.com/pausarInmueble/${IdInmueble}`, { activo: 1 });
+        await axios.put(`http://localhost:3031/pausarInmueble/${IdInmueble}`, { activo: 1 });
         swal("Publicación Activada Correctamente", "", "success");
       }
       window.location.reload();
@@ -282,7 +282,7 @@ function InmueblesSection() {
   const handleInteresClick = async (idInmueble) => {
     try {
         console.log('Clic en el sobre');
-        axios.post(`https://apirest-408205.uc.r.appspot.com/newchat/${idInmueble}`)
+        axios.post(`http://localhost:3031/newchat/${idInmueble}`)
         .then(async (response) => {
             console.log('Petición completada con éxito:', response);
             await swal('Chat Creado');

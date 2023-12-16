@@ -19,7 +19,7 @@ function Navbar({ handleSearchTerm }) {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('https://apirest-408205.uc.r.appspot.com/logout');
+      const res = await axios.get('http://localhost:3031/logout');
       if (res.data.Status === 'Success') {
         swal('Sesión Cerrada Correctamente', ' ', 'success');
         navigate('/login');
@@ -114,7 +114,7 @@ function HomeArrendatario() {
   
     useEffect(() => {
       // Fetch solo la información relevante de la tabla inmueble
-      axios.get('https://apirest-408205.uc.r.appspot.com/inmueblearrendatario') // Actualiza el endpoint según sea necesario
+      axios.get('http://localhost:3031/inmueblearrendatario') // Actualiza el endpoint según sea necesario
         .then((response) => {
           setRegisteredProperties(response.data);
         })
@@ -138,7 +138,7 @@ function HomeArrendatario() {
 
   useEffect(() => {
     // Fetch solo la información relevante de la tabla inmueble
-    axios.get('https://apirest-408205.uc.r.appspot.com/obtenerEscuelas') 
+    axios.get('http://localhost:3031/obtenerEscuelas') 
       .then((response) => {
         setRegisteredSchools(response.data);
       })
@@ -152,7 +152,7 @@ function HomeArrendatario() {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
         setName(res.data.nombre);
@@ -213,7 +213,7 @@ function HomeArrendatario() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <img
-                          src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
+                          src={`http://localhost:3031/images/${property.foto}`}
                           alt="Imagen"
                           className="img-fluid rounded-start"
                         />
@@ -251,7 +251,7 @@ function HomeArrendatario() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <img
-                          src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
+                          src={`http://localhost:3031/images/${property.foto}`}
                           alt="Imagen"
                           className="img-fluid rounded-start"
                         />
@@ -296,7 +296,7 @@ function HomeArrendatario() {
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
-                            src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
+                            src={`http://localhost:3031/images/${property.foto}`}
                             alt="Imagen"
                             className="img-fluid rounded-start"
                             style={{ width: '100%', height: 'auto' }}
@@ -333,7 +333,7 @@ function HomeArrendatario() {
                       <div className="row g-0">
                         <div className="col-md-4">
                           <img
-                            src={`https://apirest-408205.uc.r.appspot.com/images/${property.foto}`}
+                            src={`http://localhost:3031/images/${property.foto}`}
                             alt="Imagen"
                             className="img-fluid rounded-start"
                             style={{ width: '100%', height: 'auto' }}

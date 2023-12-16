@@ -11,7 +11,7 @@ function Incidencia({}) {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -70,7 +70,7 @@ function Incidencia({}) {
         requestData.id_inmueble = formData.id_inmueble;
       }
   
-      const response = await axios.post('https://apirest-408205.uc.r.appspot.com/generarReporte', requestData);
+      const response = await axios.post('http://localhost:3031/generarReporte', requestData);
       window.history.back(); 
 
       swal("Reporte realizado con éxito", " ", "success");

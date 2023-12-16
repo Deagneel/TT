@@ -13,7 +13,7 @@ function Navbar() {
 
   axios.defaults.withCredentials = true;
   useEffect(()=> {
-    axios.get('https://apirest-408205.uc.r.appspot.com')
+    axios.get('http://localhost:3031')
     .then(res => {
       if(res.data.valid) {
       } else {
@@ -56,7 +56,7 @@ function PageContent() {
   
 
   useEffect(() => {
-    axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerReporteesp/${id_reporte}`)
+    axios.get(`http://localhost:3031/obtenerReporteesp/${id_reporte}`)
       .then(response => {
         setReporte(response.data);
       })
@@ -87,7 +87,7 @@ function PageContent() {
   useEffect(() => {
     const obtenerNoReportesUsuario = async () => {
       try {
-        const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerNoReportesUsuario/${reporte?.id_usuario}`);
+        const response = await axios.get(`http://localhost:3031/obtenerNoReportesUsuario/${reporte?.id_usuario}`);
         setUserNoReports(response.data);
       } catch (error) {
         console.error('Error al obtener el número de reportes del usuario:', error);
@@ -101,7 +101,7 @@ function PageContent() {
 
   const obtenerNombreUsuario = async (idUsuario) => {
     try {
-      const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerNombreUsuario/${idUsuario}`);
+      const response = await axios.get(`http://localhost:3031/obtenerNombreUsuario/${idUsuario}`);
       return response.data;
     } catch (error) {
       console.error('Error al obtener el nombre del usuario:', error);
@@ -111,7 +111,7 @@ function PageContent() {
 
   const obtenerTituloInmueble = async (idInmueble) => {
     try {
-      const response = await axios.get(`https://apirest-408205.uc.r.appspot.com/obtenerTituloInmueble/${idInmueble}`);
+      const response = await axios.get(`http://localhost:3031/obtenerTituloInmueble/${idInmueble}`);
       return response.data;
     } catch (error) {
       console.error('Error al obtener el título del inmueble:', error);
@@ -134,7 +134,7 @@ function PageContent() {
       });
   
       if (willResolve) {
-        await axios.put(`https://apirest-408205.uc.r.appspot.com/resolverReporte/${id_reporte}/${idUsuario}`);
+        await axios.put(`http://localhost:3031/resolverReporte/${id_reporte}/${idUsuario}`);
         swal("Gracias por resolver la incidencia.", " ", "success");
         navigate('/homeadministrador');
       } else {
@@ -154,11 +154,11 @@ function PageContent() {
   
       if (estadoActivo === 1) {
         // Si activo es 1, cambiar a 0
-        await axios.put(`https://apirest-408205.uc.r.appspot.com/pausarInmueble/${reporte.id_inmueble}`, { activo: 0 });
+        await axios.put(`http://localhost:3031/pausarInmueble/${reporte.id_inmueble}`, { activo: 0 });
         swal("Publicación Pausada Correctamente", "", "success");
       } else if (estadoActivo === 0) {
         // Si activo es 0, cambiar a 1
-        await axios.put(`https://apirest-408205.uc.r.appspot.com/pausarInmueble/${reporte.id_inmueble}`, { activo: 1 });
+        await axios.put(`http://localhost:3031/pausarInmueble/${reporte.id_inmueble}`, { activo: 1 });
         swal("Publicación Activada Correctamente", "", "success");
       }
     } catch (error) {
@@ -170,7 +170,7 @@ function PageContent() {
   
   
   const handleContactar = async () => {
-    axios.post(`https://apirest-408205.uc.r.appspot.com/newchat/${reporte.id_inmueble}`)
+    axios.post(`http://localhost:3031/newchat/${reporte.id_inmueble}`)
       .then(async (response) => {
         // Puedes hacer algo con la respuesta si es necesario
         console.log('Petición completada con éxito:', response);
