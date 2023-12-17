@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import swal from 'sweetalert';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 const CalificaArrendatario = () => {
@@ -12,7 +12,7 @@ const CalificaArrendatario = () => {
   const [seguridad, setSeguridad] = useState(0);
   const [trato, setTrato] = useState(0);
   const [inmuebleInfo, setInmuebleInfo] = useState({});
-  const [idUsuario, setIdUsuario] = useState(null); // Initialize idUsuario state
+  const [idUsuario, setIdUsuario] = useState(null);
 
   const location = window.location;
   const searchParams = new URLSearchParams(location.search);
@@ -37,7 +37,6 @@ const CalificaArrendatario = () => {
       navigate('/home');
     } catch (error) {
       console.error('Error al enviar las reseñas:', error.message);
-      // Puedes agregar una lógica para mostrar un mensaje de error al usuario.
     }
   };
 
@@ -46,7 +45,7 @@ const CalificaArrendatario = () => {
       .then(response => {
         console.log('Inmueble info response:', response.data);
         setInmuebleInfo(response.data[0]);
-        setIdUsuario(response.data[0].id_usuario); // Access the object at index 0
+        setIdUsuario(response.data[0].id_usuario);
       })
       .catch(error => {
         console.error('Error al obtener la información del inmueble:', error.message);
@@ -54,7 +53,7 @@ const CalificaArrendatario = () => {
   }, [id]);
 
   if (!inmuebleInfo) {
-    return <div>Loading...</div>; // or render a loading spinner
+    return <div>Loading...</div>;
   }
 
   return (
