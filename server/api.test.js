@@ -3,6 +3,21 @@ import app from './server.js';
 
 describe('API REST Tests', function() {
 
+    let agent;
+
+    before(function(done) {
+        agent = request.agent(app); // Definir 'agent' aquí
+
+        // Realizar una operación de inicio de sesión para establecer la sesión
+        agent
+            .post('/login') // Asegúrate de que este es tu endpoint de autenticación
+            .send({ correo: 'jrodriguezcoronado1@gmail.com', contrasena: 'JesusRC1' }) // Usa credenciales válidas
+            .end(function(err, res) {
+                if (err) return done(err);
+                done();
+            });
+    });
+
     describe('POST /login', function() {
         it('debería responder con json conteniendo un estado de login', function(done) {
             request(app)
@@ -28,6 +43,15 @@ describe('API REST Tests', function() {
             request(app)
                 .post('/upload')
                 .attach('image', 'public/images/IPN.png') // Ajusta esta ruta
+                .expect(200, done);
+        });
+    });
+
+    describe('GET /perfil', function() {
+    
+        it('debería devolver información del perfil', function(done) {
+            agent
+                .get('/perfil')
                 .expect(200, done);
         });
     });
