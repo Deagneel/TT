@@ -11,7 +11,6 @@ import nodemailer from 'nodemailer';
 import axios from 'axios';
 import XLSX from 'xlsx';
 
-
 const salt = 10;
 const app = express();
 
@@ -25,9 +24,6 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
     }
 })
-
-
-
 
 const upload = multer ({
     storage: storage 
@@ -120,8 +116,6 @@ app.get('/perfil', (req, res) => {
     }
 });
 
-  
-
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
       if(err) {
@@ -132,7 +126,6 @@ app.get('/logout', (req, res) => {
       }
   });
 });
-
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/signup', (req, res) => {
@@ -716,10 +709,6 @@ app.get('/inmueblearrendatario', (req, res) => {
     });
   });
   
-
-
-
-
   app.put('/resolverReporte/:id_reporte/:id_usuario', (req, res) => {
     const { id_reporte, id_usuario } = req.params;
   
@@ -746,7 +735,6 @@ app.get('/inmueblearrendatario', (req, res) => {
     });
   });
   
-
 app.put('/pausarInmueble/:id_inmueble', (req, res) => {
   const { id_inmueble } = req.params;
   const { activo } = req.body;
@@ -763,8 +751,6 @@ app.put('/pausarInmueble/:id_inmueble', (req, res) => {
     }
   });
 });
-
-
 
   // Ruta para llenar los datos de la tabla reporte
   app.post('/generarReporte', (req, res) => {
@@ -810,8 +796,6 @@ app.put('/pausarInmueble/:id_inmueble', (req, res) => {
     });
 });
 
-
-
 // Realizar la consulta SQL para obtener los datos de la tabla "reporte"
 app.get('/obtenerReportes', (req, res) => {
   
@@ -826,7 +810,6 @@ app.get('/obtenerReportes', (req, res) => {
     }
   });
 });
-
 
 app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
@@ -848,8 +831,6 @@ app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
     }
   });
 });
-
-
 
 app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
@@ -886,7 +867,6 @@ app.get('/obtenerNoReportesUsuario/:idUsuario', (req, res) => {
   });
 });
 
-
 app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
   const { idUsuario } = req.params;
   const sql = 'SELECT nombre, primer_apellido, segundo_apellido FROM usuario WHERE id_usuario = ?';
@@ -902,7 +882,6 @@ app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
   });
 });
 
-
 app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
   const { idInmueble } = req.params;
   const sql = 'SELECT titulo, activo FROM inmueble WHERE id_inmueble = ?';
@@ -916,10 +895,6 @@ app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
     }
   });
 });
-
-
-
-
 
 app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
   const id_usuario = req.params.id_usuario;
@@ -1003,8 +978,6 @@ app.post('/recuperar-contrasena', (req, res) => {
     }
   };
 
-
-
   //Correo para los tratos
   // Función para enviar correo con información al arrendador
 const enviarCorreoArrendador = async (correoArrendador, link, tituloinmu) => {
@@ -1055,9 +1028,6 @@ app.post('/enviarCorreoArrendador', (req, res) => {
   }
 });
 
-
-
-
   //Actualizar contraseña encriptada
 // Ruta para actualizar la contraseña encriptada
 app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
@@ -1082,8 +1052,6 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
     }
   });
   
-
-
   app.post("/registrochat", async (req, res) => {
 
     // Desestructura directamente de req.body
@@ -1796,3 +1764,5 @@ app.get('/validateCP', (req, res) => {
     res.status(404).json({ error: 'Código postal no encontrado' });
   }
 });
+
+export default app;
