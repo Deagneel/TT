@@ -619,9 +619,6 @@ app.delete('/eliminarinmueble/:id_inmueble', (req, res) => {
   });
 });
 
-
-
-// Ruta para eliminar usuario
 app.delete('/eliminarUsuario/:idUsuario', (req, res) => {
   const { idUsuario } = req.params;
 
@@ -630,13 +627,18 @@ app.delete('/eliminarUsuario/:idUsuario', (req, res) => {
   db.query(sql, [idUsuario], (err, result) => {
     if (err) {
       console.error('Error al eliminar usuario:', err);
-      res.status(500).json({ error: 'Error interno del servidor' });
+      return res.status(500).json({ error: 'Error interno del servidor' });
     } else {
+      // Verifica si se eliminó algún registro
+      if (result.affectedRows === 0) {
+        // Ningún registro fue eliminado, lo que implica que el usuario no existe
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+      // Usuario eliminado con éxito
       res.json({ message: 'Usuario y registros relacionados eliminados correctamente' });
     }
   });
 });
-  
 
 const PORT = process.env.PORT || 3031;
 app.listen(PORT, () => {
@@ -980,9 +982,7 @@ const enviarCorreoArrendador = async (correoArrendador, link, tituloinmu) => {
 app.post('/enviarCorreoArrendador', (req, res) => {
   try {
     
-    const { idUsuario, idInmueble, correoUsuario, tituloinmu } = req.body;
-    const idSesion = req.session.user.id; // Aquí obtén el ID de sesión desde la sesión del usuario
-
+    const { idUsuario, idInmueble, correoUsuario, tituloinmu, idSesion } = req.body;
     
     const link = `http://localhost:3000/trato/${idUsuario}/${idInmueble}/${idSesion}`; // Reemplaza con tu URL real
 
@@ -1268,8 +1268,6 @@ app.get('/obtenerUsuario/:id_usuario', (req, res) => {
     }
   });
 });
-
-// Suponiendo que ya tienes Express y MySQL configurados en tu aplicación Node.js
 
 // Ruta para obtener información de un inmueble por ID
 app.get('/obtenerInmueble/:id_inmueble', (req, res) => {
