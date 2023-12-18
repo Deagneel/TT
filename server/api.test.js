@@ -5,6 +5,8 @@ let agent;
 
 describe('API REST Tests', function() {
 
+    //1
+
     before(function(done) {
         agent = request.agent(app);
 
@@ -121,6 +123,8 @@ describe('API REST Tests', function() {
         });
     });
 
+    //2
+
     describe('PUT /newIne/:id', function() {
         it('debería actualizar la identificación oficial del usuario', function(done) {
             const userId = 1;
@@ -223,7 +227,7 @@ describe('API REST Tests', function() {
 
     describe('GET /obtenerReporteesp/:id_reporte', function() {
         it('debería obtener un reporte específico', function(done) {
-          const idReporte = 24;
+          const idReporte = 30;
           request(app)
             .get(`/obtenerReporteesp/${idReporte}`)
             .expect('Content-Type', /json/)
@@ -266,6 +270,8 @@ describe('API REST Tests', function() {
         });
     });
 
+    //3
+
     describe('POST /generarReporte', function() {
         it('debería insertar un nuevo reporte y actualizar el contador de reportes del usuario', function(done) {
           const reporteData = {
@@ -287,7 +293,7 @@ describe('API REST Tests', function() {
         });
       });
 
-      describe('GET /obtenerReportes', function() {
+    describe('GET /obtenerReportes', function() {
         it('debería devolver todos los reportes', function(done) {
           request(app)
             .get('/obtenerReportes')
@@ -370,232 +376,262 @@ describe('API REST Tests', function() {
         });
     });
 
-  describe('POST /recuperar-contrasena', function() {
-    it('debería devolver mensaje de éxito si el correo existe', function(done) {
-      const correoExistente = 'jrodriguezcoronado1@gmail.com';
+    describe('POST /recuperar-contrasena', function() {
+      it('debería devolver mensaje de éxito si el correo existe', function(done) {
+        const correoExistente = 'jrodriguezcoronado1@gmail.com';
+        request(app)
+          .post('/recuperar-contrasena')
+          .send({ correo: correoExistente })
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            if (res.body.message !== 'Se ha enviado un correo para restablecer la contraseña') {
+              return done(new Error("Respuesta inesperada del servidor"));
+            }
+            done();
+          });
+      });
+    
+      it('debería devolver un mensaje de error si el correo no existe', function(done) {
+        const correoInexistente = 'correo@inexistente.com';
+        request(app)
+          .post('/recuperar-contrasena')
+          .send({ correo: correoInexistente })
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            if (res.body !== 'El correo proporcionado no está registrado') {
+              return done(new Error("Respuesta inesperada del servidor"));
+            }
+            done();
+          });
+      });
+    });
+
+    //4
+
+    it('debería responder con un mensaje de éxito al enviar correo', function(done) {
+      const correoUsuario = 'jrodriguezcoronado1@gmail.com';
+      const idUsuario = 123;
+      const idInmueble = 456;
+      const idSesion = 789;
+      const tituloinmu = 'Título de prueba';
+
       request(app)
-        .post('/recuperar-contrasena')
-        .send({ correo: correoExistente })
-        .expect('Content-Type', /json/)
+        .post('/enviarCorreoArrendador')
+        .send({ 
+          idUsuario, 
+          idInmueble, 
+          correoUsuario, 
+          tituloinmu, 
+          idSesion 
+        })
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
-          if (res.body.message !== 'Se ha enviado un correo para restablecer la contraseña') {
+
+          if (res.body.message !== 'Correo enviado al arrendador') {
             return done(new Error("Respuesta inesperada del servidor"));
           }
+
           done();
         });
     });
-  
-    it('debería devolver un mensaje de error si el correo no existe', function(done) {
-      const correoInexistente = 'correo@inexistente.com';
-      request(app)
-        .post('/recuperar-contrasena')
-        .send({ correo: correoInexistente })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end(function(err, res) {
-          if (err) return done(err);
-          if (res.body !== 'El correo proporcionado no está registrado') {
-            return done(new Error("Respuesta inesperada del servidor"));
-          }
-          done();
-        });
-    });
-  });
 
-  it('debería responder con un mensaje de éxito al enviar correo', function(done) {
-    const correoUsuario = 'jrodriguezcoronado1@gmail.com';
-    const idUsuario = 123;
-    const idInmueble = 456;
-    const idSesion = 789;
-    const tituloinmu = 'Título de prueba';
-
-    request(app)
-      .post('/enviarCorreoArrendador')
-      .send({ 
-        idUsuario, 
-        idInmueble, 
-        correoUsuario, 
-        tituloinmu, 
-        idSesion 
-      })
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-
-        if (res.body.message !== 'Correo enviado al arrendador') {
-          return done(new Error("Respuesta inesperada del servidor"));
-        }
-
-        done();
-      });
-  });
-
-  it('debería evaluar un inmueble y actualizar la información del usuario', function(done) {
-    const testData = {
-        id_inmueble: 1,
-        condiciones: 8,
-      servicios: 7,
-      seguridad: 9,
-      comportamiento: 10,
-      id_usuario: 1
-    };
-
-    request(app)
-      .post('/evaluarinmueble')
-      .send(testData)
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  it('debería devolver información de todos los inmuebles', function(done) {
-    request(app)
-      .get('/infoinmueblesmap')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-
-        done();
-      });
-  });
-
-  it('debería rentar un inmueble si el usuario está autenticado', function(done) {
-    const idInmueble = 1;
-
-    agent
-      .post(`/rentar/${idInmueble}`)
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  it('debería devolver un error si el usuario no está autenticado', function(done) {
-    const idInmueble = 1;
-    request(app)
-      .post(`/rentar/${idInmueble}`)
-      .expect('Content-Type', /json/)
-      .expect(401)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  it('debería devolver un error si el usuario no existe', function(done) {
-    const idUsuarioInexistente = 99999;
-
-    request(app)
-      .get(`/obtenerUsuario/${idUsuarioInexistente}`)
-      .expect(404)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  describe('GET /obtenerInmueble/:id_inmueble', function() {
-    it('debería devolver información del inmueble si existe', function(done) {
-      const idInmueble = 1;
-
-      request(app)
-        .get(`/obtenerInmueble/${idInmueble}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('PUT /actualizarEstado/:id_renta', function() {
-    it('debería actualizar el estado de una renta', function(done) {
-      const idRenta = 1;
-
-      request(app)
-        .put(`/actualizarEstado/${idRenta}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('PUT /restarHabitacion/:id_inmueble', function() {
-    it('debería restar una habitación del inmueble', function(done) {
-      const idInmueble = 1;
-
-      request(app)
-        .put(`/restarHabitacion/${idInmueble}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('DELETE /eliminarRentado/:id_renta', function() {
-    it('debería eliminar una renta si existe', function(done) {
-      const idRenta = 1;
-
-      request(app)
-        .delete(`/eliminarRentado/${idRenta}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('GET /obtenerIdRenta/:id_inmueble', function() {
-    it('debería obtener el id_renta asociado a un inmueble', function(done) {
-      const idInmueble = 1;
-
-      request(app)
-        .get(`/obtenerIdRenta/${idInmueble}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('PUT /actualizarEstadoInmueble/:id_inmueble', function() {
-    it('debería actualizar el estado del inmueble si cumple la condición', function(done) {
-      const idInmueble = 1;
-
-      request(app)
-        .put(`/actualizarEstadoInmueble/${idInmueble}`)
-        .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
-  });
-
-  describe('GET /obtenerCorreoUsuario/:id_usuario', function() {
-    it('debería devolver el correo del usuario si el usuario existe', function(done) {
-      const idUsuario = 1;
-  
-      request(app)
-        .get(`/obtenerCorreoUsuario/${idUsuario}`)
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .end(function(err, res) {
-          if (err) return done(err);
-          done();
-        });
-    });
-  });
-
-  describe('POST /enviarCorreoDocumentacion', function() {
-    it('debería procesar la solicitud y responder adecuadamente', function(done) {
-      const requestBody = {
-        correoV: 'jrodriguezcoronado1@gmail.com',
-        identificacion_oficial: 'image_1701406296903.pdf',
-        comprobante_de_domicilio: 'image_1701406296903.pdf',
-        credencial_de_estudiante: 'image_1701406296903.pdf',
-        comprobante_de_inscripcion: 'image_1701406296903.pdf'
+    it('debería evaluar un inmueble y actualizar la información del usuario', function(done) {
+      const testData = {
+          id_inmueble: 1,
+          condiciones: 8,
+        servicios: 7,
+        seguridad: 9,
+        comportamiento: 10,
+        id_usuario: 1
       };
-  
+
       request(app)
-        .post('/enviarCorreoDocumentacion')
-        .send(requestBody)
+        .post('/evaluarinmueble')
+        .send(testData)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('debería devolver información de todos los inmuebles', function(done) {
+      request(app)
+        .get('/infoinmueblesmap')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          done();
+        });
+    });
+
+    it('debería rentar un inmueble si el usuario está autenticado', function(done) {
+      const idInmueble = 1;
+
+      agent
+        .post(`/rentar/${idInmueble}`)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('debería devolver un error si el usuario no está autenticado', function(done) {
+      const idInmueble = 1;
+      request(app)
+        .post(`/rentar/${idInmueble}`)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('debería devolver un error si el usuario no existe', function(done) {
+      const idUsuarioInexistente = 99999;
+
+      request(app)
+        .get(`/obtenerUsuario/${idUsuarioInexistente}`)
+        .expect(404)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    describe('GET /obtenerInmueble/:id_inmueble', function() {
+      it('debería devolver información del inmueble si existe', function(done) {
+        const idInmueble = 1;
+
+        request(app)
+          .get(`/obtenerInmueble/${idInmueble}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    describe('PUT /actualizarEstado/:id_renta', function() {
+      it('debería actualizar el estado de una renta', function(done) {
+        const idRenta = 1;
+
+        request(app)
+          .put(`/actualizarEstado/${idRenta}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    describe('PUT /restarHabitacion/:id_inmueble', function() {
+      it('debería restar una habitación del inmueble', function(done) {
+        const idInmueble = 1;
+
+        request(app)
+          .put(`/restarHabitacion/${idInmueble}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    describe('DELETE /eliminarRentado/:id_renta', function() {
+      it('debería eliminar una renta si existe', function(done) {
+        const idRenta = 1;
+
+        request(app)
+          .delete(`/eliminarRentado/${idRenta}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    //5
+
+    describe('GET /obtenerIdRenta/:id_inmueble', function() {
+      it('debería obtener el id_renta asociado a un inmueble', function(done) {
+        const idInmueble = 1;
+
+        request(app)
+          .get(`/obtenerIdRenta/${idInmueble}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    describe('PUT /actualizarEstadoInmueble/:id_inmueble', function() {
+      it('debería actualizar el estado del inmueble si cumple la condición', function(done) {
+        const idInmueble = 1;
+
+        request(app)
+          .put(`/actualizarEstadoInmueble/${idInmueble}`)
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+    });
+
+    describe('GET /obtenerCorreoUsuario/:id_usuario', function() {
+      it('debería devolver el correo del usuario si el usuario existe', function(done) {
+        const idUsuario = 1;
+    
+        request(app)
+          .get(`/obtenerCorreoUsuario/${idUsuario}`)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+
+    describe('POST /enviarCorreoDocumentacion', function() {
+      it('debería procesar la solicitud y responder adecuadamente', function(done) {
+        const requestBody = {
+          correoV: 'jrodriguezcoronado1@gmail.com',
+          identificacion_oficial: 'image_1701406296903.pdf',
+          comprobante_de_domicilio: 'image_1701406296903.pdf',
+          credencial_de_estudiante: 'image_1701406296903.pdf',
+          comprobante_de_inscripcion: 'image_1701406296903.pdf'
+        };
+    
+        request(app)
+          .post('/enviarCorreoDocumentacion')
+          .send(requestBody)
+          .expect('Content-Type', /json/)
+          .expect(200) 
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
+
+    it('debería devolver los documentos del usuario si el usuario existe', function(done) {
+      const id_usuario = 1;
+      request(app)
+        .get(`/obtenerDocumentosUsuario/${id_usuario}`)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('debería devolver un mensaje de error si el usuario no existe', function(done) {
+      const idUsuarioInexistente = 99999;
+
+      request(app)
+        .get(`/obtenerDocumentosUsuario/${idUsuarioInexistente}`)
         .expect('Content-Type', /json/)
         .expect(200) 
         .end(function(err, res) {
@@ -603,108 +639,82 @@ describe('API REST Tests', function() {
           done();
         });
     });
-  });
 
-  it('debería devolver los documentos del usuario si el usuario existe', function(done) {
-    const id_usuario = 1;
-    request(app)
-      .get(`/obtenerDocumentosUsuario/${id_usuario}`)
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
+    it('debería procesar la solicitud y responder adecuadamente', function(done) {
+      const requestBody = {
+        correoV: 'example@example.com',
+        id_usuario: 1, 
+        usuarioNombre: 'Nombre Usuario',
+        inmuebleTitulo: 'Titulo Inmueble'
+      };
 
-  it('debería devolver un mensaje de error si el usuario no existe', function(done) {
-    const idUsuarioInexistente = 99999;
-
-    request(app)
-      .get(`/obtenerDocumentosUsuario/${idUsuarioInexistente}`)
-      .expect('Content-Type', /json/)
-      .expect(200) 
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  it('debería procesar la solicitud y responder adecuadamente', function(done) {
-    const requestBody = {
-      correoV: 'example@example.com',
-      id_usuario: 1, 
-      usuarioNombre: 'Nombre Usuario',
-      inmuebleTitulo: 'Titulo Inmueble'
-    };
-
-    request(app)
-      .post('/enviarCorreoReporte')
-      .send(requestBody)
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        
-        done();
-      });
-  });
-
-describe('POST /enviarCorreoResena', function() {
-  it('debería procesar la solicitud y responder adecuadamente', function(done) {
-    const requestBody = {
-      correoT: 'example@example.com',
-      id_inmueble: 1 
-    };
-
-    request(app)
-      .post('/enviarCorreoResena')
-      .send(requestBody)
-      .expect('Content-Type', /json/)
-      .expect(200) 
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-});
-
-it('debería verificar el estado de rentados para el usuario autenticado', function(done) {
-    agent
-      .get('/verificarEstadoRentados')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-
-  describe('GET /validateCP', function() {
-    it('debería devolver información asociada a un código postal válido', function(done) {
-      const codigoPostalValido = '11410';
-  
       request(app)
-        .get(`/validateCP?cp=${codigoPostalValido}`)
+        .post('/enviarCorreoReporte')
+        .send(requestBody)
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
           if (err) return done(err);
+          
           done();
         });
     });
-  
-    it('debería devolver un error si el código postal no existe', function(done) {
-      const codigoPostalInexistente = '00000';
-      request(app)
-        .get(`/validateCP?cp=${codigoPostalInexistente}`)
-        .expect('Content-Type', /json/)
-        .expect(404)
-        .end(function(err, res) {
-          if (err) return done(err);
-          done();
-        });
+
+    describe('POST /enviarCorreoResena', function() {
+      it('debería procesar la solicitud y responder adecuadamente', function(done) {
+        const requestBody = {
+          correoT: 'example@example.com',
+          id_inmueble: 1 
+        };
+
+        request(app)
+          .post('/enviarCorreoResena')
+          .send(requestBody)
+          .expect('Content-Type', /json/)
+          .expect(200) 
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
     });
-  });
+
+    it('debería verificar el estado de rentados para el usuario autenticado', function(done) {
+        agent
+          .get('/verificarEstadoRentados')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
+
+    describe('GET /validateCP', function() {
+      it('debería devolver información asociada a un código postal válido', function(done) {
+        const codigoPostalValido = '11410';
+    
+        request(app)
+          .get(`/validateCP?cp=${codigoPostalValido}`)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
+    
+      it('debería devolver un error si el código postal no existe', function(done) {
+        const codigoPostalInexistente = '00000';
+        request(app)
+          .get(`/validateCP?cp=${codigoPostalInexistente}`)
+          .expect('Content-Type', /json/)
+          .expect(404)
+          .end(function(err, res) {
+            if (err) return done(err);
+            done();
+          });
+      });
+    });
 
 });
