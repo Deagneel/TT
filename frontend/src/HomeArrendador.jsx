@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import swal from 'sweetalert';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Asegúrate de importar la hoja de estilos de Bootstrap
 
 function ArrendadorNavbar() {
   const navigate = useNavigate();

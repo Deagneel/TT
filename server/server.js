@@ -64,8 +64,8 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "sistemarentas"
-});*/
-
+});
+*/
 db.connect((err) => {
     if (err) {
         console.error('Error al conectar a la base de datos:', err);
@@ -118,6 +118,29 @@ app.get('/perfil', (req, res) => {
     } else {
         res.status(401).json({ error: 'No se proporcionó un usuario válido en la sesión.' });
     }
+});
+
+app.get('/verificarSolicitud', (req, res) => {
+  const idUsuario = req.session.user ? req.session.user.id : null;
+  const idInmueble = req.query.idInmueble;
+
+  if (idUsuario && idInmueble) {
+      db.query('SELECT * FROM rentados WHERE id_usuario = ? AND id_inmueble = ?', [idUsuario, idInmueble], (err, result) => {
+          if (err) {
+              console.error('Error al verificar en la tabla rentados:', err);
+              res.status(500).json({ error: 'Error interno del servidor' });
+          } else {
+              // Verifica si el usuario ya ha hecho una solicitud para el inmueble
+              if (result.length > 0) {
+                  res.json({ solicitudExistente: true });
+              } else {
+                  res.json({ solicitudExistente: false });
+              }
+          }
+      });
+  } else {
+      res.status(400).json({ error: 'Faltan datos necesarios para la consulta (idUsuario o idInmueble).' });
+  }
 });
 
   
@@ -411,6 +434,33 @@ app.get('/infoinmuebles/:id_inmueble', (req, res) => {
   
       // Enviar una respuesta de éxito
       res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
+    });
+  });
+
+  app.put('/newMail/:id', (req, res) => {
+    const userId = req.params.id;
+    const nuevoCorreo = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+  
+    // Verificar si el nombre está presente en la solicitud
+    if (!nuevoCorreo) {
+      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    }
+  
+    // Realizar la consulta SQL para actualizar el nombre del usuario
+    const sql = 'UPDATE usuario SET correo = ? WHERE id_usuario = ?';
+    db.query(sql, [nuevoCorreo, userId], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar el nombre: ' + err.message);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+      }
+  
+      // Verificar si se actualizó algún registro
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado.' });
+      }
+  
+      // Enviar una respuesta de éxito
+      res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
     });
   });
 
@@ -1069,7 +1119,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         const r = await axios.put(
             'https://api.chatengine.io/users',
             { username: mail, secret: mail, first_name: name, last_name: last_name },
-            { headers: { "private-key": "8c08728f-cad4-4b48-bf8d-b8e8db34e0db" } }
+            { headers: { "private-key": "9bfdf42a-9764-4ac9-ba56-232241a7c344" } }
         );
     } catch (e) {
         return res.status(500).json({ error: 'Error desconocido' });
@@ -1125,7 +1175,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
                     },
                     {
                         headers: {
-                            "Project-ID": "1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3",
+                            "Project-ID": "d89ffb7c-1156-4e31-bcf3-68a76ff61959",
                             "User-Name": mail,
                             "User-Secret": mail
                         }
@@ -1768,4 +1818,18 @@ app.get('/validateCP', (req, res) => {
   } else {
     res.status(404).json({ error: 'Código postal no encontrado' });
   }
+});
+
+app.get('/obtenerDatosUsuario/:idUsuario', (req, res) => {
+  const idUsuario = req.params.idUsuario;
+
+  db.query('SELECT comportamiento, contador_evaluaciones FROM usuario WHERE id_usuario = ?', [idUsuario], (err, result) => {
+      if (err) {
+          console.error('Error al obtener datos del usuario:', err);
+          res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+          // Enviar los datos de comportamiento y contador_evaluaciones
+          res.json(result.length > 0 ? result[0] : {});
+      }
+  });
 });

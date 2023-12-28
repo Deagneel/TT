@@ -37,7 +37,7 @@ function Chat() {
     <>
       <ChatEngine
         height='100vh'
-        projectID='1059213f-c0e8-48fe-a49c-8bfe9a8fb1a3'
+        projectID='d89ffb7c-1156-4e31-bcf3-68a76ff61959'
         userName={correo}
         userSecret={correo}
         renderChatList={(chatAppState) => <ChatList {...chatAppState} />}

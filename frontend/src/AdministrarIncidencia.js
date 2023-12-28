@@ -196,13 +196,13 @@ function PageContent() {
           </div>
           <div>
               {reporte.usuario && reporte.usuario.nombre && reporte.usuario.primer_apellido && reporte.usuario.segundo_apellido &&
-                <p>Usuario asociado: {reporte.usuario.nombre} {reporte.usuario.primer_apellido} {reporte.usuario.segundo_apellido}</p>
+                <p>Usuario reportado: {reporte.usuario.nombre} {reporte.usuario.primer_apellido} {reporte.usuario.segundo_apellido}</p>
               }
-            <p>ID del usuario: {reporte.id_usuario} Reportes asociados: {userNoReports}</p>
+            <p>ID del usuario: {reporte.id_usuario} Reportes asociados al usuario: {userNoReports}</p>
           </div>
           {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
             <div>
-              <p>Inmueble asociado: {reporte.inmueble.titulo}</p>
+              <p>Inmueble reportado: {reporte.inmueble.titulo}</p>
               <p>ID del inmueble: {reporte.id_inmueble}</p>
             </div>
           )}

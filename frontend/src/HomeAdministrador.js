@@ -20,7 +20,6 @@ function Navbar() {
     .then(res => {
       if(res.data.valid) {
       } else {
-        swal('Necesitas iniciar sesión para acceder a esta función');
         navigate('/login');
       }
     })

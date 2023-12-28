@@ -413,35 +413,7 @@ function EditarInmueble() {
           />
         </div>
   
-        {/* Latitud */}
-        <div className="mb-3">
-          <label htmlFor="latitud" className="form-label">Latitud</label>
-          <input
-            type="text"
-            name="latitud"
-            id="latitud"
-            value={formData.latitud}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Ingrese la Latitud"
-            disabled
-          />
-        </div>
-
-        {/* Longitud */}
-        <div className="mb-3">
-          <label htmlFor="longitud" className="form-label">Longitud</label>
-          <input
-            type="text"
-            name="longitud"
-            id="longitud"
-            value={formData.longitud}
-            onChange={handleChange}
-            className="form-control"
-            placeholder="Ingrese la longitud"
-            disabled
-          />
-        </div>
+        
 
         {/* Mapa para seleccionar la ubicación */}
         <MapComponent

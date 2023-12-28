@@ -78,6 +78,9 @@ function InfoInmueble() {
   const searchParams = new URLSearchParams(location.search);
   const idInmueble = searchParams.get('id_inmueble');
   const [correoUsuario, setCorreoUsuario] = useState('');
+  const [comportamiento, setComportamiento] = useState(null);
+  const [contadorEvaluaciones, setContadorEvaluaciones] = useState(null);
+
   
 
   const handleInteresClick = async () => {
@@ -126,7 +129,13 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
       // Mostrar mensaje si perfil_completado es 0
       await swal('Primero debes completar la documentación de tu perfil');
     } else {
-      // Mostrar SweetAlert2 de confirmación
+      const solicitudExistenteResponse = await axios.get(`http://localhost:3031/verificarSolicitud?idInmueble=${idInmueble}`);
+    const solicitudExistente = solicitudExistenteResponse.data.solicitudExistente;
+
+    if (solicitudExistente) {
+        // Informar al usuario que ya existe una solicitud para ese inmueble
+        await swal('No puedes hacer más de una solicitud de trato al mismo inmueble por ahora.' , '', 'error');
+    } else {
       console.log(correoUsuario);
       const willDoTrato = await swal({
         title: "¿Quieres mandar una solicitud para concretar un trato?",
@@ -155,6 +164,7 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
         swal("Operación Cancelada");
       }
     }
+  }
   } catch (error) {
     console.error('Error al realizar el trato:', error);
   }
@@ -197,11 +207,24 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
             console.error('Error al obtener el correo del usuario:', error);
           });
   
+        // Aquí se añade la nueva consulta para obtener comportamiento y contador_evaluaciones
+        axios.get(`http://localhost:3031/obtenerDatosUsuario/${idUsuario}`)
+          .then((datosUsuarioResponse) => {
+            const datosUsuario = datosUsuarioResponse.data;
+            // Actualizar el estado o manejar los datos como prefieras
+            setComportamiento(datosUsuario.comportamiento);
+            setContadorEvaluaciones(datosUsuario.contador_evaluaciones);
+          })
+          .catch((error) => {
+            console.error('Error al obtener datos del usuario:', error);
+          });
+  
       })
       .catch((error) => {
         console.error('Error al obtener datos del inmueble', error);
       });
-  }, [idInmueble]);
+  }, [idInmueble]); // Dependencia idInmueble
+  
 
   return (
     <div className="app-container text-center bg-dark">
@@ -227,7 +250,7 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
               <h5 className="font-weight-bold">
                   Condiciones: 
                   {property.contador_evaluaciones 
-                      ? ((property.condiciones / property.contador_evaluaciones).toFixed(2) + " de 5")
+                      ? ((property.condiciones / property.contador_evaluaciones).toFixed(1) + " de 5")
                       : "Sin evaluaciones aún"}
                   <FontAwesomeIcon icon={faStar} />
               </h5>
@@ -237,7 +260,17 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
               <h5 className="font-weight-bold">
                   Servicios: 
                   {property.contador_evaluaciones 
-                      ? ((property.servicios / property.contador_evaluaciones).toFixed(2) + " de 5")
+                      ? ((property.servicios / property.contador_evaluaciones).toFixed(1) + " de 5")
+                      : " Sin evaluaciones aún"}
+                  <FontAwesomeIcon icon={faStar} />
+              </h5>
+            </div>
+
+            <div className="col mb-3">
+              <h5 className="font-weight-bold">
+                  Seguridad: 
+                  {property.contador_evaluaciones 
+                      ? ((property.seguridad / property.contador_evaluaciones).toFixed(1) + " de 5")
                       : " Sin evaluaciones aún"}
                   <FontAwesomeIcon icon={faStar} />
               </h5>
@@ -245,9 +278,9 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
 
             <div className="col mb-5">
               <h5 className="font-weight-bold">
-                  Seguridad: 
-                  {property.contador_evaluaciones 
-                      ? ((property.seguridad / property.contador_evaluaciones).toFixed(2) + " de 5")
+                  Trato brindado por el arrendador: 
+                  {contadorEvaluaciones  
+                      ? ((comportamiento  / contadorEvaluaciones).toFixed(1) + " de 5")
                       : " Sin evaluaciones aún"}
                   <FontAwesomeIcon icon={faStar} />
               </h5>

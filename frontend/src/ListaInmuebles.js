@@ -91,7 +91,7 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
   const idEscuela = searchParams.get('id_escuela');
   const [nombreEscuela, setNombreEscuela] = useState(null);
   const [fotoEscuela, setFotoEscuela] = useState(null);
-
+ 
   useEffect(() => {
     const obtenerEscuela = async () => {
       try {
@@ -140,8 +140,10 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
           const inmueblesFiltrados = data.filter(inmueble => {
             const distanciaEscuelaHabitacion = getDistanceFromLatLonInKm(inmueble.latitud, inmueble.longitud, position.lat, position.lng);
             const cumpleCriterios = (
+              !(inmueble.activo === 0 || inmueble.activo_usuario === 1) && // Añade esta condición aquí
               inmueble.no_habitaciones > 0 &&
-              inmueble.precio <= precio &&
+              inmueble.precio >= precio.min && // Uso de precio.min
+              inmueble.precio <= precio.max &&
               inmueble.tipo_de_habitacion == tipoHabitacion &&
               distanciaEscuelaHabitacion <= distancia
             );
@@ -252,7 +254,7 @@ return (
               <h6>Dirección: {selectedInmueble.direccion}</h6>
               <h6>Precio: ${selectedInmueble.precio}</h6>
               <h6>Cuartos Disponibles: {selectedInmueble.no_habitaciones}</h6>
-              <h6>Distancia a la escuela: {getDistanceFromLatLonInKm(selectedInmueble.latitud, selectedInmueble.longitud, position.lat, position.lng)} km</h6>
+              <h6>Distancia a la escuela: {getDistanceFromLatLonInKm(selectedInmueble.latitud, selectedInmueble.longitud, position.lat, position.lng).toFixed(2)} km</h6>
 
               {/* Use a button or a more descriptive element for the clickable area */}
               <button
@@ -280,7 +282,13 @@ return (
 }
 
 function ListaInmuebles() {
-  const [precio, setPrecio] = useState('5000');
+  const rangosPrecios = {
+    '5000': { min: 0, max: 5000 },
+    '10000': { min: 5001, max: 10000 },
+    '100000': { min: 10001, max: Infinity } // Para 'más de 10000', puedes usar Infinity
+  };
+  
+  const [precio, setPrecio] = useState(rangosPrecios['5000']); // Estado inicial al rango 'Hasta $5000'
   const [distancia, setDistancia] = useState('5');
   const [tipoHabitacion, setTipoHabitacion] = useState('0');
 
@@ -289,7 +297,7 @@ function ListaInmuebles() {
 
     switch (type) {
       case 'precio':
-        setPrecio(value);
+        setPrecio(rangosPrecios[value]);
         break;
       case 'distancia':
         setDistancia(value);
