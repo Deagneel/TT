@@ -64,17 +64,17 @@ function Navbar() {
       <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
         <ul className="navbar-nav w-100 nav-fill">
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/signup')}>
+            <a className="nav-link btn btn-link w-100" onClick={() => handleNavigation('/signup')}>
               Registrar Usuario
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={() => handleNavigation('/chat')}>
+            <a className="nav-link btn btn-link w-100" onClick={() => handleNavigation('/chat')}>
               Chats
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link btn btn-link w-100" href="#" onClick={handleLogoutClick}>
+            <a className="nav-link btn btn-link w-100" onClick={handleLogoutClick}>
               Cerrar Sesión
             </a>
           </li>

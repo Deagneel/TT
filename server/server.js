@@ -52,12 +52,17 @@ app.use(session({
 
 }))
 
+//DB Online
+/*
 const db = mysql.createConnection({
   host: "bccdb0knkukccxehxrur-mysql.services.clever-cloud.com",
   user: "u0umkw3bjydys9qe",
   password: "jS9hYCGfJdgbZ4wHnbyg",
   database: 'bccdb0knkukccxehxrur'
 });
+*/
+
+//DB Local Gsus
 /*
 const db = mysql.createConnection({
   host: "localhost",
@@ -66,6 +71,16 @@ const db = mysql.createConnection({
   database: "sistemarentas"
 });
 */
+
+//DB Local atr
+
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "tt-db"
+});
+
 db.connect((err) => {
     if (err) {
         console.error('Error al conectar a la base de datos:', err);
@@ -1119,7 +1134,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
         const r = await axios.put(
             'https://api.chatengine.io/users',
             { username: mail, secret: mail, first_name: name, last_name: last_name },
-            { headers: { "private-key": "9bfdf42a-9764-4ac9-ba56-232241a7c344" } }
+            { headers: { "private-key": "3b3f36ec-29d6-4a5e-9708-2fe359e5bc01" } }
         );
     } catch (e) {
         return res.status(500).json({ error: 'Error desconocido' });
@@ -1175,7 +1190,7 @@ app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
                     },
                     {
                         headers: {
-                            "Project-ID": "d89ffb7c-1156-4e31-bcf3-68a76ff61959",
+                            "Project-ID": "6a22601b-69ce-4f51-b6ff-19957596e253",
                             "User-Name": mail,
                             "User-Secret": mail
                         }
