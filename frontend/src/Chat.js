@@ -74,6 +74,11 @@ function Chat({ correo }) {
       <MultiChatWindow {...chatProps} 
       style={{ height: '92vh'}}
        />
+       <ChatForm
+          style={{
+            display: "none"
+          }}
+        />
       <MultiChatSocket {...chatProps} />
     </>
   );

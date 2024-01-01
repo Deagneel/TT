@@ -33,7 +33,7 @@ function ArrendadorNavbar() {
   
   // Botón para acceder a los chats
   const handleChats = async () => {
-        navigate('/chat');
+        navigate('/correoobtencion');
   };
   
 
