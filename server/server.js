@@ -26,9 +26,6 @@ const storage = multer.diskStorage({
     }
 })
 
-
-
-
 const upload = multer ({
     storage: storage 
 })
@@ -306,6 +303,32 @@ app.get('/', (req, res) => {
         return res.json(result);
     });
 });
+
+// Ruta para verificar si el usuario tiene tratos pendientes
+app.get('/tratopendiente', (req, res) => {
+  const id_usuario = req.session.user.id;
+
+  const query = `
+    SELECT rentados.* FROM rentados
+    JOIN inmueble ON rentados.id_inmueble = inmueble.id_inmueble
+    WHERE inmueble.id_usuario = ? AND rentados.estado = 0
+  `;
+
+  db.query(query, [id_usuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener tratos pendientes: ', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      if (result.length > 0) {
+        res.status(200).send('OK');
+      } else {
+        res.status(404).json({ mensaje: 'No se encontraron tratos pendientes' });
+      }
+    }
+  });
+});
+
+
 
 // Ruta para obtener datos de la tabla "escuela"
 app.get('/obtenerEscuelas', (req, res) => {
