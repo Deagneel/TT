@@ -57,8 +57,6 @@ function Navbar({ handleSearchTerm }) {
           </div>
       </nav>
   );
-
-  
 }
 
 function RegistroInmueble() {
@@ -96,8 +94,6 @@ function RegistroInmueble() {
     }
   };
   
-  
-
   const handleCheckbox = () => {
     setAceptarTerminos(!aceptarTerminos);
   };
