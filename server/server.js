@@ -1871,3 +1871,33 @@ app.get('/obtenerDatosUsuario/:idUsuario', (req, res) => {
       }
   });
 });
+
+// Endpoint para obtener mensajes y verificar el campo 'read'
+app.get('/get-chat-messages', async (req, res) => {
+  const chatId = req.query.chat_id; // o como determinas el chat_id
+  const projectId = 'tu_project_id'; // reemplaza con tu project ID real
+  const userName = 'tu_user_name'; // reemplaza con tu user name real
+  const userSecret = 'tu_user_secret'; // reemplaza con tu user secret real
+
+  try {
+      const response = await axios.get(`https://api.chatengine.io/chats/${chatId}/messages/`, {
+          headers: {
+              'Project-ID': projectId,
+              'User-Name': userName,
+              'User-Secret': userSecret
+          }
+      });
+
+      const messages = response.data;
+      const hasUnreadMessages = messages.some(message => !message.read);
+
+      if (hasUnreadMessages) {
+          res.send('OK');
+      } else {
+          res.send('No unread messages');
+      }
+  } catch (error) {
+      console.error('Error fetching messages:', error);
+      res.status(500).send('Error fetching messages');
+  }
+});

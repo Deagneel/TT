@@ -71,9 +71,7 @@ function Chat({ correo }) {
   return (
     <>
       <Navbar />
-      <MultiChatWindow {...chatProps} 
-      style={{ height: '92vh'}}
-       />
+      <MultiChatWindow {...chatProps}  renderChatForm={() => null} renderPeopleSettings={() => null} style={{ height: '92vh'}} />
       <MultiChatSocket {...chatProps} />
     </>
   );
