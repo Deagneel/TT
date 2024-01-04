@@ -140,7 +140,7 @@ function PageContent({ precio, distancia, tipoHabitacion }) {
           const inmueblesFiltrados = data.filter(inmueble => {
             const distanciaEscuelaHabitacion = getDistanceFromLatLonInKm(inmueble.latitud, inmueble.longitud, position.lat, position.lng);
             const cumpleCriterios = (
-              !(inmueble.activo === 0 || inmueble.activo_usuario === 1) && // Añade esta condición aquí
+              !(inmueble.activo === 0 || inmueble.activo_usuario === 1) && 
               inmueble.no_habitaciones > 0 &&
               inmueble.precio >= precio.min && // Uso de precio.min
               inmueble.precio <= precio.max &&
