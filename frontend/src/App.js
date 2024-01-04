@@ -23,8 +23,7 @@ import CalificaArrendatario from './CalificaArrendatario';
 import MapComponent from './MapComponent';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsAndConditions from './TermsAndConditions';
-
-
+import CorreoObtencion from './CorreoObtencion';
 
 function App() {
   return (
@@ -54,6 +53,8 @@ function App() {
         <Route path="/mapcomponent" element={<MapComponent/>} />
         <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
         <Route path="/termsandconditions" element={<TermsAndConditions/>} />
+        <Route path="/correoobtencion" element={<CorreoObtencion/>} />
+
       </Routes>
     </BrowserRouter>
   );

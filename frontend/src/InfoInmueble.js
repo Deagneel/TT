@@ -58,7 +58,7 @@ function Navbar({ handleSearchTerm }) {
                       <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendatario')}>Perfil</button>
                   </li>
                   <li className="nav-item">
-                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/chat', 'Clic en el sobre')}>Chats</button>
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/correoobtencion', 'Clic en el sobre')}>Chats</button>
                   </li>
                   <li className="nav-item">
                       <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
@@ -99,7 +99,7 @@ function InfoInmueble() {
       .then(async (response) => {
         console.log('Petición completada con éxito:', response);
         await swal('Chat Creado');
-        await navigate('/chat');
+        await navigate('/correoobtencion');
       })
       .catch((error) => {
         console.error('Error al obtener datos del inmueble', error);

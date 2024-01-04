@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Validation from './LoginValidation';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import swal from 'sweetalert';
 
 function Login() {
   const [values, setValues] = useState({
@@ -37,6 +38,31 @@ function Login() {
             if (data.Login) {
               if(response.data.tipo_de_usuario === 0) {
                 navigate('/homearrendador');
+                try {
+                  // Realizar la llamada al endpoint tratopendiente
+                  const responseTrato = await axios.get('http://localhost:3031/tratopendiente');
+                  
+                  // Si la respuesta es OK, mostrar SweetAlert
+                  if (responseTrato.data === 'OK') {
+                    const willReview = await swal({
+                      title: "Tratos Pendientes",
+                      text: "Tienes tratos pendientes por revisar.",
+                      icon: "info",
+                      buttons: {
+                        cancel: "Revisar más tarde",
+                        confirm: "Revisar Tratos"
+                      },
+                      dangerMode: false,
+                    });
+            
+                    // Si el usuario hace clic en "Revisar Tratos"
+                    if (willReview) {
+                      navigate('/homearrendador'); 
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error al verificar tratos pendientes:', error);
+                }
               } else if (response.data.tipo_de_usuario === 1) {
                 navigate('/homearrendatario');
               } else if (response.data.tipo_de_usuario === 2) {

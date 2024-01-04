@@ -71,7 +71,7 @@ function Navbar({ handleSearchTerm }) {
             <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/perfilarrendatario')}>
               Perfil
             </button>
-            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/chat', 'Clic en el sobre')}>
+            <button type="button" className="nav-link btn btn-link w-200" onClick={() => handleClick('/correoobtencion', 'Clic en el sobre')}>
               Chats
             </button>
             <button type="button" className="nav-link btn btn-link w-200" onClick={handleLogoutClick}>

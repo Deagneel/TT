@@ -80,27 +80,46 @@ const handleKeyPress = (e) => {
     setValues((prev) => ({ ...prev, intento_envio: true, boton_deshabilitado: true }));
     const err = Validation(values);
     setErrors(err);
-
-    // Validar la longitud mínima de título.
+    /*
+    // Validar la longitud mínima del nombre.
     if (values.nombre.trim().length < 3) {
       swal("Error", "Ingresa un nombre válido.", "error");
       setValues(prev => ({ ...prev, boton_deshabilitado: false }));
       return;
     }
 
-    // Validar la longitud mínima de título.
+    // Validar la longitud mínima del primer apellido.
     if (values.primer_apellido.trim().length < 3) {
       swal("Error", "Ingresa un primer apellido válido.", "error");
       setValues(prev => ({ ...prev, boton_deshabilitado: false }));
       return;
     }
 
-    // Validar la longitud mínima de título.
+    // Validar la longitud mínima del segundo apellido.
     if (values.segundo_apellido.trim().length < 3) {
       swal("Error", "Ingresa un segundo apellido válido.", "error");
       setValues(prev => ({ ...prev, boton_deshabilitado: false }));
       return;
     }
+
+    // Validar que nombre no tenga tres caracteres idénticos seguidos.
+    if (/(\w)\1{2}/.test(values.nombre)) {
+      swal("Error", "Ingresa un nombre valido, por favor.", "error");
+      return;
+    }
+
+    // Validar que primer apellido no tenga tres caracteres idénticos seguidos.
+    if (/(\w)\1{2}/.test(values.primer_apellido)) {
+      swal("Error", "Ingresa un primer apellido valido, por favor.", "error");
+      return;
+    }
+
+    // Validar que segundo apellido no tenga tres caracteres idénticos seguidos.
+    if (/(\w)\1{2}/.test(values.segundo_apellido)) {
+      swal("Error", "Ingresa un nombre valido, por favor.", "error");
+      return;
+    }
+    */
   
     try {
       if (

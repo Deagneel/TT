@@ -175,8 +175,7 @@ function PageContent() {
         // Puedes hacer algo con la respuesta si es necesario
         console.log('Petición completada con éxito:', response);
 
-        // Navega a '/chat' solo si la petición se completa correctamente
-        await navigate('/chat');
+        await navigate('/correoobtencion');
       })
       .catch((error) => {
         console.error('Error al obtener datos del inmueble', error);
