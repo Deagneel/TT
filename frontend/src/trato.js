@@ -80,11 +80,11 @@ function Trato() {
               id_inmueble,
             });
 
-          swal("Has aceptado el trato.", {
+          swal("Has aceptado el trato, has recibidó la documentación del usuario interesado en tu correo.", {
             icon: "success",
           });
 
-          navigate('/home');
+          window.history.back();
           
         } else {
           swal("Operación Cancelada");

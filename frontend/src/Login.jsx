@@ -57,7 +57,7 @@ function Login() {
             
                     // Si el usuario hace clic en "Revisar Tratos"
                     if (willReview) {
-                      navigate('/homearrendador'); 
+                      navigate('/rentados'); 
                     }
                   }
                 } catch (error) {

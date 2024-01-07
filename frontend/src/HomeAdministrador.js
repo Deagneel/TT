@@ -82,19 +82,21 @@ function Navbar() {
       </div>
     </nav>
   );
-  
-  
 }
+
 
 function ReportesSection() {
   const navigate = useNavigate();
   const [reportes, setReportes] = useState([]);
+  const [filtro, setFiltro] = useState(0);
+  const [searchParam, setSearchParam] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [paginaActual, setPaginaActual] = useState(1);
+  const reportesPorPagina = 6;
 
   useEffect(() => {
-    // Realizar la petición para obtener los reportes de la base de datos
     axios.get('http://localhost:3031/obtenerReportes')
       .then(response => {
-        // Establecer los reportes en el estado
         setReportes(response.data);
       })
       .catch(error => {
@@ -106,33 +108,98 @@ function ReportesSection() {
     navigate(`/administrarincidencia/${reporteId}`);
   };
 
+  const filtrarReportes = (estado) => {
+    setFiltro(estado);
+  };
+  
+  const handleSearch = () => {
+    setBusqueda(searchParam); // Actualiza el estado de búsqueda cuando se presiona el botón
+  };
+
+  const reportesFiltrados = reportes
+  .filter(reporte => filtro === null || reporte.estado === filtro)
+  .filter(reporte => busqueda === '' || reporte.id_reporte.toString().includes(busqueda));
+
+  const numeroDePaginas = Math.ceil(reportesFiltrados.length / reportesPorPagina);
+
+  // Obtiene los reportes para la página actual
+  const indiceDelUltimoReporte = paginaActual * reportesPorPagina;
+  const indiceDelPrimerReporte = indiceDelUltimoReporte - reportesPorPagina;
+  const reportesActuales = reportesFiltrados.slice(indiceDelPrimerReporte, indiceDelUltimoReporte);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
+
+
   return (
     <div className="container-fluid" style={{ backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
-      <h2>Reportes</h2>
+      <div className="row mb-3">
+        <h2>Reportes</h2>
+        <div className="col-9">
+          <input 
+            type="text" 
+            className="form-control" 
+            placeholder="Buscar..." 
+            value={searchParam}
+            onChange={(e) => setSearchParam(e.target.value)}
+          />
+        </div>
+        <div className="col-3">
+          <button 
+            className="btn btn-outline-secondary" 
+            type="button" 
+            onClick={handleSearch}
+          >
+            <i className="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <div className="row mb-3">
+        <button className={`col-md-3 col-12 btn btn-danger ${filtro === 0 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(0)}>Pendientes</button>
+        <button className={`col-md-3 col-12 btn btn-warning ${filtro === 1 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(1)}>En revisión</button>
+        <button className={`col-md-3 col-12 btn btn-success ${filtro === 2 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(2)}>Resuelto</button>
+        <button className={`col-md-3 col-12 btn btn-secondary ${filtro === 3 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(3)}>Cerrado</button>
+      </div>
       <div className="row">
-        {reportes.map(reporte => (
-            <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
-              <div className="card h-100" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px' }}>
-                {/* Contenido del reporte */}
-                <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
-                <span className='subtitles-general'>{reporte.asunto}</span>
-                <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
-                <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-                  Gestionar Incidencia
-                </button>
-              </div>
+        {reportesActuales.map(reporte => (
+          <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
+            <div className="card h-100" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px' }}>
+              <span className='subtitles-general'>Folio del reporte: {reporte.id_reporte}&nbsp;&nbsp;</span>
+              <span className='subtitles-general'>{reporte.asunto}</span>
+              <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
+              <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
+                Gestionar Incidencia
+              </button>
             </div>
-          ))}
+          </div>
+        ))}
+      </div>
+      <div className="pagination">
+        {[...Array(numeroDePaginas).keys()].map(numero => (
+          <button 
+            key={numero + 1} 
+            onClick={() => cambiarPagina(numero + 1)}
+            className={`page-item ${paginaActual === numero + 1 ? 'active' : ''}`}
+          >
+            {numero + 1}
+          </button>
+        ))}
       </div>
     </div>
   );
 }
+
 
 // UsuariosSection
 function UsuariosSection() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState('');
   const [userReports, setUserReports] = useState([]);
+  const [filtro, setFiltro] = useState(0);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const reportesPorPagina = 6;
 
   const handleSearch = () => {
     // Realizar la petición al servidor con el ID del reporte
@@ -148,6 +215,12 @@ function UsuariosSection() {
   const handleGestionarIncidencia = (reporteId) => {
     navigate(`/administrarincidencia/${reporteId}`);
   };
+
+  const filtrarReportes = (estado) => {
+    setFiltro(estado);
+  };
+
+  const reportesFiltrados = userReports.filter(reporte => reporte.estado === filtro);
 
   const handleInteresClick = async (idInmueble) => {
     try {
@@ -196,6 +269,17 @@ function UsuariosSection() {
     }
   };
 
+  const numeroDePaginas = Math.ceil(reportesFiltrados.length / reportesPorPagina);
+
+  // Obtiene los reportes para la página actual
+  const indiceDelUltimoReporte = paginaActual * reportesPorPagina;
+  const indiceDelPrimerReporte = indiceDelUltimoReporte - reportesPorPagina;
+  const reportesActuales = reportesFiltrados.slice(indiceDelPrimerReporte, indiceDelUltimoReporte);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
+
   return (
     <div className="container-fluid" style={{ flex: 1, backgroundColor: '#F9F9F9', padding: '20px', textAlign: 'center' }}>
       <h2>Usuarios</h2>
@@ -210,9 +294,18 @@ function UsuariosSection() {
           </button>
         </div>
       </div>
+      
+      <div className="row mb-3">
+        {/* Botones de filtro aquí */}
+        <button className={`col-3 btn btn-danger ${filtro === 0 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(0)}>Pendientes</button>
+        <button className={`col-3 btn btn-warning ${filtro === 1 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(1)}>En revisión</button>
+        <button className={`col-3 btn btn-success ${filtro === 2 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(2)}>Resuelto</button>
+        <button className={`col-3 btn btn-secondary ${filtro === 3 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(3)}>Cerrado</button>
+      </div>
+
       {/* Listado de reportes asociados al usuario */}
       <div className="row">
-        {userReports.map(reporte => (
+        {reportesActuales.map(reporte => (
             <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
               <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
                 {/* Contenido del usuario */}
@@ -235,6 +328,17 @@ function UsuariosSection() {
             </div>
           ))}
       </div>
+      <div className="pagination">
+        {[...Array(numeroDePaginas).keys()].map(numero => (
+          <button 
+            key={numero + 1} 
+            onClick={() => cambiarPagina(numero + 1)}
+            className={`page-item ${paginaActual === numero + 1 ? 'active' : ''}`}
+          >
+            {numero + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -244,6 +348,15 @@ function InmueblesSection() {
   const navigate = useNavigate();
   const [searchParam, setSearchParam] = useState('');
   const [userReports, setUserReports] = useState([]);
+  const [filtro, setFiltro] = useState(0);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const reportesPorPagina = 6;
+
+  const filtrarReportes = (estado) => {
+    setFiltro(estado);
+  };
+
+  const reportesFiltrados = userReports.filter(reporte => reporte.estado === filtro);
 
   const handleSearch = () => {
     // Realizar la petición al servidor con el parámetro de búsqueda
@@ -295,6 +408,16 @@ function InmueblesSection() {
     }
   };
 
+  const numeroDePaginas = Math.ceil(reportesFiltrados.length / reportesPorPagina);
+
+  // Obtiene los reportes para la página actual
+  const indiceDelUltimoReporte = paginaActual * reportesPorPagina;
+  const indiceDelPrimerReporte = indiceDelUltimoReporte - reportesPorPagina;
+  const reportesActuales = reportesFiltrados.slice(indiceDelPrimerReporte, indiceDelUltimoReporte);
+
+  const cambiarPagina = (numeroPagina) => {
+    setPaginaActual(numeroPagina);
+  };
 
   return (
     <div className="container-fluid" style={{ flex: 1, backgroundColor: '#EFEFEF', padding: '20px', textAlign: 'center' }}>
@@ -320,8 +443,17 @@ function InmueblesSection() {
           </button>
         </div>
       </div>
+
+      <div className="row mb-3">
+        {/* Botones de filtro aquí */}
+        <button className={`col-3 btn btn-danger ${filtro === 0 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(0)}>Pendientes</button>
+        <button className={`col-3 btn btn-warning ${filtro === 1 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(1)}>En revisión</button>
+        <button className={`col-3 btn btn-success ${filtro === 2 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(2)}>Resuelto</button>
+        <button className={`col-3 btn btn-secondary ${filtro === 3 ? 'active-btn' : ''}`} onClick={() => filtrarReportes(3)}>Cerrado</button>
+      </div>
+
       <div className="row">
-      {userReports.map(reporte => (
+      {reportesActuales.map(reporte => (
           <div key={reporte.id_reporte} className="col-lg-4 col-md-6 mb-4">
             <div className="card" style={{ backgroundColor: '#D8BFD8', padding: '10px', margin: '10px', position: 'relative' }}>
               {/* Contenido del inmueble */}
@@ -347,6 +479,17 @@ function InmueblesSection() {
           </div>
         ))}
         </div>
+        <div className="pagination">
+        {[...Array(numeroDePaginas).keys()].map(numero => (
+          <button 
+            key={numero + 1} 
+            onClick={() => cambiarPagina(numero + 1)}
+            className={`page-item ${paginaActual === numero + 1 ? 'active' : ''}`}
+          >
+            {numero + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

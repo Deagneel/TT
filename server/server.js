@@ -60,24 +60,24 @@ const db = mysql.createConnection({
 */
 
 //DB Local Gsus
-/*
+
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "sistemarentas"
 });
-*/
+
 
 //DB Local atr
-
+/*
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "tt-db"
 });
-
+*/
 db.connect((err) => {
     if (err) {
         console.error('Error al conectar a la base de datos:', err);
@@ -370,6 +370,28 @@ app.get('/inmuebles', (req, res) => {
       }
     });
   });
+
+  app.get('/inmueblesRenta', (req, res) => {
+    const id_usuario = req.session.user.id;
+
+  // Consulta SQL que involucra una unión entre las tablas inmueble, rentados y usuario
+  const sql = `
+    SELECT i.*, u.nombre, u.primer_apellido, u.segundo_apellido FROM inmueble i
+    INNER JOIN rentados r ON i.id_inmueble = r.id_inmueble
+    INNER JOIN usuario u ON r.id_usuario = u.id_usuario
+    WHERE i.id_usuario = ? AND r.estado = 1
+  `;
+
+  db.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de la tabla inmueble:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
+  });
+});
+  
 
   // Ruta para obtener información de un inmueble por ID
 app.get('/infoinmuebles/:id_inmueble', (req, res) => {
@@ -778,34 +800,38 @@ app.get('/inmueblearrendatario', (req, res) => {
   });
   
 
-
-
-
-  app.put('/resolverReporte/:id_reporte/:id_usuario', (req, res) => {
-    const { id_reporte, id_usuario } = req.params;
+  app.put('/actualizarEstadoReporte/:id_reporte', (req, res) => {
+    const { id_reporte } = req.params;
+    const { estado } = req.body;
   
-    // Decrementar en 1 la columna no_reportes en la tabla usuario
-    const sqlDecrement = 'UPDATE usuario SET no_reportes = no_reportes - 1 WHERE id_usuario = ?';
+    const sql = 'UPDATE reporte SET estado = ? WHERE id_reporte = ?';
   
-    // Eliminar la fila asociada al reporte en la tabla reporte
-    const sqlDelete = 'DELETE FROM reporte WHERE id_reporte = ?';
-  
-    db.query(sqlDecrement, [id_usuario], (err, resultDecrement) => {
+    db.query(sql, [estado, id_reporte], (err, result) => {
       if (err) {
-        console.error('Error al decrementar el contador de reportes del usuario:', err);
+        console.error('Error al actualizar el estado del reporte:', err);
         res.status(500).json({ error: 'Error interno del servidor' });
       } else {
-        db.query(sqlDelete, [id_reporte], (err, resultDelete) => {
-          if (err) {
-            console.error('Error al eliminar el reporte:', err);
-            res.status(500).json({ error: 'Error interno del servidor' });
-          } else {
-            res.json({ message: 'Reporte resuelto y eliminado correctamente' });
-          }
-        });
+        res.json({ mensaje: 'Estado del reporte actualizado correctamente' });
       }
     });
   });
+  
+
+  app.put('/incrementarReportesUsuario/:id_usuario', (req, res) => {
+    const { id_usuario } = req.params;
+  
+    const sql = 'UPDATE usuario SET no_reportes = no_reportes + 1 WHERE id_usuario = ?';
+  
+    db.query(sql, [id_usuario], (err, result) => {
+      if (err) {
+        console.error('Error al incrementar el número de reportes del usuario:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ mensaje: 'Número de reportes del usuario incrementado correctamente' });
+      }
+    });
+  });
+  
   
 
 app.put('/pausarInmueble/:id_inmueble', (req, res) => {
@@ -856,7 +882,7 @@ app.put('/pausarInmueble/:id_inmueble', (req, res) => {
 
             // Incrementar el contador de reportes
             const currentNoReportes = rows[0].no_reportes;
-            const newNoReportes = currentNoReportes + 1;
+            const newNoReportes = currentNoReportes ;
 
             // Actualizar el número de reportes para el usuario correspondiente
             db.query(sqlUpdate, [newNoReportes, req.body.id_usuario], (err, result) => {
@@ -895,7 +921,7 @@ app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
     SELECT r.*, u.nombre AS nombre_usuario, u.primer_apellido AS p_apellido, u.segundo_apellido AS s_apellido, u.no_reportes AS asociados
     FROM reporte r 
     INNER JOIN usuario u ON r.id_usuario = u.id_usuario 
-    WHERE r.id_usuario = ? OR u.nombre LIKE ?
+    WHERE r.id_usuario = ?
   `;
 
   const searchParam = `%${parametroBusqueda}%`; // Para buscar coincidencias parciales del nombre
@@ -918,7 +944,7 @@ app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
     SELECT r.*, u.titulo AS nombre_inmueble, u.activo AS inmueble_activo
     FROM reporte r 
     INNER JOIN inmueble u ON r.id_inmueble = u.id_inmueble
-    WHERE r.id_inmueble = ? OR u.titulo LIKE ?
+    WHERE r.id_inmueble = ?
   `;
 
   const searchParam = `%${parametroBusqueda}%`; // Para buscar coincidencias parciales del nombre
@@ -1068,7 +1094,7 @@ app.post('/recuperar-contrasena', (req, res) => {
 
   //Correo para los tratos
   // Función para enviar correo con información al arrendador
-const enviarCorreoArrendador = async (correoArrendador, link, tituloinmu) => {
+const enviarCorreoArrendador = async (correoArrendador, tituloinmu) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -1081,7 +1107,7 @@ const enviarCorreoArrendador = async (correoArrendador, link, tituloinmu) => {
     from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
     to: correoArrendador, // Cambiar al correo del arrendador
     subject: 'Solicitud de trato en inmueble',
-    html: `<p>Ha recibido una solicitud para concretar un trato en el inmueble "${tituloinmu}". <br/> Revisa los detalles <a href="${link}">aquí</a>.</p>`,
+    html: `<p>Ha recibido una solicitud para concretar un trato en el inmueble "${tituloinmu}".</p>`,
   };
 
   try {
@@ -1098,11 +1124,8 @@ app.post('/enviarCorreoArrendador', (req, res) => {
     const { idUsuario, idInmueble, correoUsuario, tituloinmu } = req.body;
     const idSesion = req.session.user.id; // Aquí obtén el ID de sesión desde la sesión del usuario
 
-    
-    const link = `http://localhost:3000/trato/${idUsuario}/${idInmueble}/${idSesion}`; // Reemplaza con tu URL real
-
     // Llamar a la función para enviar el correo al arrendador con el correo y el enlace generado
-    enviarCorreoArrendador(correoUsuario, link, tituloinmu)
+    enviarCorreoArrendador(correoUsuario, tituloinmu)
       .then(() => {
         res.json({ message: 'Correo enviado al arrendador' });
       })
@@ -1871,3 +1894,25 @@ app.get('/obtenerDatosUsuario/:idUsuario', (req, res) => {
       }
   });
 });
+
+app.get('/solicitudesPendientes', (req, res) => {
+  const id_usuario = req.session.user.id;
+
+  const sql = `
+    SELECT i.*, r.id_usuario as idSolicitante, r.id_inmueble, u.nombre, u.primer_apellido, u.segundo_apellido 
+    FROM inmueble i
+    LEFT JOIN rentados r ON i.id_inmueble = r.id_inmueble AND r.estado = 0
+    LEFT JOIN usuario u ON r.id_usuario = u.id_usuario
+    WHERE i.id_usuario = ? AND r.id_inmueble IS NOT NULL
+  `;
+
+  db.query(sql, [id_usuario], (err, result) => {
+    if (err) {
+      console.error('Error al obtener solicitudes pendientes:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(result);
+    }
+  });
+});
+

@@ -53,6 +53,13 @@ function PageContent() {
   const [userNoReports, setUserNoReports] = useState(0);
   const [reporte, setReporte] = useState(null);
   const { id_reporte } = useParams();
+  const estadosReporte = {
+    0: "Pendiente",
+    1: "En revisión",
+    2: "Resuelto",
+    3: "Cerrado"
+  };
+
   
 
   useEffect(() => {
@@ -123,31 +130,6 @@ function PageContent() {
     return <p>El reporte no se ha encontrado.</p>;
   }
 
-  const handleresultoClick = async (idUsuario) => {
-    try {
-      const willResolve = await swal({
-        title: "¿Estás seguro?",
-        text: "Una vez resuelto, este reporte se eliminará.",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      });
-  
-      if (willResolve) {
-        await axios.put(`http://localhost:3031/resolverReporte/${id_reporte}/${idUsuario}`);
-        swal("Gracias por resolver la incidencia.", " ", "success");
-        navigate('/homeadministrador');
-      } else {
-        swal("Operación Cancelada");
-      }
-    } catch (error) {
-      console.error('Error al resolver el reporte:', error);
-    }
-  };
-  
-
-
-
   const handlePausa = async () => {
     try {
       const estadoActivo = reporte.inmueble.activo; // Almacena el valor en una variable auxiliar
@@ -165,8 +147,77 @@ function PageContent() {
       console.error('Error al cambiar el estado de la publicación del inmueble:', error);
     }
   };
+
+  const handleRevision = async (idReporte) => {
+    try {
+      const willResolve = await swal({
+        title: "¿Estás seguro de comenzar la revisión?",
+        text: "Una vez iniciado será marcado como en revisión.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
   
+      if (willResolve) {
+        await axios.put(`http://localhost:3031/actualizarEstadoReporte/${idReporte}`, { estado: 1 });
+        swal("Se cambió el estado del reporte.", " ", "success");
+        navigate('/homeadministrador');
+      } else {
+        swal("Operación Cancelada");
+      }
+    } catch (error) {
+      console.error('Error al cambiar el estado:', error);
+    }
+  };
   
+  const handleSolucionado = async (idReporte) => {
+    try {
+      const willResolve = await swal({
+        title: "¿Estás seguro de resolver el reporte?",
+        text: "Una vez resuelto no se podrá cambiar.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+  
+      if (willResolve) {
+        await axios.put(`http://localhost:3031/actualizarEstadoReporte/${idReporte}`, { estado: 2 });
+        swal("Se cambió el estado del reporte.", " ", "success");
+        navigate('/homeadministrador');
+      } else {
+        swal("Operación Cancelada");
+      }
+    } catch (error) {
+      console.error('Error al cambiar el estado:', error);
+    }
+  };
+  
+  const handleCerrar = async (idReporte) => {
+    try {
+      const willResolve = await swal({
+        title: "¿Estás seguro de cerrar el reporte?",
+        text: "Una vez cerrado no se podrá cambiar.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      });
+  
+      if (willResolve) {
+        // Actualizar el estado del reporte
+        await axios.put(`http://localhost:3031/actualizarEstadoReporte/${idReporte}`, { estado: 3 });
+  
+        // Incrementar el conteo de reportes del usuario
+        await axios.put(`http://localhost:3031/incrementarReportesUsuario/${reporte.id_usuario}`);
+  
+        swal("Se cambió el estado del reporte.", " ", "success");
+        navigate('/homeadministrador');
+      } else {
+        swal("Operación Cancelada");
+      }
+    } catch (error) {
+      console.error('Error al cambiar el estado:', error);
+    }
+  };
   
   
   const handleContactar = async () => {
@@ -187,19 +238,26 @@ function PageContent() {
     <div className="row justify-content-center">
       <div className="col-lg-8 col-md-10 col-sm-12">
         <div className="bg-light p-4 rounded mt-5 shadow">
-          <h3>Folio del reporte: {reporte.id_reporte}</h3>
+          <div className="row">
+              <div className="col">
+                <h3>Folio del reporte: {reporte.id_reporte}</h3>
+              </div>
+              <div className="col text-end">
+                <p className="mb-0">Cantidad de reportes aociados: {userNoReports}</p>
+              </div>
+            </div>
           <p>Asunto: {reporte.asunto}</p>
           <div className="bg-secondary text-light p-3 rounded mb-3">
             <p>{reporte.descripción}</p>
-            <p>Fecha del reporte: {reporte.fecha}</p>
+            <p>Fecha del reporte: {reporte.fecha.split('T')[0]}</p>
           </div>
           <div>
               {reporte.usuario && reporte.usuario.nombre && reporte.usuario.primer_apellido && reporte.usuario.segundo_apellido &&
                 <p>Usuario reportado: {reporte.usuario.nombre} {reporte.usuario.primer_apellido} {reporte.usuario.segundo_apellido}</p>
               }
-            <p>ID del usuario: {reporte.id_usuario} Reportes asociados al usuario: {userNoReports}</p>
+            <p>ID del usuario: {reporte.id_usuario}</p>
           </div>
-          {reporte.inmueble !== 'Inmueble no encontrado' && reporte.inmueble && (
+          {reporte.id_inmueble !== 21 && reporte.inmueble && (
             <div>
               <p>Inmueble reportado: {reporte.inmueble.titulo}</p>
               <p>ID del inmueble: {reporte.id_inmueble}</p>
@@ -214,13 +272,32 @@ function PageContent() {
                 className="btn btn-secondary me-3"
                 onClick={handlePausa}
               >
-                {reporte.inmueble.activo === 1 ? "Pausar Publicación de Inmueble" : "Activar Publicación de Inmueble"}
+                {reporte.inmueble.activo === 1 ? "Pausar Publicación" : "Activar Publicación"}
               </button>
             )}
-            <button className="btn btn-secondary" onClick={() => handleresultoClick(reporte.id_usuario)}>
-              Incidencia resuelta
-            </button>
           </div>
+          <div className="d-flex mt-4">
+            <h5>Estado del reporte: {estadosReporte[reporte.estado]}</h5>
+          </div>
+          <div className="card-footer">
+              {reporte.estado === 0 && (
+                <div className="d-flex justify-content-around">
+                  <button className="btn btn-warning" onClick={() => handleRevision(reporte.id_reporte)}>
+                    En revisión
+                  </button>
+                </div>
+              )}
+              {reporte.estado === 1 && (
+                <div className="d-flex justify-content-around">
+                  <button className="btn btn-success" onClick={() => handleSolucionado(reporte.id_reporte)}>
+                    Resuelto
+                  </button>
+                  <button className="btn btn-danger" onClick={() => handleCerrar(reporte.id_reporte)}>
+                    Cerrar
+                  </button>
+                </div>
+              )}
+            </div>
         </div>
       </div>
     </div>

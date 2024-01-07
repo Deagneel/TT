@@ -24,6 +24,7 @@ import MapComponent from './MapComponent';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsAndConditions from './TermsAndConditions';
 import CorreoObtencion from './CorreoObtencion';
+import Rentados from './Rentados';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
         <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
         <Route path="/termsandconditions" element={<TermsAndConditions/>} />
         <Route path="/correoobtencion" element={<CorreoObtencion/>} />
+        <Route path="/rentados" element={<Rentados/>} />
 
       </Routes>
     </BrowserRouter>

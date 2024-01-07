@@ -35,6 +35,10 @@ function ArrendadorNavbar() {
   const handleChats = async () => {
         navigate('/correoobtencion');
   };
+
+  const handleRentados = async () => {
+    navigate('/rentados');
+};
   
 
   const handleLogoutClick = () => {
@@ -84,6 +88,11 @@ function ArrendadorNavbar() {
           <li className="nav-item">
               <a className="nav-link btn btn-link w-100" onClick={handleChats}>
               Chats
+            </a>
+          </li>
+          <li className="nav-item">
+              <a className="nav-link btn btn-link w-100" onClick={handleRentados}>
+              Mis inmuebles rentados
             </a>
           </li>
           <li className="nav-item">

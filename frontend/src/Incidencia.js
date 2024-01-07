@@ -71,9 +71,11 @@ function Incidencia({}) {
       }
   
       const response = await axios.post('http://localhost:3031/generarReporte', requestData);
+
       window.history.back(); 
 
       swal("Reporte realizado con éxito", " ", "success");
+      
       if (response.data.error) {
         console.log('Error al subir reporte:', response.data.error);
         return;
