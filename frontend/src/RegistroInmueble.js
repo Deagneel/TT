@@ -406,7 +406,7 @@ function RegistroInmueble() {
           <p>Todos los campos son obligatorios.</p> {/* Mensaje de instrucción */}
           {/* Título del anuncio */}
           <div className="mb-3 form-group">
-            <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}
+            <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresar título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}
             <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Ingresa el título del anuncio..." />
           </div>
 
@@ -461,7 +461,7 @@ function RegistroInmueble() {
 
           {/* Tipo de vivienda */}
           <div className="mb-3 form-group">
-            <label htmlFor="Tvivienda" style={{ fontWeight: 'bold', fontSize: '18px' }}>Tipo de vivienda<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor="Tvivienda" style={{ fontWeight: 'bold', fontSize: '18px' }}>¿Qué tipo de vivienda es?<span style={{ color: 'red' }}>*</span></label>
             <select className="form-control" id="Tvivienda" name="Tvivienda" value={formData.Tvivienda} onChange={handleChange}>
               <option value="">Selecciona un tipo de vivienda</option>
               <option value="0">Individual</option>
@@ -472,11 +472,11 @@ function RegistroInmueble() {
           {/* Precio y Periodo */}
           <div className="mb-3 form-row">
             <div className="mb-3 col">
-              <label htmlFor="price" style={{ fontWeight: 'bold', fontSize: '18px' }}>Precio<span style={{ color: 'red' }}>*</span></label>
+              <label htmlFor="price" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el precio<span style={{ color: 'red' }}>*</span></label>
               <input type="text" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} placeholder="Ingrese el precio" />
             </div>
             <div className="mb-3 col">
-              <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>Periodo de renta<span style={{ color: 'red' }}>*</span></label>
+              <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>¿Cuál es el periodo de la renta?<span style={{ color: 'red' }}>*</span></label>
               <select className="form-control" id="period" name="period" value={formData.period} onChange={handleChange} >
                 <option value="Mensual">Mensual</option>
                 <option value="Cuatrimestral">Cuatrimestral</option>
@@ -488,25 +488,25 @@ function RegistroInmueble() {
 
           {/* Número de habitaciones */}
           <div className="mb-3 form-group">
-            <label htmlFor="numRooms" style={{ fontWeight: 'bold', fontSize: '18px' }}>Número de habitaciones<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor="numRooms" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el número de habitaciones<span style={{ color: 'red' }}>*</span></label>
             <input type="text" className="form-control" id="numRooms" name="numRooms" value={formData.numRooms} onChange={handleChange} placeholder="..." />
           </div>
 
           {/* Reglamento */}
           <div className="mb-3 form-group">
-            <label htmlFor="regulations" style={{ fontWeight: 'bold', fontSize: '18px' }}>Reglamento<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor="regulations" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el reglamento interno del inmueble<span style={{ color: 'red' }}>*</span></label>
             <textarea className="form-control" id="regulations" name="regulations" value={formData.regulations} onChange={handleChange} placeholder="Ingrese el reglamento"></textarea>
           </div>
 
           {/* Caracteristicas */}
           <div className="mb-3 form-group">
-            <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Características<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa características adicionales del inmueble<span style={{ color: 'red' }}>*</span></label>
             <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características destacables del Inmueble"></textarea>
           </div>
 
           {/* Carga de imagen */}
           <div className="mb-3 form-group">
-            <label htmlFor="imageUpload" style={{ fontWeight: 'bold', fontSize: '18px' }}>Imagen<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor="imageUpload" style={{ fontWeight: 'bold', fontSize: '18px' }}>Sube la foto de tu inmueble<span style={{ color: 'red' }}>*</span></label>
             <input type="file" className="form-control-file" id="imageUpload" onChange={handleFile} />
           </div>
 

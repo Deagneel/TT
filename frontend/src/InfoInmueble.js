@@ -93,7 +93,18 @@ function InfoInmueble() {
       // Si perfil_completado es 0, muestra un mensaje y no ejecuta el código
       await swal('Primero debes completar la documentación de tu perfil');
     } else {
-      // Si perfil_completado no es 0, continúa con la lógica actual
+
+      const willDoTrato = await swal({
+        title: "¿Quieres iniciar un chat con el arrendador?",
+        text: "Se creará un chat con el propietario del inmueble.",
+        icon: "info",
+        buttons: true,
+        dangerMode: false,
+      });
+
+      // Si el usuario confirma
+      if (willDoTrato) {
+        // Si perfil_completado no es 0, continúa con la lógica actual
       console.log('Clic en el sobre');
       axios.post(`http://localhost:3031/newchat/${idInmueble}`)
       .then(async (response) => {
@@ -104,7 +115,10 @@ function InfoInmueble() {
       .catch((error) => {
         console.error('Error al obtener datos del inmueble', error);
       });
-
+      } else {
+        // Mostrar SweetAlert2 de cancelación
+        swal("Operación Cancelada");
+      }
     }
   } catch (error) {
     console.error('Error al obtener datos del inmueble', error);
