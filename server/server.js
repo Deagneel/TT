@@ -11,41 +11,40 @@ import nodemailer from 'nodemailer';
 import axios from 'axios';
 import XLSX from 'xlsx';
 
-
 const salt = 10;
 const app = express();
 
 app.use(express.static('public'));
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/images')
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
-    }
+  destination: (req, file, cb) => {
+    cb(null, 'public/images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
+  }
 })
 
-const upload = multer ({
-    storage: storage 
+const upload = multer({
+  storage: storage
 })
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["POST", "GET", "PUT", "DELETE"],
-    credentials: true
+  origin: ["http://localhost:3000"],
+  methods: ["POST", "GET", "PUT", "DELETE"],
+  credentials: true
 }))
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(session({
-    secret: 'secret', //llave secreta para cifrar la cookie de la sesión
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: false,
-        maxAge: 100*60*60*24
-    } //propiedades de la cookie
+  secret: 'secret', //llave secreta para cifrar la cookie de la sesión
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 100 * 60 * 60 * 24
+  } //propiedades de la cookie
 
 }))
 
@@ -79,57 +78,57 @@ const db = mysql.createConnection({
 });
 */
 db.connect((err) => {
-    if (err) {
-        console.error('Error al conectar a la base de datos:', err);
-        throw err;
-    }
-    console.log('Conexión a la base de datos establecida');
+  if (err) {
+    console.error('Error al conectar a la base de datos:', err);
+    throw err;
+  }
+  console.log('Conexión a la base de datos establecida');
 });
 
 app.post('/upload', upload.single('image'), (req, res) => {
-    console.log(req.file);
-    res.json({url: req.file.filename});
+  console.log(req.file);
+  res.json({ url: req.file.filename });
 })
 
 app.get('/geocode', async (req, res) => {
   try {
-      const address = req.query.address;
-      const apiKey = 'AIzaSyArrTAZutsOGQ0qEXumdsKfqz6sryLq3bw'; // Reemplaza con tu clave API de Google Maps
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+    const address = req.query.address;
+    const apiKey = 'AIzaSyArrTAZutsOGQ0qEXumdsKfqz6sryLq3bw'; // Reemplaza con tu clave API de Google Maps
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
 
-      const response = await axios.get(url);
-      res.json(response.data);
+    const response = await axios.get(url);
+    res.json(response.data);
   } catch (error) {
-      console.error('Error en el proxy de geocodificación:', error);
-      res.status(500).send('Error en el servidor');
+    console.error('Error en el proxy de geocodificación:', error);
+    res.status(500).send('Error en el servidor');
   }
 });
 
 app.get('/', (req, res) => {
-  if(req.session.user && req.session.user.nombre) {
-      return res.json({valid: true, nombre: req.session.user.correo})
+  if (req.session.user && req.session.user.nombre) {
+    return res.json({ valid: true, nombre: req.session.user.correo })
   } else {
-      return res.json({valid:false})
+    return res.json({ valid: false })
   }
 })
 
 app.get('/perfil', (req, res) => {
-    const id_usuario = req.session.user ? req.session.user.id : null;
+  const id_usuario = req.session.user ? req.session.user.id : null;
 
-    if (id_usuario) {
-        db.query('SELECT id_usuario, nombre, primer_apellido, segundo_apellido, correo FROM usuario WHERE id_usuario = ?', [id_usuario], (err, result) => {
-            if (err) {
-                console.error('Error al obtener datos de la tabla usuario:', err);
-                res.status(500).json({ error: 'Error interno del servidor' });
-            } else {
-                // Verifica si hay al menos un resultado
-                const perfil = result.length > 0 ? result[0] : null;
-                res.json(perfil);
-            }
-        });
-    } else {
-        res.status(401).json({ error: 'No se proporcionó un usuario válido en la sesión.' });
-    }
+  if (id_usuario) {
+    db.query('SELECT id_usuario, nombre, primer_apellido, segundo_apellido, correo FROM usuario WHERE id_usuario = ?', [id_usuario], (err, result) => {
+      if (err) {
+        console.error('Error al obtener datos de la tabla usuario:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        // Verifica si hay al menos un resultado
+        const perfil = result.length > 0 ? result[0] : null;
+        res.json(perfil);
+      }
+    });
+  } else {
+    res.status(401).json({ error: 'No se proporcionó un usuario válido en la sesión.' });
+  }
 });
 
 app.get('/verificarSolicitud', (req, res) => {
@@ -137,34 +136,34 @@ app.get('/verificarSolicitud', (req, res) => {
   const idInmueble = req.query.idInmueble;
 
   if (idUsuario && idInmueble) {
-      db.query('SELECT * FROM rentados WHERE id_usuario = ? AND id_inmueble = ?', [idUsuario, idInmueble], (err, result) => {
-          if (err) {
-              console.error('Error al verificar en la tabla rentados:', err);
-              res.status(500).json({ error: 'Error interno del servidor' });
-          } else {
-              // Verifica si el usuario ya ha hecho una solicitud para el inmueble
-              if (result.length > 0) {
-                  res.json({ solicitudExistente: true });
-              } else {
-                  res.json({ solicitudExistente: false });
-              }
-          }
-      });
+    db.query('SELECT * FROM rentados WHERE id_usuario = ? AND id_inmueble = ?', [idUsuario, idInmueble], (err, result) => {
+      if (err) {
+        console.error('Error al verificar en la tabla rentados:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        // Verifica si el usuario ya ha hecho una solicitud para el inmueble
+        if (result.length > 0) {
+          res.json({ solicitudExistente: true });
+        } else {
+          res.json({ solicitudExistente: false });
+        }
+      }
+    });
   } else {
-      res.status(400).json({ error: 'Faltan datos necesarios para la consulta (idUsuario o idInmueble).' });
+    res.status(400).json({ error: 'Faltan datos necesarios para la consulta (idUsuario o idInmueble).' });
   }
 });
 
-  
+
 
 app.get('/logout', (req, res) => {
   req.session.destroy((err) => {
-      if(err) {
-          // manejar el error
-      } else {
-          res.clearCookie('nombreDeTuCookie');
-          return res.json({Status: "Success"});
-      }
+    if (err) {
+      // manejar el error
+    } else {
+      res.clearCookie('nombreDeTuCookie');
+      return res.json({ Status: "Success" });
+    }
   });
 });
 
@@ -174,40 +173,40 @@ app.post('/signup', (req, res) => {
   const sql = "INSERT INTO usuario (nombre, primer_apellido, segundo_apellido, correo, contrasena, tipo_de_usuario) VALUES (?, ?, ?, ?, ?, ?)";
 
   bcrypt.hash(req.body.contrasena, salt, async (err, hash) => {
+    if (err) {
+      console.log(err);
+      return res.json("Error hashing password");
+    }
+
+    const values = [
+      req.body.nombre,
+      req.body.primer_apellido,
+      req.body.segundo_apellido,
+      req.body.correo,
+      hash,
+      req.body.tipo_de_usuario
+    ];
+
+    // Imprimir la contraseña en la consola (Solo para propósitos de depuración)
+    console.log('Contraseña:', req.body.contrasena);
+
+    db.query(sql, values, async (err, data) => {
       if (err) {
-          console.log(err);
-          return res.json("Error hashing password");
+        console.log(err);
+        return res.json("Error inserting into database");
       }
 
-      const values = [
-          req.body.nombre,
-          req.body.primer_apellido,
-          req.body.segundo_apellido,
-          req.body.correo,
-          hash,
-          req.body.tipo_de_usuario
-      ];
-
-      // Imprimir la contraseña en la consola (Solo para propósitos de depuración)
-      console.log('Contraseña:', req.body.contrasena);
-
-      db.query(sql, values, async (err, data) => {
-          if (err) {
-              console.log(err);
-              return res.json("Error inserting into database");
-          }
-
-          // Imprimir en la consola información relevante incluyendo la contraseña
-          console.log('Nuevo usuario registrado:', {
-              nombre: req.body.nombre,
-              correo: req.body.correo,
-              contrasena: req.body.contrasena,
-              tipo_de_usuario: req.body.tipo_de_usuario,
-              id: data.insertId
-          });
-
-          return res.json(data);
+      // Imprimir en la consola información relevante incluyendo la contraseña
+      console.log('Nuevo usuario registrado:', {
+        nombre: req.body.nombre,
+        correo: req.body.correo,
+        contrasena: req.body.contrasena,
+        tipo_de_usuario: req.body.tipo_de_usuario,
+        id: data.insertId
       });
+
+      return res.json(data);
+    });
   });
 });
 
@@ -219,89 +218,89 @@ app.post('/login', (req, res) => {
   console.log('Correo proporcionado:', req.body.correo);
 
   db.query(sql, [req.body.correo], (err, data) => {
-      if (err) {
-          console.error('Error en la consulta a la base de datos:', err);
-          return res.json("Error");
-      } 
+    if (err) {
+      console.error('Error en la consulta a la base de datos:', err);
+      return res.json("Error");
+    }
 
-      if (data.length > 0) {
-          console.log('Datos de la base de datos:', data);
+    if (data.length > 0) {
+      console.log('Datos de la base de datos:', data);
 
-          // Imprimir las contraseñas antes de la comparación
-          console.log('Contraseña proporcionada en la solicitud:', req.body.contrasena);
-          console.log('Contraseña almacenada en la base de datos:', data[0].contrasena);
+      // Imprimir las contraseñas antes de la comparación
+      console.log('Contraseña proporcionada en la solicitud:', req.body.contrasena);
+      console.log('Contraseña almacenada en la base de datos:', data[0].contrasena);
 
-          bcrypt.compare(req.body.contrasena.toString(), data[0].contrasena, (err, response) => {
-              if (err) {
-                  console.error('Error al comparar contraseñas:', err);
-                  return res.json("Error: Contraseña incorrecta");
-              }
+      bcrypt.compare(req.body.contrasena.toString(), data[0].contrasena, (err, response) => {
+        if (err) {
+          console.error('Error al comparar contraseñas:', err);
+          return res.json("Error: Contraseña incorrecta");
+        }
 
-              console.log('Resultado de la comparación de contraseñas:', response);
+        console.log('Resultado de la comparación de contraseñas:', response);
 
-              if (response) {
-                  req.session.user = {
-                      id: data[0].id_usuario,
-                      nombre: data[0].nombre,
-                      correo: data[0].correo
-                  };
-                  console.log(req.session.user);
-                  return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario});
-              }
-              return res.json({ Login: false });                
-          });
-      } else {
-          console.log('No se encontró ningún usuario con ese correo.');
-          return res.json("Fail: No coincide correo");
-      }
+        if (response) {
+          req.session.user = {
+            id: data[0].id_usuario,
+            nombre: data[0].nombre,
+            correo: data[0].correo
+          };
+          console.log(req.session.user);
+          return res.json({ Login: true, tipo_de_usuario: data[0].tipo_de_usuario });
+        }
+        return res.json({ Login: false });
+      });
+    } else {
+      console.log('No se encontró ningún usuario con ese correo.');
+      return res.json("Fail: No coincide correo");
+    }
   });
 });
 
 // Ruta para manejar la solicitud POST de registro de usuarios
 app.post('/registroinmueble', (req, res) => {
 
-    if (!req.session.user || !req.session.user.id) {
-        return res.status(401).json({ error: 'User not authenticated' });
+  if (!req.session.user || !req.session.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
+
+  const sql = "INSERT INTO inmueble (titulo, direccion, asentamiento, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, caracteristicas, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
+  const values = [
+    req.body.title,
+    req.body.address,
+    req.body.asentamiento,
+    req.body.cp,
+    req.body.alcaldia,
+    req.body.latitud,
+    req.body.longitud,
+    req.body.price,
+    req.body.period,
+    req.body.numRooms,
+    req.body.regulations,
+    req.body.caracteristicas,
+    req.body.images,
+    req.session.user.id,
+    req.body.idEscuela,
+    req.body.Tvivienda,
+    req.body.activo
+  ];
+  console.log(req.session.user.id);
+  db.query(sql, values, (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.json("Error inserting into database");
     }
 
-    const sql = "INSERT INTO inmueble (titulo, direccion, asentamiento, cp, alcaldia, latitud, longitud, precio, periodo_de_renta, no_habitaciones, reglamento, caracteristicas, foto, id_usuario, id_escuela, tipo_de_habitacion, activo) VALUES (?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
-    const values = [
-        req.body.title,
-        req.body.address,
-        req.body.asentamiento,
-        req.body.cp,
-        req.body.alcaldia,
-        req.body.latitud,
-        req.body.longitud,
-        req.body.price,
-        req.body.period,
-        req.body.numRooms,
-        req.body.regulations,
-        req.body.caracteristicas,
-        req.body.images,
-        req.session.user.id,
-        req.body.idEscuela,
-        req.body.Tvivienda,
-        req.body.activo
-    ];
-    console.log(req.session.user.id);
-    db.query(sql, values, (err, data) => {
-        if (err) {
-            console.log(err);
-            return res.json("Error inserting into database");
-        }
-
-        return res.json(data);
-    });
+    return res.json(data);
+  });
 });
 
 // Ruta para obtener datos de la tabla "escuela"
 app.get('/', (req, res) => {
-    const sql = "SELECT * FROM escuela";
-    db.query(sql, (err, result) => {
-        if (err) return res.json({ message: "Error inside server" });
-        return res.json(result);
-    });
+  const sql = "SELECT * FROM escuela";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ message: "Error inside server" });
+    return res.json(result);
+  });
 });
 
 // Ruta para verificar si el usuario tiene tratos pendientes
@@ -332,14 +331,14 @@ app.get('/tratopendiente', (req, res) => {
 
 // Ruta para obtener datos de la tabla "escuela"
 app.get('/obtenerEscuelas', (req, res) => {
-    const sql = "SELECT * FROM escuela"; // Selecciona solo el campo "nombre" de la tabla
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error al obtener datos de escuela:', err);
-            return res.json({ message: "Error al obtener datos de escuela" });
-        }
-        return res.json(result);
-    });
+  const sql = "SELECT * FROM escuela"; // Selecciona solo el campo "nombre" de la tabla
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de escuela:', err);
+      return res.json({ message: "Error al obtener datos de escuela" });
+    }
+    return res.json(result);
+  });
 });
 
 // Ruta para obtener datos de una escuela específica según su ID
@@ -347,11 +346,11 @@ app.get('/escuela/:id_escuela', (req, res) => {
   const id_escuela = req.params.id_escuela;
   const sql = "SELECT * FROM escuela WHERE id_escuela = ?"; // Filtra por el ID de la escuela
   db.query(sql, [id_escuela], (err, result) => {
-      if (err) {
-          console.error('Error al obtener datos de escuela:', err);
-          return res.json({ message: "Error al obtener datos de escuela" });
-      }
-      return res.json(result);
+    if (err) {
+      console.error('Error al obtener datos de escuela:', err);
+      return res.json({ message: "Error al obtener datos de escuela" });
+    }
+    return res.json(result);
   });
 });
 
@@ -393,326 +392,326 @@ app.get('/inmuebles', (req, res) => {
 });
   
 
-  // Ruta para obtener información de un inmueble por ID
+// Ruta para obtener información de un inmueble por ID
 app.get('/infoinmuebles/:id_inmueble', (req, res) => {
-    const id_inmueble = req.params.id_inmueble;
-  
-    // Consulta SQL para obtener la información del inmueble
-    const sql = `SELECT * FROM inmueble WHERE id_inmueble = ?`;
-  
-    db.query(sql, [id_inmueble], (err, result) => {
-      if (err) {
-        console.error('Error al obtener el inmueble:', err);
-        res.status(500).send('Error interno del servidor');
+  const id_inmueble = req.params.id_inmueble;
+
+  // Consulta SQL para obtener la información del inmueble
+  const sql = `SELECT * FROM inmueble WHERE id_inmueble = ?`;
+
+  db.query(sql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al obtener el inmueble:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      if (result.length > 0) {
+        // Si se encuentra el inmueble, envía la información al cliente
+        res.json(result[0]);
       } else {
-        if (result.length > 0) {
-          // Si se encuentra el inmueble, envía la información al cliente
-          res.json(result[0]);
-        } else {
-          // Si no se encuentra el inmueble, devuelve un mensaje de error
-          res.status(404).send('Inmueble no encontrado');
-        }
+        // Si no se encuentra el inmueble, devuelve un mensaje de error
+        res.status(404).send('Inmueble no encontrado');
       }
-    });
+    }
   });
+});
 
-  app.put('/newName/:id', (req, res) => {
-    const userId = req.params.id;
-    const nuevoNombre = req.body.nombre; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nuevoNombre) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
-    }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET nombre = ? WHERE id_usuario = ?';
-    db.query(sql, [nuevoNombre, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar el nombre: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
-    });
-  });
+app.put('/newName/:id', (req, res) => {
+  const userId = req.params.id;
+  const nuevoNombre = req.body.nombre; // Obtén el nombre del cuerpo de la solicitud
 
-  app.put('/newApe/:id', (req, res) => {
-    const userId = req.params.id;
-    const nuevoNombre = req.body.primer_apellido; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nuevoNombre) {
-      return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
-    }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET primer_apellido = ? WHERE id_usuario = ?';
-    db.query(sql, [nuevoNombre, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar el primer apellido: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
-    });
-  });
-  
-  app.put('/newApe2/:id', (req, res) => {
-    const userId = req.params.id;
-    const nuevoNombre = req.body.segundo_apellido; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nuevoNombre) {
-      return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
-    }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET segundo_apellido = ? WHERE id_usuario = ?';
-    db.query(sql, [nuevoNombre, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar el primer apellido: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
-    });
-  });
+  // Verificar si el nombre está presente en la solicitud
+  if (!nuevoNombre) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
 
-  app.put('/newMail/:id', (req, res) => {
-    const userId = req.params.id;
-    const nuevoCorreo = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nuevoCorreo) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET nombre = ? WHERE id_usuario = ?';
+  db.query(sql, [nuevoNombre, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el nombre: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
     }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET correo = ? WHERE id_usuario = ?';
-    db.query(sql, [nuevoCorreo, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar el nombre: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
-    });
-  });
 
-  app.put('/newIne/:id', (req, res) => {
-    const userId = req.params.id;
-    const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nueva) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
     }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET identificacion_oficial = ? WHERE id_usuario = ?';
-    db.query(sql, [nueva, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar INE: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
-    });
-  });
 
-  app.put('/newCredencial/:id', (req, res) => {
-    const userId = req.params.id;
-    const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nueva) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
-    }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET credencial_de_estudiante = ? WHERE id_usuario = ?';
-    db.query(sql, [nueva, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar Credencial de Estudiante: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Credenecial de Estudiante actualizada exitosamente.' });
-    });
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
   });
+});
 
-  app.put('/newComprobante/:id', (req, res) => {
-    const userId = req.params.id;
-    const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nueva) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
-    }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET comprobante_de_inscripcion = ? WHERE id_usuario = ?';
-    db.query(sql, [nueva, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar Credencial de Estudiante: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Comprobante de innscipción actualizado exitosamente.' });
-    });
-  });
+app.put('/newApe/:id', (req, res) => {
+  const userId = req.params.id;
+  const nuevoNombre = req.body.primer_apellido; // Obtén el nombre del cuerpo de la solicitud
 
-  app.put('/newComprobanteD/:id', (req, res) => {
-    const userId = req.params.id;
-    const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
-  
-    // Verificar si el nombre está presente en la solicitud
-    if (!nueva) {
-      return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  // Verificar si el nombre está presente en la solicitud
+  if (!nuevoNombre) {
+    return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET primer_apellido = ? WHERE id_usuario = ?';
+  db.query(sql, [nuevoNombre, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el primer apellido: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
     }
-  
-    // Realizar la consulta SQL para actualizar el nombre del usuario
-    const sql = 'UPDATE usuario SET comprobante_de_domicilio = ? WHERE id_usuario = ?';
-    db.query(sql, [nueva, userId], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar comprobante de domicilio: ' + err.message);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
-      }
-  
-      // Verificar si se actualizó algún registro
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ error: 'Usuario no encontrado.' });
-      }
-  
-      // Enviar una respuesta de éxito
-      res.json({ mensaje: 'Comprobante de domiclio actualizado exitosamente.' });
-    });
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
   });
-  
-  // Actualizar información de un inmueble por ID
+});
+
+app.put('/newApe2/:id', (req, res) => {
+  const userId = req.params.id;
+  const nuevoNombre = req.body.segundo_apellido; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nuevoNombre) {
+    return res.status(400).json({ error: 'El campo "apellido" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET segundo_apellido = ? WHERE id_usuario = ?';
+  db.query(sql, [nuevoNombre, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el primer apellido: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Nombre de usuario actualizado exitosamente.' });
+  });
+});
+
+app.put('/newMail/:id', (req, res) => {
+  const userId = req.params.id;
+  const nuevoCorreo = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nuevoCorreo) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET correo = ? WHERE id_usuario = ?';
+  db.query(sql, [nuevoCorreo, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el nombre: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
+  });
+});
+
+app.put('/newIne/:id', (req, res) => {
+  const userId = req.params.id;
+  const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nueva) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET identificacion_oficial = ? WHERE id_usuario = ?';
+  db.query(sql, [nueva, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar INE: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Correo de usuario actualizado exitosamente.' });
+  });
+});
+
+app.put('/newCredencial/:id', (req, res) => {
+  const userId = req.params.id;
+  const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nueva) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET credencial_de_estudiante = ? WHERE id_usuario = ?';
+  db.query(sql, [nueva, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar Credencial de Estudiante: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Credenecial de Estudiante actualizada exitosamente.' });
+  });
+});
+
+app.put('/newComprobante/:id', (req, res) => {
+  const userId = req.params.id;
+  const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nueva) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET comprobante_de_inscripcion = ? WHERE id_usuario = ?';
+  db.query(sql, [nueva, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar Credencial de Estudiante: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Comprobante de innscipción actualizado exitosamente.' });
+  });
+});
+
+app.put('/newComprobanteD/:id', (req, res) => {
+  const userId = req.params.id;
+  const nueva = req.body.correo; // Obtén el nombre del cuerpo de la solicitud
+
+  // Verificar si el nombre está presente en la solicitud
+  if (!nueva) {
+    return res.status(400).json({ error: 'El campo "nombre" es requerido.' });
+  }
+
+  // Realizar la consulta SQL para actualizar el nombre del usuario
+  const sql = 'UPDATE usuario SET comprobante_de_domicilio = ? WHERE id_usuario = ?';
+  db.query(sql, [nueva, userId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar comprobante de domicilio: ' + err.message);
+      return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+
+    // Verificar si se actualizó algún registro
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado.' });
+    }
+
+    // Enviar una respuesta de éxito
+    res.json({ mensaje: 'Comprobante de domiclio actualizado exitosamente.' });
+  });
+});
+
+// Actualizar información de un inmueble por ID
 app.put('/infoinmuebles/:id_inmueble', upload.none(), (req, res) => {
-    const id_inmueble = req.params.id_inmueble;
-    const updatedData = {
-      title: req.body.title,
-      address: req.body.address,
-      coordinates: req.body.coordinates,
-      price: req.body.price,
-      period: req.body.period,
-      numRooms: req.body.numRooms,
-      regulations: req.body.regulations,
-      idEscuela: req.body.idEscuela,
-      Tvivienda: req.body.Tvivienda,
-      activo: req.body.activo,
-    }; // Datos actualizados del inmueble
-  
-    // Consulta SQL para actualizar la información del inmueble
-    const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
-  
-    db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
-      if (err) {
-        console.error('Error al actualizar el inmueble:', err);
-        res.status(500).send('Error interno del servidor');
+  const id_inmueble = req.params.id_inmueble;
+  const updatedData = {
+    title: req.body.title,
+    address: req.body.address,
+    coordinates: req.body.coordinates,
+    price: req.body.price,
+    period: req.body.period,
+    numRooms: req.body.numRooms,
+    regulations: req.body.regulations,
+    idEscuela: req.body.idEscuela,
+    Tvivienda: req.body.Tvivienda,
+    activo: req.body.activo,
+  }; // Datos actualizados del inmueble
+
+  // Consulta SQL para actualizar la información del inmueble
+  const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
+
+  db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el inmueble:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+      if (result.affectedRows > 0) {
+        // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
+        res.status(200).send('Inmueble actualizado correctamente');
       } else {
-        if (result.affectedRows > 0) {
-          // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
-          res.status(200).send('Inmueble actualizado correctamente');
-        } else {
-          // Si no se encuentra el inmueble, devuelve un mensaje de error
-          res.status(404).send('Inmueble no encontrado');
-        }
+        // Si no se encuentra el inmueble, devuelve un mensaje de error
+        res.status(404).send('Inmueble no encontrado');
       }
-    });
-  });
-
-  app.put('/editarinmueble/:id_inmueble', upload.none(), (req, res) => {
-    // Obtén el ID del inmueble de los parámetros de la URL
-    const id_inmueble = req.params.id_inmueble;
-
-    // Verifica si el usuario está autenticado
-    if (!req.session.user || !req.session.user.id) {
-        return res.status(401).json({ error: 'User not authenticated' });
     }
+  });
+});
 
-    // Datos actualizados del inmueble
-    const updatedData = {
-        titulo: req.body.title,
-        direccion: req.body.address,
-        asentamiento: req.body.asentamiento,
-        cp: req.body.cp,
-        alcaldia: req.body.alcaldia,
-        latitud: req.body.latitud,
-        longitud: req.body.longitud,
-        precio: req.body.price,
-        periodo_de_renta: req.body.period,
-        no_habitaciones: req.body.numRooms,
-        reglamento: req.body.regulations,
-        caracteristicas: req.body.caracteristicas,
-        tipo_de_habitacion : req.body.Tvivienda,
-        activo_usuario: req.body.activo,
-        foto: req.body.foto,
-    };
+app.put('/editarinmueble/:id_inmueble', upload.none(), (req, res) => {
+  // Obtén el ID del inmueble de los parámetros de la URL
+  const id_inmueble = req.params.id_inmueble;
 
-    // Consulta SQL para actualizar la información del inmueble
-    const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
+  // Verifica si el usuario está autenticado
+  if (!req.session.user || !req.session.user.id) {
+    return res.status(401).json({ error: 'User not authenticated' });
+  }
 
-    // Ejecuta la consulta SQL
-    db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
-        if (err) {
-            console.error('Error al actualizar el inmueble:', err);
-            return res.status(500).json('Error interno del servidor');
-        } else {
-            if (result.affectedRows > 0) {
-                // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
-                return res.status(200).json('Inmueble actualizado correctamente');
-            } else {
-                // Si no se encuentra el inmueble, devuelve un mensaje de error
-                return res.status(404).json('Inmueble no encontrado');
-            }
-        }
-    });
+  // Datos actualizados del inmueble
+  const updatedData = {
+    titulo: req.body.title,
+    direccion: req.body.address,
+    asentamiento: req.body.asentamiento,
+    cp: req.body.cp,
+    alcaldia: req.body.alcaldia,
+    latitud: req.body.latitud,
+    longitud: req.body.longitud,
+    precio: req.body.price,
+    periodo_de_renta: req.body.period,
+    no_habitaciones: req.body.numRooms,
+    reglamento: req.body.regulations,
+    caracteristicas: req.body.caracteristicas,
+    tipo_de_habitacion: req.body.Tvivienda,
+    activo_usuario: req.body.activo,
+    foto: req.body.foto,
+  };
+
+  // Consulta SQL para actualizar la información del inmueble
+  const updateSql = `UPDATE inmueble SET ? WHERE id_inmueble = ?;`;
+
+  // Ejecuta la consulta SQL
+  db.query(updateSql, [updatedData, id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el inmueble:', err);
+      return res.status(500).json('Error interno del servidor');
+    } else {
+      if (result.affectedRows > 0) {
+        // Si se actualiza el inmueble correctamente, devuelve un mensaje de éxito
+        return res.status(200).json('Inmueble actualizado correctamente');
+      } else {
+        // Si no se encuentra el inmueble, devuelve un mensaje de error
+        return res.status(404).json('Inmueble no encontrado');
+      }
+    }
+  });
 });
 
 app.delete('/eliminarinmueble/:id_inmueble', (req, res) => {
@@ -736,8 +735,6 @@ app.delete('/eliminarinmueble/:id_inmueble', (req, res) => {
   });
 });
 
-
-
 // Ruta para eliminar usuario
 app.delete('/eliminarUsuario/:idUsuario', (req, res) => {
   const { idUsuario } = req.params;
@@ -753,11 +750,11 @@ app.delete('/eliminarUsuario/:idUsuario', (req, res) => {
     }
   });
 });
-  
+
 
 const PORT = process.env.PORT || 3031;
 app.listen(PORT, () => {
-    console.log(`Servidor escuchando en el puerto ${PORT}`);
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
 
 
@@ -768,7 +765,7 @@ app.get('/inmueblearrendatario', (req, res) => {
     FROM inmueble AS i 
     LEFT JOIN escuela AS e ON i.id_escuela = e.id_escuela
   `;
-  
+
   db.query(sql, (err, result) => {
     if (err) {
       console.error('Error al obtener datos de la tabla inmueble:', err);
@@ -778,7 +775,6 @@ app.get('/inmueblearrendatario', (req, res) => {
     }
   });
 });
-
 
   app.get('/obtenerReporteesp/:id_reporte', (req, res) => {
     const { id_reporte } = req.params;
@@ -851,57 +847,53 @@ app.put('/pausarInmueble/:id_inmueble', (req, res) => {
   });
 });
 
+// Ruta para llenar los datos de la tabla reporte
+app.post('/generarReporte', (req, res) => {
+  const sqlInsert = "INSERT INTO reporte (asunto, descripción, fecha, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?)";
+  const valuesInsert = [
+    req.body.aff,
+    req.body.description,
+    req.body.date,
+    req.body.id_usuario,
+    req.body.id_inmueble
+  ];
 
+  const sqlSelect = "SELECT no_reportes FROM usuario WHERE id_usuario = ?";
+  const sqlUpdate = "UPDATE usuario SET no_reportes = ? WHERE id_usuario = ?";
 
-  // Ruta para llenar los datos de la tabla reporte
-  app.post('/generarReporte', (req, res) => {
-    const sqlInsert = "INSERT INTO reporte (asunto, descripción, fecha, id_usuario, id_inmueble) VALUES (?, ?, ?, ?, ?)";
-    const valuesInsert = [
-        req.body.aff,
-        req.body.description,
-        req.body.date,
-        req.body.id_usuario,
-        req.body.id_inmueble
-    ];
+  db.query(sqlInsert, valuesInsert, (err, result) => {
+    if (err) {
+      console.error('Error al insertar en la base de datos:', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
 
-    const sqlSelect = "SELECT no_reportes FROM usuario WHERE id_usuario = ?";
-    const sqlUpdate = "UPDATE usuario SET no_reportes = ? WHERE id_usuario = ?";
-
-    db.query(sqlInsert, valuesInsert, (err, result) => {
-        if (err) {
-            console.error('Error al insertar en la base de datos:', err);
-            return res.status(500).json({ error: 'Error interno del servidor' });
-        }
-
-        // Obtener el número actual de reportes del usuario
-        db.query(sqlSelect, [req.body.id_usuario], (err, rows) => {
-            if (err) {
-                console.error('Error al obtener el número de reportes del usuario:', err);
-                return res.status(500).json({ error: 'Error interno del servidor' });
-            }
+    // Obtener el número actual de reportes del usuario
+    db.query(sqlSelect, [req.body.id_usuario], (err, rows) => {
+      if (err) {
+        console.error('Error al obtener el número de reportes del usuario:', err);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+      }
 
             // Incrementar el contador de reportes
             const currentNoReportes = rows[0].no_reportes;
             const newNoReportes = currentNoReportes ;
 
-            // Actualizar el número de reportes para el usuario correspondiente
-            db.query(sqlUpdate, [newNoReportes, req.body.id_usuario], (err, result) => {
-                if (err) {
-                    console.error('Error al actualizar el número de reportes del usuario:', err);
-                    return res.status(500).json({ error: 'Error interno del servidor' });
-                }
+      // Actualizar el número de reportes para el usuario correspondiente
+      db.query(sqlUpdate, [newNoReportes, req.body.id_usuario], (err, result) => {
+        if (err) {
+          console.error('Error al actualizar el número de reportes del usuario:', err);
+          return res.status(500).json({ error: 'Error interno del servidor' });
+        }
 
-                return res.json({ message: 'Datos insertados correctamente' });
-            });
-        });
+        return res.json({ message: 'Datos insertados correctamente' });
+      });
     });
+  });
 });
-
-
 
 // Realizar la consulta SQL para obtener los datos de la tabla "reporte"
 app.get('/obtenerReportes', (req, res) => {
-  
+
   const sql = 'SELECT * FROM reporte';
 
   db.query(sql, (err, result) => {
@@ -913,7 +905,6 @@ app.get('/obtenerReportes', (req, res) => {
     }
   });
 });
-
 
 app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
@@ -935,8 +926,6 @@ app.get('/obtenerReportesPorUsuario/:parametroBusqueda', (req, res) => {
     }
   });
 });
-
-
 
 app.get('/obtenerReportesPorInmueble/:parametroBusqueda', (req, res) => {
   const { parametroBusqueda } = req.params;
@@ -973,7 +962,6 @@ app.get('/obtenerNoReportesUsuario/:idUsuario', (req, res) => {
   });
 });
 
-
 app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
   const { idUsuario } = req.params;
   const sql = 'SELECT nombre, primer_apellido, segundo_apellido FROM usuario WHERE id_usuario = ?';
@@ -989,7 +977,6 @@ app.get('/obtenerNombreUsuario/:idUsuario', (req, res) => {
   });
 });
 
-
 app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
   const { idInmueble } = req.params;
   const sql = 'SELECT titulo, activo FROM inmueble WHERE id_inmueble = ?';
@@ -1003,10 +990,6 @@ app.get('/obtenerTituloInmueble/:idInmueble', (req, res) => {
     }
   });
 });
-
-
-
-
 
 app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
   const id_usuario = req.params.id_usuario;
@@ -1022,75 +1005,72 @@ app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
 
 // Ruta para obtener datos de la tabla "inmueble"
 app.get('/obtenerInmuebleInfo/:id_inmueble', (req, res) => {
-    const id_inmueble = req.params.id_inmueble;
-    const sql = "SELECT * FROM inmueble WHERE id_inmueble = ?"; // Selecciona solo el campo "nombre" de la tabla
-    db.query(sql, [id_inmueble], (err, result) => {
-        if (err) {
-            console.error('Error al obtener datos de inmueble:', err);
-            return res.json({ message: "Error al obtener datos de inmueble" });
-        }
-        return res.json(result);
-    });
+  const id_inmueble = req.params.id_inmueble;
+  const sql = "SELECT * FROM inmueble WHERE id_inmueble = ?"; // Selecciona solo el campo "nombre" de la tabla
+  db.query(sql, [id_inmueble], (err, result) => {
+    if (err) {
+      console.error('Error al obtener datos de inmueble:', err);
+      return res.json({ message: "Error al obtener datos de inmueble" });
+    }
+    return res.json(result);
+  });
 });
 
 // Ruta para manejar la solicitud de recuperación de contraseña
 app.post('/recuperar-contrasena', (req, res) => {
-    const { correo } = req.body;
-    const sql = "SELECT * FROM usuario WHERE correo = ?";
-    
-    db.query(sql, [correo], (err, data) => {
-      if (err) {
-        console.error('Error al buscar el correo en la base de datos:', err);
-        return res.json("Error interno del servidor");
-      } 
-  
-      if (data.length > 0) {
-        // El correo existe, ahora se enviará un correo con un link para cambiar la contraseña
-        const usuario = data[0];
-        const link = `http://localhost:3000/nuevacontra/${usuario.id_usuario}`;
+  const { correo } = req.body;
+  const sql = "SELECT * FROM usuario WHERE correo = ?";
 
-        enviarCorreoRecuperacion(usuario.correo, link)
-          .then(() => {
-            return res.json({ message: 'Se ha enviado un correo para restablecer la contraseña' });
-          })
-          .catch((error) => {
-            console.error('Error al enviar el correo de recuperación:', error);
-            return res.json("Error al enviar el correo de recuperación");
-          });
-      } else {
-        // El correo no existe en la base de datos
-        return res.json("El correo proporcionado no está registrado");
-      }
-    });
+  db.query(sql, [correo], (err, data) => {
+    if (err) {
+      console.error('Error al buscar el correo en la base de datos:', err);
+      return res.json("Error interno del servidor");
+    }
+
+    if (data.length > 0) {
+      // El correo existe, ahora se enviará un correo con un link para cambiar la contraseña
+      const usuario = data[0];
+      const link = `http://localhost:3000/nuevacontra/${usuario.id_usuario}`;
+
+      enviarCorreoRecuperacion(usuario.correo, link)
+        .then(() => {
+          return res.json({ message: 'Se ha enviado un correo para restablecer la contraseña' });
+        })
+        .catch((error) => {
+          console.error('Error al enviar el correo de recuperación:', error);
+          return res.json("Error al enviar el correo de recuperación");
+        });
+    } else {
+      // El correo no existe en la base de datos
+      return res.json("El correo proporcionado no está registrado");
+    }
+  });
+});
+
+//Seccion para enviar correo de recuperacion
+const enviarCorreoRecuperacion = async (correo, link) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+    },
   });
 
-
-  //Seccion para enviar correo de recuperacion
-  const enviarCorreoRecuperacion = async (correo, link) => {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
-        pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
-      },
-    });
-  
-    const mailOptions = {
-      from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
-      to: correo,
-      subject: 'Recuperación de contraseña',
-      html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${link}">${link}</a></p>`,
-    };
-  
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log('Correo de recuperación enviado a:', correo);
-    } catch (error) {
-      throw error;
-    }
+  const mailOptions = {
+    from: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+    to: correo,
+    subject: 'Recuperación de contraseña',
+    html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p><p><a href="${link}">${link}</a></p>`,
   };
 
-
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo de recuperación enviado a:', correo);
+  } catch (error) {
+    throw error;
+  }
+};
 
   //Correo para los tratos
   // Función para enviar correo con información al arrendador
@@ -1120,7 +1100,7 @@ const enviarCorreoArrendador = async (correoArrendador, tituloinmu) => {
 
 app.post('/enviarCorreoArrendador', (req, res) => {
   try {
-    
+
     const { idUsuario, idInmueble, correoUsuario, tituloinmu } = req.body;
     const idSesion = req.session.user.id; // Aquí obtén el ID de sesión desde la sesión del usuario
 
@@ -1139,123 +1119,120 @@ app.post('/enviarCorreoArrendador', (req, res) => {
   }
 });
 
-
-
-
-  //Actualizar contraseña encriptada
+//Actualizar contraseña encriptada
 // Ruta para actualizar la contraseña encriptada
 app.put('/actualizar-contrasena/:id_usuario', async (req, res) => {
-    const id_usuario = req.params.id_usuario;
-    const nuevaContrasena = req.body.contrasena;
-  
-    try {
-      const hashedPassword = await bcrypt.hash(nuevaContrasena, 10); // Hash de la nueva contraseña
-  
-      const updatePasswordSql = 'UPDATE usuario SET contrasena = ? WHERE id_usuario = ?';
-      db.query(updatePasswordSql, [hashedPassword, id_usuario], (err, result) => {
-        if (err) {
-          console.error('Error al actualizar la contraseña:', err);
-          res.status(500).json({ error: 'Error interno del servidor' });
-        } else {
-          res.json({ message: 'Contraseña actualizada exitosamente' });
-        }
-      });
-    } catch (error) {
-      console.error('Error al cambiar la contraseña:', error);
-      res.status(500).json({ error: 'Error interno del servidor' });
+  const id_usuario = req.params.id_usuario;
+  const nuevaContrasena = req.body.contrasena;
+
+  try {
+    const hashedPassword = await bcrypt.hash(nuevaContrasena, 10); // Hash de la nueva contraseña
+
+    const updatePasswordSql = 'UPDATE usuario SET contrasena = ? WHERE id_usuario = ?';
+    db.query(updatePasswordSql, [hashedPassword, id_usuario], (err, result) => {
+      if (err) {
+        console.error('Error al actualizar la contraseña:', err);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ message: 'Contraseña actualizada exitosamente' });
+      }
+    });
+  } catch (error) {
+    console.error('Error al cambiar la contraseña:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
+app.post("/registrochat", async (req, res) => {
+
+  // Desestructura directamente de req.body
+  const { mail, name, last_name } = req.body;
+
+  console.log("Nombre: ", name);
+  console.log("Correo: ", mail);
+
+  try {
+    const r = await axios.put(
+      'https://api.chatengine.io/users',
+      { username: mail, secret: mail, first_name: name, last_name: last_name },
+      { headers: { "private-key": "3b3f36ec-29d6-4a5e-9708-2fe359e5bc01" } }
+    );
+  } catch (e) {
+    return res.status(500).json({ error: 'Error desconocido' });
+  }
+});
+
+app.post("/newchat/:idInmueble", async (req, res) => {
+  const id_inmueble = req.params.idInmueble;
+
+  // Consulta SQL para obtener id_usuario
+  const sql1 = "SELECT id_usuario FROM inmueble WHERE id_inmueble = ?";
+  db.query(sql1, [id_inmueble], (err, result1) => {
+    if (err) {
+      console.error('Error al obtener datos de inmueble:', err);
+      return res.status(500).json({ error: 'Error al obtener datos de inmueble' });
     }
-  });
-  
 
+    if (result1.length === 0) {
+      console.error('Inmueble no encontrado');
+      return res.status(404).json({ error: 'Inmueble no encontrado' });
+    }
 
-  app.post("/registrochat", async (req, res) => {
+    const id_usuario = result1[0].id_usuario;
+    console.log("ID recibido: ", id_usuario);
 
-    // Desestructura directamente de req.body
-    const { mail, name, last_name } = req.body;
+    // Consulta SQL para obtener correo del usuario
+    const sql2 = "SELECT correo FROM usuario WHERE id_usuario = ?";
+    db.query(sql2, [id_usuario], async (err, result2) => {
+      if (err) {
+        console.error('Error al obtener datos de usuario:', err);
+        return res.status(500).json({ error: 'Error al obtener datos de usuario' });
+      }
 
-    console.log("Nombre: ", name);
-    console.log("Correo: ", mail);
+      if (result2.length === 0) {
+        console.error('Usuario no encontrado');
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
 
-    try {
-        const r = await axios.put(
-            'https://api.chatengine.io/users',
-            { username: mail, secret: mail, first_name: name, last_name: last_name },
-            { headers: { "private-key": "3b3f36ec-29d6-4a5e-9708-2fe359e5bc01" } }
+      const destinatario = result2[0].correo;
+      console.log("Correo Recibido: ", destinatario);
+
+      const mail = req.session.user.correo;
+      console.log("Correo del remitente: ", mail);
+
+      try {
+        // Realizar la solicitud a la API de chat
+        const response = await axios.put(
+          'https://api.chatengine.io/chats/',
+          {
+            usernames: [destinatario],
+            title: "Chat",
+            is_direct_chat: true
+          },
+          {
+            headers: {
+              "Project-ID": "6a22601b-69ce-4f51-b6ff-19957596e253",
+              "User-Name": mail,
+              "User-Secret": mail
+            }
+          }
         );
-    } catch (e) {
-        return res.status(500).json({ error: 'Error desconocido' });
-    }
-  });
 
-  app.post("/newchat/:idInmueble", async (req, res) => {
-    const id_inmueble = req.params.idInmueble;
+        // Puedes hacer algo con la respuesta si es necesario
+        console.log(response.data);
 
-    // Consulta SQL para obtener id_usuario
-    const sql1 = "SELECT id_usuario FROM inmueble WHERE id_inmueble = ?";
-    db.query(sql1, [id_inmueble], (err, result1) => {
-        if (err) {
-            console.error('Error al obtener datos de inmueble:', err);
-            return res.status(500).json({ error: 'Error al obtener datos de inmueble' });
-        }
-
-        if (result1.length === 0) {
-            console.error('Inmueble no encontrado');
-            return res.status(404).json({ error: 'Inmueble no encontrado' });
-        }
-
-        const id_usuario = result1[0].id_usuario;
-        console.log("ID recibido: ", id_usuario);
-
-        // Consulta SQL para obtener correo del usuario
-        const sql2 = "SELECT correo FROM usuario WHERE id_usuario = ?";
-        db.query(sql2, [id_usuario], async (err, result2) => {
-            if (err) {
-                console.error('Error al obtener datos de usuario:', err);
-                return res.status(500).json({ error: 'Error al obtener datos de usuario' });
-            }
-
-            if (result2.length === 0) {
-                console.error('Usuario no encontrado');
-                return res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-
-            const destinatario = result2[0].correo;
-            console.log("Correo Recibido: ", destinatario);
-
-            const mail = req.session.user.correo;
-            console.log("Correo del remitente: ", mail);
-
-            try {
-                // Realizar la solicitud a la API de chat
-                const response = await axios.put(
-                    'https://api.chatengine.io/chats/',
-                    {
-                        usernames: [destinatario],
-                        title: "Chat",
-                        is_direct_chat: true
-                    },
-                    {
-                        headers: {
-                            "Project-ID": "6a22601b-69ce-4f51-b6ff-19957596e253",
-                            "User-Name": mail,
-                            "User-Secret": mail
-                        }
-                    }
-                );
-
-                // Puedes hacer algo con la respuesta si es necesario
-                console.log(response.data);
-
-                return res.status(200).json({ success: true });
-            } catch (error) {
-                console.error("Error en la solicitud a la API de chat:", error);
-                return res.status(500).json({ error: 'Error en la solicitud a la API de chat' });
-            }
-        });
+        return res.status(200).json({ success: true });
+      } catch (error) {
+        console.error("Error en la solicitud a la API de chat:", error);
+        return res.status(500).json({ error: 'Error en la solicitud a la API de chat' });
+      }
     });
   });
+});
 
-  // Función para realizar consultas de actualización
+// Función para realizar consultas de actualización
 async function updateInmueble(id_inmueble, condiciones, servicios, seguridad) {
   const updateInmuebleQuery = "UPDATE inmueble SET condiciones = condiciones + ?, servicios = servicios + ?, seguridad = seguridad + ?, contador_evaluaciones = contador_evaluaciones + 1 WHERE id_inmueble = ?";
   const inmuebleValues = [condiciones, servicios, seguridad, id_inmueble];
@@ -1270,7 +1247,7 @@ async function updateUsuario(id_usuario, comportamiento) {
   console.log("Updating usuario with values:", usuarioValues);
   await db.query(updateUsuarioQuery, usuarioValues);
 }
- 
+
 app.post('/evaluarinmueble', async (req, res) => {
   try {
     const id_inmueble = req.body.id;
@@ -1324,7 +1301,7 @@ app.post('/rentar/:id', async (req, res) => {
     }
 
     const id_inmueble = req.params.id;
-    
+
     // Simula la lógica de obtención de información del inmueble
     const sql = `SELECT * FROM inmueble WHERE id_inmueble = ?`;
 
@@ -1342,7 +1319,7 @@ app.post('/rentar/:id', async (req, res) => {
           console.error('Error: no se encontró la propiedad data en el resultado de la consulta');
           return res.status(500).json({ error: 'Error interno del servidor: no se encontró la propiedad data en el resultado de la consulta' });
         }
-        
+
         const fecha_inicio = new Date().toISOString().slice(0, 10);
         const fecha_fin = calcularFechaFin(fecha_inicio, infoInmuebleResponse.periodo_de_renta);
 
@@ -1411,8 +1388,6 @@ app.get('/obtenerUsuario/:id_usuario', (req, res) => {
     }
   });
 });
-
-// Suponiendo que ya tienes Express y MySQL configurados en tu aplicación Node.js
 
 // Ruta para obtener información de un inmueble por ID
 app.get('/obtenerInmueble/:id_inmueble', (req, res) => {
@@ -1520,96 +1495,94 @@ app.put('/actualizarEstadoInmueble/:id_inmueble', (req, res) => {
   });
 });
 
-
 // En tu servidor, podrías agregar una nueva ruta para obtener el correo del usuario según su ID
 app.get('/obtenerCorreoUsuario/:id_usuario', (req, res) => {
   const { id_usuario } = req.params;
   const sql = `SELECT correo FROM usuario WHERE id_usuario = ${id_usuario}`;
   db.query(sql, (err, result) => {
-      if (err) {
-          console.error('Error al obtener correo del usuario:', err);
-          return res.json({ message: "Error al obtener correo del usuario" });
-      }
-      if (result.length > 0) {
-          const correoUsuario = result[0].correo;
-          return res.json({ correo: correoUsuario });
-      } else {
-          return res.json({ message: "Usuario no encontrado" });
-      }
+    if (err) {
+      console.error('Error al obtener correo del usuario:', err);
+      return res.json({ message: "Error al obtener correo del usuario" });
+    }
+    if (result.length > 0) {
+      const correoUsuario = result[0].correo;
+      return res.json({ correo: correoUsuario });
+    } else {
+      return res.json({ message: "Usuario no encontrado" });
+    }
   });
 });
 
-
- //Correo para los documentos con trato completo
- const enviarCorreoDatos = async (correoV, documentosAdjuntos) => {
+//Correo para los documentos con trato completo
+const enviarCorreoDatos = async (correoV, documentosAdjuntos) => {
   const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-          user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
-          pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
-      },
+    service: 'gmail',
+    auth: {
+      user: 'inmueblesestudiante@gmail.com', // Cambiar al correo real
+      pass: 'zjqqojsupetjfwrg', // Cambiar a la contraseña real
+    },
   });
 
   const mailOptions = {
-      from: 'inmueblesestudiante@gmail.com', 
-      to: correoV, 
-      subject: 'Solicitud de trato en inmueble',
-      html: `<p>A continuación te facilitamos la documentación del usuario con el que cerraste el trato.</p>`,
-      attachments: documentosAdjuntos, // Aquí se adjuntan los archivos
+    from: 'inmueblesestudiante@gmail.com',
+    to: correoV,
+    subject: 'Solicitud de trato en inmueble',
+    html: `<p>A continuación te facilitamos la documentación del usuario con el que cerraste el trato.</p>`,
+    attachments: documentosAdjuntos, // Aquí se adjuntan los archivos
   };
 
   try {
-      await transporter.sendMail(mailOptions);
-      console.log('Correo enviado al arrendador:', correoV);
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado al arrendador:', correoV);
   } catch (error) {
-      throw error;
+    throw error;
   }
 };
 
 app.post('/enviarCorreoDocumentacion', async (req, res) => {
   try {
-      const { correoV, identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion } = req.body;
+    const { correoV, identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion } = req.body;
 
-      // Rutas de los archivos PDF en tu servidor
-      const rutaIdentificacion = `public/images/${identificacion_oficial}`;
-      const rutaComprobanteDomicilio = `public/images/${comprobante_de_domicilio}`;
-      const rutaCredencialEstudiante = `public/images/${credencial_de_estudiante}`;
-      const rutaComprobanteInscripcion = `public/images/${comprobante_de_inscripcion}`;
+    // Rutas de los archivos PDF en tu servidor
+    const rutaIdentificacion = `public/images/${identificacion_oficial}`;
+    const rutaComprobanteDomicilio = `public/images/${comprobante_de_domicilio}`;
+    const rutaCredencialEstudiante = `public/images/${credencial_de_estudiante}`;
+    const rutaComprobanteInscripcion = `public/images/${comprobante_de_inscripcion}`;
 
-      // Array de documentos adjuntos para el correo
-      const documentosAdjuntos = [
-          { filename: identificacion_oficial, path: rutaIdentificacion },
-          { filename: comprobante_de_domicilio, path: rutaComprobanteDomicilio },
-          { filename: credencial_de_estudiante, path: rutaCredencialEstudiante },
-          { filename: comprobante_de_inscripcion, path: rutaComprobanteInscripcion },
-      ];
+    // Array de documentos adjuntos para el correo
+    const documentosAdjuntos = [
+      { filename: identificacion_oficial, path: rutaIdentificacion },
+      { filename: comprobante_de_domicilio, path: rutaComprobanteDomicilio },
+      { filename: credencial_de_estudiante, path: rutaCredencialEstudiante },
+      { filename: comprobante_de_inscripcion, path: rutaComprobanteInscripcion },
+    ];
 
-      // Llamar a la función para enviar el correo al arrendador con los archivos adjuntos
-      await enviarCorreoDatos(correoV, documentosAdjuntos);
+    // Llamar a la función para enviar el correo al arrendador con los archivos adjuntos
+    await enviarCorreoDatos(correoV, documentosAdjuntos);
 
-      res.json({ message: 'Correo enviado al arrendador' });
+    res.json({ message: 'Correo enviado al arrendador' });
   } catch (error) {
-      console.error('Error al procesar la solicitud:', error);
-      res.status(500).json({ error: 'Error interno del servidor' });
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
-  
-  app.get('/obtenerDocumentosUsuario/:id_usuario', (req, res) => {
-    const { id_usuario } = req.params;
-    const sql = `SELECT identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion FROM usuario WHERE id_usuario = ${id_usuario}`;
-    db.query(sql, (err, result) => {
-        if (err) {
-            console.error('Error al obtener documentos del usuario:', err);
-            return res.json({ message: "Error al obtener documentos del usuario" });
-        }
-        if (result.length > 0) {
-            const documentosUsuario = result[0];
-            return res.json(documentosUsuario);
-        } else {
-            return res.json({ message: "Usuario no encontrado" });
-        }
-    });
+
+app.get('/obtenerDocumentosUsuario/:id_usuario', (req, res) => {
+  const { id_usuario } = req.params;
+  const sql = `SELECT identificacion_oficial, comprobante_de_domicilio, credencial_de_estudiante, comprobante_de_inscripcion FROM usuario WHERE id_usuario = ${id_usuario}`;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al obtener documentos del usuario:', err);
+      return res.json({ message: "Error al obtener documentos del usuario" });
+    }
+    if (result.length > 0) {
+      const documentosUsuario = result[0];
+      return res.json(documentosUsuario);
+    } else {
+      return res.json({ message: "Usuario no encontrado" });
+    }
+  });
 });
 
 
@@ -1640,8 +1613,8 @@ const enviarCorreoReporte = async (correoV, link, usuarioNombre, inmuebleTitulo)
 
 app.post('/enviarCorreoReporte', (req, res) => {
   try {
-    
-    const { correoV, id_usuario, usuarioNombre, inmuebleTitulo} = req.body;
+
+    const { correoV, id_usuario, usuarioNombre, inmuebleTitulo } = req.body;
     const link = `http://localhost:3000/incidencia/${id_usuario}/${21}`; // Reemplaza con tu URL real
 
     // Llamar a la función para enviar el correo al arrendador con el correo y el enlace generado
@@ -1661,7 +1634,7 @@ app.post('/enviarCorreoReporte', (req, res) => {
 
 
 //Enviar correo para reseña
-const enviarCorreoReseña= async (correoT, link) => {
+const enviarCorreoReseña = async (correoT, link) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -1687,7 +1660,7 @@ const enviarCorreoReseña= async (correoT, link) => {
 
 app.post('/enviarCorreoResena', (req, res) => {
   try {
-    const { correoT, id_inmueble} = req.body;
+    const { correoT, id_inmueble } = req.body;
     const link = `http://localhost:3000/calificaarrendatario?id_inmueble=${id_inmueble}`;
 
     enviarCorreoReseña(correoT, link)
@@ -1885,13 +1858,13 @@ app.get('/obtenerDatosUsuario/:idUsuario', (req, res) => {
   const idUsuario = req.params.idUsuario;
 
   db.query('SELECT comportamiento, contador_evaluaciones FROM usuario WHERE id_usuario = ?', [idUsuario], (err, result) => {
-      if (err) {
-          console.error('Error al obtener datos del usuario:', err);
-          res.status(500).json({ error: 'Error interno del servidor' });
-      } else {
-          // Enviar los datos de comportamiento y contador_evaluaciones
-          res.json(result.length > 0 ? result[0] : {});
-      }
+    if (err) {
+      console.error('Error al obtener datos del usuario:', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      // Enviar los datos de comportamiento y contador_evaluaciones
+      res.json(result.length > 0 ? result[0] : {});
+    }
   });
 });
 

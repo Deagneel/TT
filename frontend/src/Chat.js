@@ -36,27 +36,27 @@ function Navbar() {
   };
 
   return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
-          <button className="navbar-toggler" type="button" onClick={toggleMenu}>
-              <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} justify-content-center w-100`} id="navbarNav">
-              <ul className="navbar-nav w-100 justify-content-around">
-                  <li className="nav-item">
-                      <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
-                  </li>
-                  <li className="nav-item">
-                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendador')}>Perfil</button>
-                  </li>
-                  <li className="nav-item">
-                      <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
-                  </li>
-              </ul>
-          </div>
-      </nav>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+      <button className="navbar-toggler" type="button" onClick={toggleMenu}>
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} justify-content-center w-100`} id="navbarNav">
+        <ul className="navbar-nav w-100 justify-content-around">
+          <li className="nav-item">
+            <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
+          </li>
+          <li className="nav-item">
+            <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendador')}>Perfil</button>
+          </li>
+          <li className="nav-item">
+            <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
+          </li>
+        </ul>
+      </div>
+    </nav>
   );
 
-  
+
 }
 
 function Chat({ correo }) {
@@ -71,9 +71,14 @@ function Chat({ correo }) {
   return (
     <>
       <Navbar />
-      <MultiChatWindow {...chatProps} 
-      style={{ height: '92vh'}}
-       />
+      <MultiChatWindow
+  {...chatProps}
+  renderOptionsSettings={() => null}
+  renderChatForm={() => null}
+  renderPeopleSettings={() => null}
+  style={{ height: '92vh', fontFamily: 'inherit' }}
+/>
+
       <MultiChatSocket {...chatProps} />
     </>
   );
