@@ -59,24 +59,24 @@ const db = mysql.createConnection({
 */
 
 //DB Local Gsus
-
+/*
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "sistemarentas"
 });
-
+*/
 
 //DB Local atr
-/*
+
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "1234",
   database: "tt-db"
 });
-*/
+
 db.connect((err) => {
   if (err) {
     console.error('Error al conectar a la base de datos:', err);

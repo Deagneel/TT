@@ -71,6 +71,9 @@ function ArrendadorNavbar() {
       </button>
       <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
         <ul className="navbar-nav w-100 nav-fill">
+          <li className="nav-item">
+            <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
+          </li>
           <li className="nav-item active">
              <a className="nav-link btn btn-link w-100" onClick={handleRegistrarInmueble}>
               Registrar Inmueble
@@ -110,6 +113,10 @@ function ArrendadorPageContent() {
     axios.get('http://localhost:3031/solicitudesPendientes')
       .then((response) => {
         setSolicitudesPendientes(response.data);
+        if (response.data.length === 0) {
+          // Mostrar mensaje SweetAlert si no hay solicitudes pendientes
+          swal('No tienes solicitudes pendientes', 'No tienes ninguna solicitud de renta pendiente en este momento.', 'info');
+        }
       })
       .catch((error) => {
         console.error('Error al obtener solicitudes pendientes:', error);
@@ -132,6 +139,10 @@ function ArrendadorPageContent() {
     axios.get('http://localhost:3031/inmueblesRenta')
       .then((response) => {
         setRegisteredProperties(response.data);
+        if (response.data.length === 0) {
+          // Mostrar mensaje SweetAlert si no hay inmuebles rentados
+          swal('No tienes inmuebles rentados', 'No tienes ningún inmueble rentado en este momento.', 'info');
+        }
       })
       .catch((error) => {
         console.error('Error al obtener datos de propiedades:', error);
