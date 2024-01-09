@@ -49,6 +49,18 @@ function Incidencia({}) {
       return;
     }
 
+    // Validar que aff no tenga tres caracteres idénticos seguidos.
+    if (/(\w)\1{2}/.test(formData.aff)) {
+      swal("Error", "Ingresa una asunto válido, por favor.", "error");
+      return;
+    }
+
+    // Validar que description no tenga tres caracteres idénticos seguidos.
+    if (/(\w)\1{2}/.test(formData.description)) {
+      swal("Error", "Ingresa una descripción válida, por favor.", "error");
+      return;
+    }
+
     try {
       const currentDate = new Date().toISOString().slice(0, 10);
 
