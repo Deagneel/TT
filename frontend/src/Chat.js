@@ -65,7 +65,7 @@ function Chat({ correo }) {
   const secret = correo || 'default_secret';
 
   // Inicializar useMultiChatLogic con los valores adecuados
-  const projectId = '6a22601b-69ce-4f51-b6ff-19957596e253';
+  const projectId = 'a987d794-2d0c-4d89-8cc8-98f9a8622d19';
   const chatProps = useMultiChatLogic(projectId, username, secret);
 
   return (
