@@ -369,7 +369,7 @@ function EditarInmueble() {
         
         {/* Dirección */}
         <div className="mb-3">
-          <label htmlFor="address" className="form-label">Dirección</label>
+          <label htmlFor="address" className="form-label">Calle y número</label>
           <input
             type="text"
             name="address"
