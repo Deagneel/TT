@@ -1226,7 +1226,7 @@ app.post("/registrochat", async (req, res) => {
     const r = await axios.put(
       "https://api.chatengine.io/users",
       { username: mail, secret: mail, first_name: name, last_name: last_name },
-      { headers: { "private-key": "3b3f36ec-29d6-4a5e-9708-2fe359e5bc01" } }
+      { headers: { "private-key": "712809e3-263c-4a03-a4db-ec70c400597c" } }
     );
   } catch (e) {
     return res.status(500).json({ error: "Error desconocido" });
@@ -1286,7 +1286,7 @@ app.post("/newchat/:idInmueble", async (req, res) => {
           },
           {
             headers: {
-              "Project-ID": "6a22601b-69ce-4f51-b6ff-19957596e253",
+              "Project-ID": "a987d794-2d0c-4d89-8cc8-98f9a8622d19",
               "User-Name": mail,
               "User-Secret": mail,
             },
