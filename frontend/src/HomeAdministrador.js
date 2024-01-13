@@ -140,7 +140,7 @@ function ReportesSection() {
           <input 
             type="text" 
             className="form-control" 
-            placeholder="Buscar..." 
+            placeholder="Buscar reporte por id..." 
             value={searchParam}
             onChange={(e) => setSearchParam(e.target.value)}
           />
@@ -170,7 +170,7 @@ function ReportesSection() {
               <span className='subtitles-general'>{reporte.asunto}</span>
               <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
               <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-                Gestionar Incidencia
+                {reporte.estado === 2 || reporte.estado === 3 ? 'Consultar Incidencia' : 'Gestionar Incidencia'}
               </button>
             </div>
           </div>
@@ -286,7 +286,7 @@ function UsuariosSection() {
       {/* Barra de búsqueda */}
       <div className="row mb-3">
         <div className="col-9">
-          <input type="text" className="form-control" placeholder="Buscar por ID de reporte..." value={userId} onChange={(e) => setUserId(e.target.value)} />
+          <input type="text" className="form-control" placeholder="Buscar por ID de usuario..." value={userId} onChange={(e) => setUserId(e.target.value)} />
         </div>
         <div className="col-3">
           <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
@@ -315,7 +315,7 @@ function UsuariosSection() {
                 <span className='subtitles-general'>{reporte.asunto}</span>
                 <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
                 <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-                  Gestionar Incidencia
+                {reporte.estado === 2 || reporte.estado === 3 ? 'Consultar Incidencia' : 'Gestionar Incidencia'}
                 </button>
                 {/* Botones debajo del último botón "Gestionar Incidencia" */}
                 <div className="mt-3">
@@ -428,7 +428,7 @@ function InmueblesSection() {
           <input 
             type="text" 
             className="form-control" 
-            placeholder="Buscar..." 
+            placeholder="Buscar por ID de inmueble..." 
             value={searchParam}
             onChange={(e) => setSearchParam(e.target.value)}
           />
@@ -462,7 +462,7 @@ function InmueblesSection() {
               <span className='subtitles-general'>{reporte.asunto}</span>
               <p>{reporte.descripción.length > 96 ? `${reporte.descripción.substring(0, 96)}...` : reporte.descripción}</p>
               <button className="btn btn-secondary" onClick={() => handleGestionarIncidencia(reporte.id_reporte)}>
-                Gestionar Incidencia
+              {reporte.estado === 2 || reporte.estado === 3 ? 'Consultar Incidencia' : 'Gestionar Incidencia'}
               </button>
               {/* Botones debajo del último botón "Gestionar Incidencia" */}
               <div className="mt-3">

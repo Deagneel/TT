@@ -403,7 +403,7 @@ function RegistroInmueble() {
       <div className="container-fluid registro-inmueble-container bg-secondary">
         <div className="container bg-white p-4">
           <h1 className="h3 mb-3 font-weight-bold">Registrar nuevo inmueble</h1>
-          <p>Todos los campos son obligatorios.</p> {/* Mensaje de instrucción */}
+          <p>Todos los campos con * son obligatorios.</p> {/* Mensaje de instrucción */}
           {/* Título del anuncio */}
           <div className="mb-3 form-group">
             <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresar título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}

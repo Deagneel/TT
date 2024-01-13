@@ -108,6 +108,10 @@ function ArrendadorPageContent() {
   const [currentPageRight, setCurrentPageRight] = useState(1);
   const itemsPerPage = 4;
   const [solicitudesPendientes, setSolicitudesPendientes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [tempSearchTerm, setTempSearchTerm] = useState('');
+  const [searchTermSolicitudes, setSearchTermSolicitudes] = useState('');
+  const [tempSearchTermSolicitudes, setTempSearchTermSolicitudes] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:3031/solicitudesPendientes')
@@ -167,16 +171,46 @@ function ArrendadorPageContent() {
       console.error('Error: ID del inmueble no válido');
     }
   };
+  
+  const handleInputChange = (event) => {
+    setTempSearchTerm(event.target.value);
+  };
+
+  const handleSearch = () => {
+    setSearchTerm(tempSearchTerm); // Actualiza searchTerm cuando se hace clic en el botón
+  };
+
+  const handleInputChangeSolicitudes = (event) => {
+    setTempSearchTermSolicitudes(event.target.value);
+  };
+
+  const handleSearchSolicitudes = () => {
+    setSearchTermSolicitudes(tempSearchTermSolicitudes);
+  };
+
+  const filteredProperties = registeredProperties.filter(property =>
+    property.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    property.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    property.primer_apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    property.segundo_apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+  );
+
+  const filteredSolicitudes = solicitudesPendientes.filter(solicitud =>
+    solicitud.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTermSolicitudes.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    solicitud.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTermSolicitudes.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    solicitud.primer_apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTermSolicitudes.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) ||
+    solicitud.segundo_apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(searchTermSolicitudes.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+  );
 
   // Calcula los inmuebles a mostrar en la columna izquierda
   const indexOfLastItemLeft = currentPageLeft * itemsPerPage;
   const indexOfFirstItemLeft = indexOfLastItemLeft - itemsPerPage;
-  const currentItemsLeft = registeredProperties.slice(indexOfFirstItemLeft, indexOfLastItemLeft);
+  const currentItemsLeft = filteredProperties.slice(indexOfFirstItemLeft, indexOfLastItemLeft);
 
   // Calcula los inmuebles a mostrar en la columna derecha
   const indexOfLastItemRight = currentPageRight * itemsPerPage;
   const indexOfFirstItemRight = indexOfLastItemRight - itemsPerPage;
-  const currentSolicitudes = solicitudesPendientes.slice(indexOfFirstItemRight, indexOfLastItemRight);
+  const currentSolicitudes = filteredSolicitudes.slice(indexOfFirstItemRight, indexOfLastItemRight);
 
   return (
     <div className="container mt-4">
@@ -184,6 +218,20 @@ function ArrendadorPageContent() {
         {/* Primera mitad de inmuebles a la izquierda */}
         <div className="col-md-6 divider-right">
           <h2 className="text-center mb-4">Inmuebles rentados</h2>
+          <div className="input-group mb-3">
+              <input
+                 type="text"
+                 placeholder="Buscar inmueble o usuario..."
+                 value={tempSearchTerm}
+                 onChange={handleInputChange}
+                 style={{ width: '92%' }}
+              />
+              <div className="input-group-append">
+                <button className="btn btn-outline-secondary" type="button" onClick={handleSearch}>
+                  <i className="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
           <div className="row justify-content-center">
             {currentItemsLeft.map((property, index) => (
               <div key={index} className={`col-md-6 mb-4 ${property.activo === 0 || property.activo_usuario === 1 ? 'inactive' : ''}`}>
@@ -218,6 +266,20 @@ function ArrendadorPageContent() {
         {/* Segunda mitad de inmuebles a la derecha */}
         <div className="col-md-6">
           <h2 className="text-center mb-4">Solicitudes de renta</h2>
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              placeholder="Buscar solicitud por usuario o inmueble..."
+              value={tempSearchTermSolicitudes}
+              onChange={handleInputChangeSolicitudes}
+              style={{ width: '92%' }}
+            />
+            <div className="input-group-append">
+              <button className="btn btn-outline-secondary" type="button" onClick={handleSearchSolicitudes}>
+                <i className="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
           <div className="row justify-content-center">
             {currentSolicitudes.map((solicitud, index) => (
               <div key={index} className={`col-md-6 mb-4 ${solicitud.activo === 0 || solicitud.activo_usuario === 1 ? 'inactive' : ''}`}>

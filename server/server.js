@@ -1465,7 +1465,8 @@ function calcularFechaFin(fecha_inicio, periodo_de_renta) {
 // Ruta para obtener información de un usuario por ID
 app.get("/obtenerUsuario/:id_usuario", (req, res) => {
   const id_usuario = req.params.id_usuario;
-  const sql = "SELECT nombre FROM usuario WHERE id_usuario = ?";
+  // Modificada para concatenar nombre, primer_apellido y segundo_apellido
+  const sql = "SELECT CONCAT(nombre, ' ', primer_apellido, ' ', segundo_apellido) AS nombreCompleto FROM usuario WHERE id_usuario = ?";
 
   db.query(sql, [id_usuario], (err, result) => {
     if (err) {
@@ -1473,8 +1474,8 @@ app.get("/obtenerUsuario/:id_usuario", (req, res) => {
       res.status(500).send("Error interno del servidor");
     } else {
       if (result.length > 0) {
-        // Si se encuentra el usuario, envía la información al cliente
-        res.json(result[0]);
+        // Enviar el nombre completo como 'nombre'
+        res.json({ nombre: result[0].nombreCompleto });
       } else {
         // Si no se encuentra el usuario, devuelve un mensaje de error
         res.status(404).send("Usuario no encontrado");
@@ -1482,6 +1483,7 @@ app.get("/obtenerUsuario/:id_usuario", (req, res) => {
     }
   });
 });
+
 
 // Ruta para obtener información de un inmueble por ID
 app.get("/obtenerInmueble/:id_inmueble", (req, res) => {

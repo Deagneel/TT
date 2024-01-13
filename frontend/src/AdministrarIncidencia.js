@@ -243,7 +243,7 @@ function PageContent() {
                 <h3>Folio del reporte: {reporte.id_reporte}</h3>
               </div>
               <div className="col text-end">
-                <p className="mb-0">Cantidad de reportes aociados: {userNoReports}</p>
+                <p className="mb-0">Cantidad de reportes asociados: {userNoReports}</p>
               </div>
             </div>
           <p>Asunto: {reporte.asunto}</p>
@@ -267,7 +267,7 @@ function PageContent() {
             <button className="btn btn-secondary me-auto" onClick={handleContactar}>
               Contactar al usuario
             </button>
-            {reporte.id_inmueble !== 21 && reporte.inmueble && (
+            {reporte.id_inmueble !== 21 && reporte.inmueble && reporte.estado === 1 && (
               <button
                 className="btn btn-secondary me-3"
                 onClick={handlePausa}
@@ -275,6 +275,7 @@ function PageContent() {
                 {reporte.inmueble.activo === 1 ? "Pausar Publicación" : "Activar Publicación"}
               </button>
             )}
+
           </div>
           <div className="d-flex mt-4">
             <h5>Estado del reporte: {estadosReporte[reporte.estado]}</h5>
@@ -288,14 +289,23 @@ function PageContent() {
                 </div>
               )}
               {reporte.estado === 1 && (
-                <div className="d-flex justify-content-around">
-                  <button className="btn btn-success" onClick={() => handleSolucionado(reporte.id_reporte)}>
-                    Resuelto
-                  </button>
-                  <button className="btn btn-danger" onClick={() => handleCerrar(reporte.id_reporte)}>
-                    Cerrar
-                  </button>
+                <div className="mb-4">
+                  <div className="d-flex justify-content-around">
+                    <button className="btn btn-success" onClick={() => handleSolucionado(reporte.id_reporte)}>
+                      Resuelto
+                    </button>
+                    <button className="btn btn-danger" onClick={() => handleCerrar(reporte.id_reporte)}>
+                      Cerrar
+                    </button>
+                  </div>
+                  <div className="text-center">
+                  <small className="text-muted">
+                    <strong>Estado de los Reportes:</strong><br />
+                    - <span className="text-success">Resuelto</span>: Indica que el reporte ha obtenido una solución positiva y el problema original ha sido solucionado de manera efectiva.<br />
+                    - <span className="text-danger">Cerrado</span>: Señala que el reporte ha sido finalizado sin una solución satisfactoria, lo que significa que el problema reportado no ha sido resuelto.
+                  </small>
                 </div>
+              </div>
               )}
             </div>
         </div>
