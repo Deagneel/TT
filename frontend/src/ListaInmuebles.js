@@ -75,6 +75,15 @@ function Navbar() {
             <button
               type="button"
               className="nav-link btn btn-link"
+              onClick={() => handleClick("/homearrendatario")}
+            >
+              Inicio
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              type="button"
+              className="nav-link btn btn-link"
               onClick={() => handleClick("/perfilarrendatario")}
             >
               Perfil

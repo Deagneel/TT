@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import swal from 'sweetalert';
-import MapComponent from './MapComponent';
-
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import swal from "sweetalert";
+import MapComponent from "./MapComponent";
 
 function Navbar({ handleSearchTerm }) {
   const navigate = useNavigate();
@@ -18,12 +17,12 @@ function Navbar({ handleSearchTerm }) {
 
   const handleLogoutClick = async () => {
     try {
-      const res = await axios.get('http://localhost:3031/logout');
-      if (res.data.Status === 'Success') {
-        swal('Sesión Cerrada Correctamente', ' ', 'success');
-        navigate('/login');
+      const res = await axios.get("http://localhost:3031/logout");
+      if (res.data.Status === "Success") {
+        swal("Sesión Cerrada Correctamente", " ", "success");
+        navigate("/login");
       } else {
-        alert('error');
+        alert("error");
       }
     } catch (err) {
       console.log(err);
@@ -39,19 +38,59 @@ function Navbar({ handleSearchTerm }) {
       <button className="navbar-toggler" type="button" onClick={toggleMenu}>
         <span className="navbar-toggler-icon"></span>
       </button>
-      <div className={`navbar-collapse ${menuOpen ? 'show' : 'collapse'} justify-content-center w-100`} id="navbarNav">
+      <div
+        className={`navbar-collapse ${
+          menuOpen ? "show" : "collapse"
+        } justify-content-center w-100`}
+        id="navbarNav"
+      >
         <ul className="navbar-nav w-100 justify-content-around">
           <li className="nav-item">
-            <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
+            <button
+              type="button"
+              className="nav-link btn btn-link"
+              onClick={() => window.history.back()}
+            >
+              Volver
+            </button>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendador')}>Perfil</button>
+            <button
+              type="button"
+              className="nav-link btn btn-link"
+              onClick={() => handleClick("/homearrendador")}
+            >
+              Inicio
+            </button>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/correoobtencion', 'Clic en el sobre')}>Chats</button>
+            <button
+              type="button"
+              className="nav-link btn btn-link"
+              onClick={() => handleClick("/perfilarrendador")}
+            >
+              Perfil
+            </button>
           </li>
           <li className="nav-item">
-            <button type="button" className="nav-link btn btn-link" onClick={handleLogoutClick}>Cerrar sesión</button>
+            <button
+              type="button"
+              className="nav-link btn btn-link"
+              onClick={() =>
+                handleClick("/correoobtencion", "Clic en el sobre")
+              }
+            >
+              Chats
+            </button>
+          </li>
+          <li className="nav-item">
+            <button
+              type="button"
+              className="nav-link btn btn-link"
+              onClick={handleLogoutClick}
+            >
+              Cerrar sesión
+            </button>
           </li>
         </ul>
       </div>
@@ -60,24 +99,25 @@ function Navbar({ handleSearchTerm }) {
 }
 
 function RegistroInmueble() {
-
   axios.defaults.withCredentials = true;
   useEffect(() => {
-    console.log("useEffect inicial en RegistroInmueble, formData actual:", formData);
-    axios.get('http://localhost:3031')
-      .then(res => {
-        if (res.data.valid) {
-        } else {
-          navigate('/login');
-        }
-      })
-  })
-  const XLSX = require('xlsx');
+    console.log(
+      "useEffect inicial en RegistroInmueble, formData actual:",
+      formData
+    );
+    axios.get("http://localhost:3031").then((res) => {
+      if (res.data.valid) {
+      } else {
+        navigate("/login");
+      }
+    });
+  });
+  const XLSX = require("xlsx");
   const [aceptarTerminos, setAceptarTerminos] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [esCpValido, setEsCpValido] = useState(null);
-  const [tempAsentamiento, setTempAsentamiento] = useState('');
-  const [tempAlcaldia, setTempAlcaldia] = useState('');
+  const [tempAsentamiento, setTempAsentamiento] = useState("");
+  const [tempAlcaldia, setTempAlcaldia] = useState("");
 
   const validarCP = (cp) => {
     // Convertir el CP a número para la comparación
@@ -102,36 +142,40 @@ function RegistroInmueble() {
   const [escuelas, setEscuelas] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3031/obtenerEscuelas')
-      .then(response => {
+    axios
+      .get("http://localhost:3031/obtenerEscuelas")
+      .then((response) => {
         setEscuelas(response.data);
       })
-      .catch(error => {
-        console.error('Error al obtener las escuelas:', error);
+      .catch((error) => {
+        console.error("Error al obtener las escuelas:", error);
       });
   }, []);
 
   const [formData, setFormData] = useState({
-    title: '',
-    address: '',
-    calle: '',
-    numExterior: '',
-    numInterior: '',
-    asentamiento: '',
-    cp: '',
-    alcaldia: '',
-    latitud: '',
-    longitud: '',
-    price: '',
-    period: 'mensual',
-    numRooms: '',
-    regulations: '',
-    caracteristicas: '',
-    idEscuela: '',
-    Tvivienda: ''
+    title: "",
+    address: "",
+    calle: "",
+    numExterior: "",
+    numInterior: "",
+    asentamiento: "",
+    cp: "",
+    alcaldia: "",
+    latitud: "",
+    longitud: "",
+    price: "",
+    period: "mensual",
+    numRooms: "",
+    regulations: "",
+    caracteristicas: "",
+    idEscuela: "",
+    Tvivienda: "",
   });
 
-  console.log("Inicio del componente RegistroInmueble, estado inicial formData:", formData);
+  console.log(
+    "Inicio del componente RegistroInmueble, estado inicial formData:",
+    formData
+  );
 
   const handleMarkerDragEnd = (position) => {
     setFormData({ ...formData, latitud: position.lat, longitud: position.lng });
@@ -142,10 +186,21 @@ function RegistroInmueble() {
 
   useEffect(() => {
     const checkFormValidity = () => {
-      const requiredFieldsFilled = formData.title && formData.address && formData.asentamiento && formData.cp &&
-        formData.alcaldia && formData.latitud && formData.longitud && formData.price &&
-        formData.period && formData.numRooms && formData.regulations && formData.caracteristicas &&
-        formData.Tvivienda && file;
+      const requiredFieldsFilled =
+        formData.title &&
+        formData.address &&
+        formData.asentamiento &&
+        formData.cp &&
+        formData.alcaldia &&
+        formData.latitud &&
+        formData.longitud &&
+        formData.price &&
+        formData.period &&
+        formData.numRooms &&
+        formData.regulations &&
+        formData.caracteristicas &&
+        formData.Tvivienda &&
+        file;
 
       setIsFormValid(requiredFieldsFilled && aceptarTerminos);
     };
@@ -158,17 +213,26 @@ function RegistroInmueble() {
 
     // Definir las validaciones para campos específicos
     const validations = {
-      title: value => !/[\d]/.test(value), // No permite números en el título
-      cp: value => /^$|^[0-9]+$/.test(value), // Solo permite números en el código postal
-      price: value => /^$|^[0-9]+$/.test(value),
-      numRooms: value => /^$|^[0-9]+$/.test(value)
+      title: (value) => !/[\d]/.test(value), // No permite números en el título
+      cp: (value) => /^$|^[0-9]+$/.test(value), // Solo permite números en el código postal
+      price: (value) => /^$|^[0-9]+$/.test(value),
+      numRooms: (value) => /^$|^[0-9]+$/.test(value),
+      calle: (value) =>
+        value === "" || /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]+$/.test(value), // Permite letras, números y espacios
+      numExterior: (value) =>
+        value === "" || /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]+$/.test(value), // Permite letras, números y espacios
+      numInterior: (value) =>
+        value === "" || /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]+$/.test(value), // Permite letras, números y espacios
     };
 
     const errorMessages = {
-      title: "El título no puede incluir números",
-      cp: "El código postal solo puede contener números",
-      price: "El precio solo puede contener números",
-      numRooms: "El número de habitaciones solo puede contener números"
+      title: "El título no puede incluir números.",
+      cp: "El código postal solo puede contener números.",
+      price: "El precio solo puede contener números.",
+      numRooms: "El número de habitaciones solo puede contener números.",
+      calle: "La calle no puede incluir caracteres especiales.",
+      numExterior: "El número exterior no puede incluir caracteres especiales.",
+      numInterior: "El número inteiror no puede incluir caracteres especiales.",
     };
 
     // Verificar si hay una validación definida para este campo
@@ -179,44 +243,54 @@ function RegistroInmueble() {
         return; // Detener la ejecución aquí
       }
     }
+
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
 
     console.log("handleChange, formData después de actualizar:", formData);
-
   };
 
   const findNearestSchool = async (lat, lng) => {
     try {
       console.log("Latitud:", lat, "Longitud:", lng); // Para depuración
-  
-      const response = await axios.get(`http://localhost:3031/escuelaCercana?lat=${lat}&lon=${lng}`);
+
+      const response = await axios.get(
+        `http://localhost:3031/escuelaCercana?lat=${lat}&lon=${lng}`
+      );
       console.log("Respuesta del servidor:", response.data); // Para depuración
-  
+
       if (response.data && response.data.idEscuelaMasCercana) {
-        setFormData(prevFormData => ({
+        setFormData((prevFormData) => ({
           ...prevFormData,
-          idEscuela: response.data.idEscuelaMasCercana
+          idEscuela: response.data.idEscuelaMasCercana,
         }));
       } else {
-        console.log("No se encontró idEscuelaMasCercana en la respuesta del servidor.");
+        console.log(
+          "No se encontró idEscuelaMasCercana en la respuesta del servidor."
+        );
       }
     } catch (error) {
-      console.error('Error al obtener la escuela más cercana:', error);
-      console.error('Detalle del error:', error.response ? error.response.data : error.message);
+      console.error("Error al obtener la escuela más cercana:", error);
+      console.error(
+        "Detalle del error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
-  
 
   //Sección de validacion de CP
   const handlecpvalidation = async () => {
-    const cpInput = document.getElementById('cp');
+    const cpInput = document.getElementById("cp");
     const cpValue = cpInput.value;
 
     if (!formData.calle || !formData.numExterior || !cpValue) {
-      swal("Error", "Por favor, rellena los campos de Calle, Número Exterior y Código Postal antes de validar.", "error");
+      swal(
+        "Error",
+        "Por favor, rellena los campos de Calle, Número Exterior y Código Postal antes de validar.",
+        "error"
+      );
       return;
     }
 
@@ -245,33 +319,57 @@ function RegistroInmueble() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3031/validateCP?cp=${cpValue}`);
-      if (response.status === 200 && response.data.asentamiento && response.data.alcaldia) {
-        setFormData(prevFormData => ({
+      const response = await axios.get(
+        `http://localhost:3031/validateCP?cp=${cpValue}`
+      );
+      if (
+        response.status === 200 &&
+        response.data.asentamiento &&
+        response.data.alcaldia
+      ) {
+        setFormData((prevFormData) => ({
           ...prevFormData,
           asentamiento: response.data.asentamiento,
           alcaldia: response.data.alcaldia,
-          cp: cpValue
+          cp: cpValue,
         }));
 
         // Continúa con la búsqueda de coordenadas
-        const direccionCompleta = `${formData.calle} ${formData.numExterior} ${formData.numInterior ? 'Int. ' + formData.numInterior : ''}, ${response.data.asentamiento}, ${cpValue}, ${response.data.alcaldia}`;
+        const direccionCompleta = `${formData.calle} ${formData.numExterior} ${
+          formData.numInterior ? "Interior " + formData.numInterior : ""
+        }, ${response.data.asentamiento}, ${cpValue}, ${
+          response.data.alcaldia
+        }`;
         fetchCoordinates(direccionCompleta);
       } else {
-        console.error('Error en la solicitud al servidor: ', response.status);
+        console.error("Error en la solicitud al servidor: ", response.status);
       }
     } catch (error) {
-      swal("Ingresa un código postal valido.", "", "error");
-      console.error('Error en la solicitud al servidor', error);
+      swal("Ingresa un código postal válido.", "", "error");
+      console.error("Error en la solicitud al servidor", error);
     }
 
     console.log("handlecpvalidation, fin de la función, formData:", formData);
-
   };
 
-
   const handleFile = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      const validImageTypes = ["image/jpeg", "image/png"];
+
+      if (validImageTypes.includes(fileType)) {
+        setFile(file);
+      } else {
+        swal(
+          "Error",
+          "Solo se aceptan imágenes en formato JPG o PNG.",
+          "error"
+        );
+        // Opcionalmente, resetear el input de archivo aquí
+        e.target.value = ""; // Esto resetea el input
+      }
+    }
   };
 
   const handleAddressPartChange = (e) => {
@@ -286,7 +384,9 @@ function RegistroInmueble() {
 
   const getAddressForMap = () => {
     // Combina los campos de la dirección
-    const direccionCompleta = `${formData.calle} ${formData.numExterior} ${formData.numInterior ? 'Int. ' + formData.numInterior : ''}`.trim();
+    const direccionCompleta = `${formData.calle} ${formData.numExterior} ${
+      formData.numInterior ? "Interior " + formData.numInterior : ""
+    }`.trim();
 
     // Construye la dirección completa con asentamiento, CP y alcaldía
     const fullAddress = `${direccionCompleta}, ${formData.asentamiento}, ${formData.cp}, ${formData.alcaldia}`;
@@ -296,27 +396,34 @@ function RegistroInmueble() {
   };
 
   const fetchCoordinates = async (fullAddress) => {
-    if (fullAddress.length > 10) { // Asegúrate de que la dirección sea lo suficientemente larga
+    if (fullAddress.length > 10) {
+      // Asegúrate de que la dirección sea lo suficientemente larga
       try {
-        const response = await axios.get(`http://localhost:3031/geocode?address=${encodeURIComponent(fullAddress)}`);
+        const response = await axios.get(
+          `http://localhost:3031/geocode?address=${encodeURIComponent(
+            fullAddress
+          )}`
+        );
         const { results } = response.data;
         if (results.length > 0) {
           const { lat, lng } = results[0].geometry.location;
-          setFormData(prevFormData => ({
+          setFormData((prevFormData) => ({
             ...prevFormData,
             latitud: lat,
             longitud: lng,
-            address: fullAddress
+            address: fullAddress,
           }));
           findNearestSchool(lat, lng);
         }
       } catch (error) {
-        console.error('Error en la geocodificación:', error);
+        console.error("Error en la geocodificación:", error);
       }
     }
 
-    console.log("fetchCoordinates, después de obtener coordenadas, formData:", formData);
-
+    console.log(
+      "fetchCoordinates, después de obtener coordenadas, formData:",
+      formData
+    );
   };
 
   const handleRegister = async () => {
@@ -325,17 +432,27 @@ function RegistroInmueble() {
     if (!isFormValid) return;
 
     // Combina los campos de la dirección
-    const direccionCompleta = `${formData.calle} ${formData.numExterior} ${formData.numInterior ? 'Int. ' + formData.numInterior : ''}`.trim();
+    const direccionCompleta = `${formData.calle} ${formData.numExterior} ${
+      formData.numInterior ? "Interior " + formData.numInterior : ""
+    }`.trim();
 
     // Validar la longitud mínima de título.
     if (formData.regulations.trim().length < 10) {
-      swal("Error", "Necesitamos un poco más de información en el reglamento.", "error");
+      swal(
+        "Error",
+        "Necesitamos un poco más de información en el reglamento.",
+        "error"
+      );
       return;
     }
 
     // Validar la longitud mínima de características.
     if (formData.caracteristicas.trim().length < 10) {
-      swal("Error", "Necesitamos un poco más de información en las características.", "error");
+      swal(
+        "Error",
+        "Necesitamos un poco más de información en las características.",
+        "error"
+      );
       return;
     }
 
@@ -353,38 +470,44 @@ function RegistroInmueble() {
 
     try {
       const formImage = new FormData();
-      formImage.append('image', file);
-      const imageResponse = await axios.post('http://localhost:3031/upload', formImage);
+      formImage.append("image", file);
+      const imageResponse = await axios.post(
+        "http://localhost:3031/upload",
+        formImage
+      );
       console.log(imageResponse.data);
 
-      const response = await axios.post('http://localhost:3031/registroinmueble', {
-        title: formData.title,
-        address: direccionCompleta,
-        asentamiento: formData.asentamiento,
-        cp: formData.cp,
-        alcaldia: formData.alcaldia,
-        latitud: formData.latitud,
-        longitud: formData.longitud,
-        price: formData.price,
-        period: formData.period,
-        numRooms: formData.numRooms,
-        regulations: formData.regulations,
-        caracteristicas: formData.caracteristicas,
-        images: imageResponse.data.url,
-        idEscuela: formData.idEscuela,
-        Tvivienda: formData.Tvivienda,
-        activo: 1
-      });
+      const response = await axios.post(
+        "http://localhost:3031/registroinmueble",
+        {
+          title: formData.title,
+          address: direccionCompleta,
+          asentamiento: formData.asentamiento,
+          cp: formData.cp,
+          alcaldia: formData.alcaldia,
+          latitud: formData.latitud,
+          longitud: formData.longitud,
+          price: formData.price,
+          period: formData.period,
+          numRooms: formData.numRooms,
+          regulations: formData.regulations,
+          caracteristicas: formData.caracteristicas,
+          images: imageResponse.data.url,
+          idEscuela: formData.idEscuela,
+          Tvivienda: formData.Tvivienda,
+          activo: 1,
+        }
+      );
 
       if (response.data.error) {
-        console.log('Error al registrar inmueble:', response.data.error);
+        console.log("Error al registrar inmueble:", response.data.error);
         return;
       }
 
       swal("Inmueble Registrado Correctamente", " ", "success");
-      navigate('/homearrendador');
+      navigate("/homearrendador");
     } catch (error) {
-      console.error('Error al enviar la solicitud al servidor:', error);
+      console.error("Error al enviar la solicitud al servidor:", error);
     }
   };
 
@@ -392,92 +515,227 @@ function RegistroInmueble() {
     console.log("Cambio en formData:", formData);
   }, [formData]);
 
-
   useEffect(() => {
-    console.log("Cambio detectado en asentamiento o alcaldía:", formData.asentamiento, formData.alcaldia);
+    console.log(
+      "Cambio detectado en asentamiento o alcaldía:",
+      formData.asentamiento,
+      formData.alcaldia
+    );
   }, [formData.asentamiento, formData.alcaldia]);
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <Navbar />
       <div className="container-fluid registro-inmueble-container bg-secondary">
         <div className="container bg-white p-4">
           <h1 className="h3 mb-3 font-weight-bold">Registrar nuevo inmueble</h1>
-          <p>Todos los campos con * son obligatorios.</p> {/* Mensaje de instrucción */}
+          <p>
+            Todos los campos con <span style={{ color: "red" }}>*</span> son
+            obligatorios.
+          </p>
+          {/* Mensaje de instrucción */}
           {/* Título del anuncio */}
           <div className="mb-3 form-group">
-            <label htmlFor="title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresar título del anuncio <span style={{ color: 'red' }}>*</span></label> {/* Añadir asterisco */}
-            <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Ingresa el título del anuncio..." />
+            <label
+              htmlFor="title"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Ingresar título del anuncio{" "}
+              <span style={{ color: "red" }}>*</span>
+            </label>{" "}
+            {/* Añadir asterisco */}
+            <input
+              type="text"
+              className="form-control"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Ingresa el título del anuncio..."
+            />
           </div>
-
           {/* Calle */}
-
           <div className="mb-3 form-group">
-            <label htmlFor="calle" style={{ fontWeight: 'bold', fontSize: '18px' }}>Calle <span style={{ color: 'red' }}>*</span></label>
-            <input type="text" className="form-control" id="calle" name="calle" value={formData.calle} onChange={handleAddressPartChange} placeholder="Calle" />
+            <label
+              htmlFor="calle"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Calle <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="calle"
+              name="calle"
+              value={formData.calle}
+              onChange={handleChange}
+              placeholder="Calle"
+            />
           </div>
-
           {/* Número Exterior e Interior */}
-
           <div className="row">
             <div className="col-md-6 mb-3 form-group">
-              <label htmlFor="numExterior" style={{ fontWeight: 'bold', fontSize: '18px' }}>Número Exterior <span style={{ color: 'red' }}>*</span></label>
-              <input type="text" className="form-control" id="numExterior" name="numExterior" value={formData.numExterior} onChange={handleAddressPartChange} placeholder="Número Exterior" />
+              <label
+                htmlFor="numExterior"
+                style={{ fontWeight: "bold", fontSize: "18px" }}
+              >
+                Número Exterior <span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="numExterior"
+                name="numExterior"
+                value={formData.numExterior}
+                onChange={handleChange}
+                placeholder="Número Exterior"
+              />
             </div>
             <div className="col-md-6 mb-3 form-group">
-              <label htmlFor="numInterior" style={{ fontWeight: 'bold', fontSize: '18px' }}>Número Interior</label>
-              <input type="text" className="form-control" id="numInterior" name="numInterior" value={formData.numInterior} onChange={handleAddressPartChange} placeholder="Número Interior (opcional)" />
+              <label
+                htmlFor="numInterior"
+                style={{ fontWeight: "bold", fontSize: "18px" }}
+              >
+                Número Interior
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="numInterior"
+                name="numInterior"
+                value={formData.numInterior}
+                onChange={handleChange}
+                placeholder="Número Interior (opcional)"
+              />
             </div>
           </div>
-
           {/* Código Postal */}
           <div className="mb-3 form-group">
-            <label htmlFor="cp" style={{ fontWeight: 'bold', fontSize: '18px' }}>Código Postal<span style={{ color: 'red' }}>*</span></label>
+            <label
+              htmlFor="cp"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Código Postal<span style={{ color: "red" }}>*</span>
+            </label>
             <div className="input-group">
-              <input type="text" className="form-control" id="cp" name="cp" value={formData.cp} onChange={handleChange} placeholder="Ingrese el Código Postal" />
+              <input
+                type="text"
+                className="form-control"
+                id="cp"
+                name="cp"
+                value={formData.cp}
+                onChange={handleChange}
+                placeholder="Ingrese el Código Postal"
+              />
               <div className="input-group-append">
-                <button onClick={handlecpvalidation} className="btn btn-outline-secondary" type="button" id="button-addon2">Validar Dirección</button>
+                <button
+                  onClick={handlecpvalidation}
+                  className="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                >
+                  Validar Dirección
+                </button>
               </div>
             </div>
           </div>
-
           {/* Asentamiento */}
           <div className="mb-3 form-group">
-            <label htmlFor="asentamiento" style={{ fontWeight: 'bold', fontSize: '18px' }}>Asentamiento<span style={{ color: 'red' }}>*</span></label>
-            <input disabled type="text" className="form-control" id="asentamiento" name="asentamiento" value={formData.asentamiento} onChange={handleChange} placeholder="..." />
+            <label
+              htmlFor="asentamiento"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Asentamiento<span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              disabled
+              type="text"
+              className="form-control"
+              id="asentamiento"
+              name="asentamiento"
+              value={formData.asentamiento}
+              onChange={handleChange}
+              placeholder="..."
+            />
           </div>
-
           {/* Alcaldía */}
           <div className="mb-3 form-group">
-            <label htmlFor="alcaldia" style={{ fontWeight: 'bold', fontSize: '18px' }}>Alcaldía<span style={{ color: 'red' }}>*</span></label>
-            <input disabled type="text" className="form-control" id="alcaldia" name="alcaldia" value={formData.alcaldia} onChange={handleChange} placeholder="..." />
+            <label
+              htmlFor="alcaldia"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Alcaldía<span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              disabled
+              type="text"
+              className="form-control"
+              id="alcaldia"
+              name="alcaldia"
+              value={formData.alcaldia}
+              onChange={handleChange}
+              placeholder="..."
+            />
           </div>
-
           <MapComponent
             onMarkerDragEnd={handleMarkerDragEnd}
             latitud={parseFloat(formData.latitud)}
             longitud={parseFloat(formData.longitud)}
           />
-
           {/* Tipo de vivienda */}
           <div className="mb-3 form-group">
-            <label htmlFor="Tvivienda" style={{ fontWeight: 'bold', fontSize: '18px' }}>¿Qué tipo de vivienda es?<span style={{ color: 'red' }}>*</span></label>
-            <select className="form-control" id="Tvivienda" name="Tvivienda" value={formData.Tvivienda} onChange={handleChange}>
+            <label
+              htmlFor="Tvivienda"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              ¿Qué tipo de vivienda es?<span style={{ color: "red" }}>*</span>
+            </label>
+            <select
+              className="form-control"
+              id="Tvivienda"
+              name="Tvivienda"
+              value={formData.Tvivienda}
+              onChange={handleChange}
+            >
               <option value="">Selecciona un tipo de vivienda</option>
               <option value="0">Individual</option>
               <option value="1">Compartida</option>
             </select>
           </div>
-
           {/* Precio y Periodo */}
           <div className="mb-3 form-row">
             <div className="mb-3 col">
-              <label htmlFor="price" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el precio<span style={{ color: 'red' }}>*</span></label>
-              <input type="text" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} placeholder="Ingrese el precio" />
+              <label
+                htmlFor="price"
+                style={{ fontWeight: "bold", fontSize: "18px" }}
+              >
+                Ingresa el precio<span style={{ color: "red" }}>*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="price"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Ingrese el precio"
+              />
             </div>
             <div className="mb-3 col">
-              <label htmlFor="period" style={{ fontWeight: 'bold', fontSize: '18px' }}>¿Cuál es el periodo de la renta?<span style={{ color: 'red' }}>*</span></label>
-              <select className="form-control" id="period" name="period" value={formData.period} onChange={handleChange} >
+              <label
+                htmlFor="period"
+                style={{ fontWeight: "bold", fontSize: "18px" }}
+              >
+                ¿Cuál es el periodo de la renta?
+                <span style={{ color: "red" }}>*</span>
+              </label>
+              <select
+                className="form-control"
+                id="period"
+                name="period"
+                value={formData.period}
+                onChange={handleChange}
+              >
                 <option value="Mensual">Mensual</option>
                 <option value="Cuatrimestral">Cuatrimestral</option>
                 <option value="Semestral">Semestral</option>
@@ -485,44 +743,101 @@ function RegistroInmueble() {
               </select>
             </div>
           </div>
-
           {/* Número de habitaciones */}
           <div className="mb-3 form-group">
-            <label htmlFor="numRooms" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el número de habitaciones<span style={{ color: 'red' }}>*</span></label>
-            <input type="text" className="form-control" id="numRooms" name="numRooms" value={formData.numRooms} onChange={handleChange} placeholder="..." />
+            <label
+              htmlFor="numRooms"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Ingresa el número de habitaciones
+              <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="numRooms"
+              name="numRooms"
+              value={formData.numRooms}
+              onChange={handleChange}
+              placeholder="..."
+            />
           </div>
-
           {/* Reglamento */}
           <div className="mb-3 form-group">
-            <label htmlFor="regulations" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa el reglamento interno del inmueble<span style={{ color: 'red' }}>*</span></label>
-            <textarea className="form-control" id="regulations" name="regulations" value={formData.regulations} onChange={handleChange} placeholder="Ingrese el reglamento"></textarea>
+            <label
+              htmlFor="regulations"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Ingresa el reglamento interno del inmueble
+              <span style={{ color: "red" }}>*</span>
+            </label>
+            <textarea
+              className="form-control"
+              id="regulations"
+              name="regulations"
+              value={formData.regulations}
+              onChange={handleChange}
+              placeholder="Ingrese el reglamento"
+            ></textarea>
           </div>
-
           {/* Caracteristicas */}
           <div className="mb-3 form-group">
-            <label htmlFor="caracteristicas" style={{ fontWeight: 'bold', fontSize: '18px' }}>Ingresa características adicionales del inmueble<span style={{ color: 'red' }}>*</span></label>
-            <textarea className="form-control" id="caracteristicas" name="caracteristicas" value={formData.caracteristicas} onChange={handleChange} placeholder="Ingrese características destacables del Inmueble"></textarea>
+            <label
+              htmlFor="caracteristicas"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Ingresa características adicionales del inmueble
+              <span style={{ color: "red" }}>*</span>
+            </label>
+            <textarea
+              className="form-control"
+              id="caracteristicas"
+              name="caracteristicas"
+              value={formData.caracteristicas}
+              onChange={handleChange}
+              placeholder="Ingrese características destacables del Inmueble"
+            ></textarea>
           </div>
-
           {/* Carga de imagen */}
           <div className="mb-3 form-group">
-            <label htmlFor="imageUpload" style={{ fontWeight: 'bold', fontSize: '18px' }}>Sube la foto de tu inmueble<span style={{ color: 'red' }}>*</span></label>
-            <input type="file" className="form-control-file" id="imageUpload" onChange={handleFile} />
+            <label
+              htmlFor="imageUpload"
+              className="form-label"
+              style={{ fontWeight: "bold", fontSize: "18px" }}
+            >
+              Sube la foto de tu inmueble<span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              id="imageUpload"
+              onChange={handleFile}
+            />
           </div>
 
           {/* Políticas de privacidad */}
           <div className="mb-3 form-check">
-            <input type="checkbox" className="form-check-input" id="aceptar_terminos" name="aceptar_terminos" onChange={handleCheckbox} checked={aceptarTerminos} />
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="aceptar_terminos"
+              name="aceptar_terminos"
+              onChange={handleCheckbox}
+              checked={aceptarTerminos}
+            />
             <label className="form-check-label" htmlFor="aceptar_terminos">
-              Acepto las <Link to="/privacypolicy">políticas de privacidad</Link>
+              Acepto las{" "}
+              <Link to="/privacypolicy">políticas de privacidad</Link>
             </label>
           </div>
-
           {/* Botón de registro */}
-          <button type="button" className="btn btn-secondary"
-            style={{ backgroundColor: '#beaf87', color: 'black' }}
+          <button
+            type="button"
+            className="btn btn-secondary"
+            style={{ backgroundColor: "#beaf87", color: "black" }}
             onClick={handleRegister}
-            disabled={!isFormValid || esCpValido === false}>
+            disabled={!isFormValid || esCpValido === false}
+          >
             Registrar
           </button>
         </div>
@@ -530,6 +845,5 @@ function RegistroInmueble() {
     </div>
   );
 }
-
 
 export default RegistroInmueble;

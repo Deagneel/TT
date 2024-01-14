@@ -55,6 +55,9 @@ function Navbar({ handleSearchTerm }) {
                       <button type="button" className="nav-link btn btn-link" onClick={() => window.history.back()}>Volver</button>
                   </li>
                   <li className="nav-item">
+                      <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/homearrendatario')}>Inicio</button>
+                  </li>
+                  <li className="nav-item">
                       <button type="button" className="nav-link btn btn-link" onClick={() => handleClick('/perfilarrendatario')}>Perfil</button>
                   </li>
                   <li className="nav-item">
@@ -304,12 +307,17 @@ const handleTrato = async (idUsuario, idInmueble, tituloinmu) => {
             
             {/* Dirección */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">Dirección: {property.direccion}</h5>
+              <h5 className="font-weight-bold">Calle y N: {property.direccion}</h5>
             </div>
 
             {/* Asentamientos */}
             <div className="mb-3">
-              <h5 className="font-weight-bold">{property.asentamiento} &nbsp; &nbsp; &nbsp; Código postal: {property.cp}</h5>
+              <h5 className="font-weight-bold">Asentamiento: {property.asentamiento}</h5>
+            </div>
+
+            {/* Asentamientos */}
+            <div className="mb-3">
+              <h5 className="font-weight-bold"> Código postal: {property.cp}</h5>
             </div>
 
             {/* Alcaldía */}
